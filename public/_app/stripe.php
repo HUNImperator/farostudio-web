@@ -127,3 +127,35 @@ function stripe_alairas_ervenyes(string $torzs, string $fejlec, string $titok, i
     }
     return false;
 }
+
+/**
+ * Egy Checkout Session alapján a rendelés fizetettnek jelölése (webhook és admin közös logikája).
+ * Visszaad: rövid eredmény szöveg.
+ */
+function stripe_fizetes_feldolgoz(array $r, array $s, string $szerzo): string
+{
+    $id = (int)$r['id'];
+    if (($s['payment_status'] ?? '') !== 'paid') {
+        return 'A fizetés még nem történt meg (Stripe állapot: ' . ($s['payment_status'] ?? '?') . ', ' . ($s['status'] ?? '?') . ').';
+    }
+    $vart = stripe_osszeg((int)$r['vegosszeg']);
+    if ((int)($s['amount_total'] ?? -1) !== $vart || strtolower((string)($s['currency'] ?? '')) !== 'huf') {
+        naplo($id, 'FIGYELEM: a Stripe-on fizetett összeg (' . (int)($s['amount_total'] ?? 0) / 100 . ' ' . ($s['currency'] ?? '?') . ') eltér a rendeléstől!', $szerzo);
+        return 'Eltérő összeg – a rendelés nem lett Fizetve.';
+    }
+    if ($r['allapot'] === 'lemondva') {
+        naplo($id, 'FIGYELEM: lemondott rendelésre érkezett bankkártyás fizetés – visszatérítés szükséges a Stripe-ban!', $szerzo);
+        return 'Lemondott rendelésre érkezett fizetés.';
+    }
+    if (!in_array($r['allapot'], ['uj', 'fizetesre_var'], true)) {
+        return 'Már feldolgozva korábban.';
+    }
+    rendeles_allapot($id, 'fizetve', $szerzo, 'bankkártyás fizetés sikeres');
+    $r = rendeles_betolt($id);
+    $ok = level_vevo_visszaigazolas($r);
+    naplo($id, $ok ? 'Visszaigazoló e-mail elküldve a vevőnek.' : 'A visszaigazoló e-mail küldése NEM sikerült.', 'rendszer');
+    if (!level_admin_uj_rendeles($r)) {
+        naplo($id, 'Az értesítő e-mail (új rendelés) küldése NEM sikerült.', 'rendszer');
+    }
+    return 'Rendben: a rendelés Fizetve, e-mailek elküldve.';
+}

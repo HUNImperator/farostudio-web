@@ -37,6 +37,7 @@ function db_driver(): string
 
 function db_migrate(PDO $pdo): void
 {
+    db_migrate_webhook($pdo);
     // ha a táblák már megvannak, nincs teendő
     try {
         $pdo->query('SELECT 1 FROM belepesi_kiserletek LIMIT 1');
@@ -119,4 +120,27 @@ function db_migrate(PDO $pdo): void
     ] as $sql) {
         try { $pdo->exec($sql); } catch (PDOException $e) { /* már létezik */ }
     }
+}
+
+/** Külső értesítések (pl. Stripe webhook) naplója – hibakereséshez. */
+function db_migrate_webhook(PDO $pdo): void
+{
+    try {
+        $pdo->query('SELECT 1 FROM ertesites_naplo LIMIT 1');
+        return;
+    } catch (PDOException $e) {
+    }
+    $mysql = db_driver() === 'mysql';
+    $id   = $mysql ? 'INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY' : 'INTEGER PRIMARY KEY AUTOINCREMENT';
+    $dt   = $mysql ? 'DATETIME' : 'TEXT';
+    $tail = $mysql ? ' ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_hungarian_ci' : '';
+    $pdo->exec("CREATE TABLE IF NOT EXISTS ertesites_naplo (
+        id $id,
+        ido $dt NOT NULL,
+        forras VARCHAR(30) NOT NULL,
+        esemeny VARCHAR(100) NOT NULL DEFAULT '',
+        rendeles_id INT NULL,
+        kod INT NOT NULL,
+        eredmeny VARCHAR(500) NOT NULL
+    )$tail");
 }

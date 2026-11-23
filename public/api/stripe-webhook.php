@@ -13,8 +13,20 @@ require FARO_APP . '/stripe.php';
 
 header('Content-Type: application/json; charset=utf-8');
 
+$GLOBALS['wh_tipus'] = '';
+$GLOBALS['wh_rendeles'] = null;
+
 function webhook_valasz(int $kod, string $uzenet): void
 {
+    // minden beérkező értesítést naplózunk (admin → Stripe-értesítések)
+    try {
+        db()->prepare('INSERT INTO ertesites_naplo (ido, forras, esemeny, rendeles_id, kod, eredmeny) VALUES (?,?,?,?,?,?)')
+            ->execute([most(), 'stripe', mb_substr((string)$GLOBALS['wh_tipus'], 0, 100), $GLOBALS['wh_rendeles'], $kod, mb_substr($uzenet, 0, 500)]);
+        // 90 napnál régebbi bejegyzések törlése
+        db()->prepare('DELETE FROM ertesites_naplo WHERE ido < ?')->execute([date('Y-m-d H:i:s', time() - 90 * 86400)]);
+    } catch (Throwable $e) {
+        error_log('[FARO] webhook-napló hiba: ' . $e->getMessage());
+    }
     http_response_code($kod);
     echo json_encode(['uzenet' => $uzenet], JSON_UNESCAPED_UNICODE);
     exit;
@@ -29,51 +41,38 @@ if (!stripe_beallitva()) {
 
 $torzs = (string)file_get_contents('php://input');
 $fejlec = (string)($_SERVER['HTTP_STRIPE_SIGNATURE'] ?? '');
-if (!stripe_alairas_ervenyes($torzs, $fejlec, (string)faro_config()['stripe']['webhook_secret'])) {
-    webhook_valasz(400, 'Érvénytelen aláírás.');
-}
-
 $esemeny = json_decode($torzs, true);
 $tipus = (string)($esemeny['type'] ?? '');
+$GLOBALS['wh_tipus'] = $tipus;
+if ($fejlec === '') {
+    webhook_valasz(400, 'Érvénytelen aláírás: hiányzik a Stripe-Signature fejléc.');
+}
+if (!stripe_alairas_ervenyes($torzs, $fejlec, (string)faro_config()['stripe']['webhook_secret'])) {
+    $t = preg_match('/t=(\d+)/', $fejlec, $m) ? (int)$m[1] : 0;
+    $elteres = $t ? abs(time() - $t) : null;
+    webhook_valasz(400, 'Érvénytelen aláírás' . ($elteres !== null && $elteres > 300
+        ? ' (az időbélyeg ' . $elteres . ' mp-cel eltér a szerver órájától).'
+        : ' – valószínűleg a faro-config.php-ban lévő webhook_secret nem ehhez a végponthoz tartozik.'));
+}
 $s = $esemeny['data']['object'] ?? [];
 if (($s['object'] ?? '') !== 'checkout.session') {
-    webhook_valasz(200, 'Nem figyelt esemény.');
+    webhook_valasz(200, isset($esemeny['data']['object'])
+        ? 'Nem figyelt esemény.'
+        : 'Az értesítésben nincs fizetési adat – a Stripe-ban a végpont „thin” formátumra van állítva, „snapshot” kell.');
 }
 
 $id = (int)($s['metadata']['rendeles_id'] ?? 0);
 $r = $id ? rendeles_betolt($id) : null;
+$GLOBALS['wh_rendeles'] = $r ? $id : null;
 if (!$r || ($r['stripe_session'] ?? '') !== ($s['id'] ?? '')) {
     // ismeretlen rendelés (pl. a régi webshopból) – nyugtázzuk, hogy a Stripe ne küldje újra
-    webhook_valasz(200, 'Ismeretlen rendelés.');
+    webhook_valasz(200, 'Ismeretlen rendelés (nem az új oldalról indult fizetés).');
 }
 
 switch ($tipus) {
     case 'checkout.session.completed':
     case 'checkout.session.async_payment_succeeded':
-        if (($s['payment_status'] ?? '') !== 'paid') {
-            naplo($id, 'Stripe: a fizetés folyamatban (még nincs jóváírva).', 'stripe');
-            break;
-        }
-        $vart = stripe_osszeg((int)$r['vegosszeg']);
-        if ((int)($s['amount_total'] ?? -1) !== $vart || strtolower((string)($s['currency'] ?? '')) !== 'huf') {
-            naplo($id, 'FIGYELEM: a Stripe-on fizetett összeg (' . (int)($s['amount_total'] ?? 0) / 100 . ' ' . ($s['currency'] ?? '?') . ') eltér a rendeléstől!', 'stripe');
-            break;
-        }
-        if ($r['allapot'] === 'lemondva') {
-            naplo($id, 'FIGYELEM: lemondott rendelésre érkezett bankkártyás fizetés – visszatérítés szükséges a Stripe-ban!', 'stripe');
-            break;
-        }
-        if (!in_array($r['allapot'], ['uj', 'fizetesre_var'], true)) {
-            break; // már feldolgoztuk (a Stripe többször is küldheti)
-        }
-        rendeles_allapot($id, 'fizetve', 'stripe', 'bankkártyás fizetés sikeres');
-        $r = rendeles_betolt($id);
-        $ok = level_vevo_visszaigazolas($r);
-        naplo($id, $ok ? 'Visszaigazoló e-mail elküldve a vevőnek.' : 'A visszaigazoló e-mail küldése NEM sikerült.', 'rendszer');
-        if (!level_admin_uj_rendeles($r)) {
-            naplo($id, 'Az értesítő e-mail (új rendelés) küldése NEM sikerült.', 'rendszer');
-        }
-        break;
+        webhook_valasz(200, stripe_fizetes_feldolgoz($r, $s, 'stripe'));
 
     case 'checkout.session.async_payment_failed':
         naplo($id, 'Stripe: a fizetés sikertelen.', 'stripe');

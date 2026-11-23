@@ -136,6 +136,34 @@ if ($p === 'jelszo') {
     exit;
 }
 
+/* ---------- külső értesítések naplója (Stripe) ---------- */
+if ($p === 'ertesitesek') {
+    $sorok = db()->query('SELECT * FROM ertesites_naplo ORDER BY id DESC LIMIT 100')->fetchAll();
+    oldal('Stripe-értesítések', function () use ($sorok) { ?>
+        <h1>Stripe-értesítések</h1>
+        <p class="muted">A Stripe által a szervernek küldött értesítések és a szerver válasza (az utolsó 100, 90 napig őrizzük). Ha egy fizetés után a rendelés nem lett „Fizetve”, itt látszik az ok.</p>
+        <?php if (!$sorok): ?>
+          <p class="empty">Még nem érkezett értesítés a Stripe-tól. Ha már fizettél teszt kártyával, a Stripe nem küldte el az értesítést: ellenőrizd a Stripe-ban a webhook címét, az eseményeket, és hogy ugyanabban a módban (teszt/éles) készült-e, mint a kulcs.</p>
+        <?php else: ?>
+        <table class="table">
+          <thead><tr><th>Időpont</th><th>Esemény</th><th>Rendelés</th><th class="num">Válasz</th><th>Eredmény</th></tr></thead>
+          <tbody>
+          <?php foreach ($sorok as $w): ?>
+            <tr>
+              <td style="white-space:nowrap"><?= h(datum($w['ido'])) ?></td>
+              <td><?= h($w['esemeny'] ?: '—') ?></td>
+              <td><?= $w['rendeles_id'] ? '<a href="./?p=rendeles&amp;id=' . (int)$w['rendeles_id'] . '">megnyitás</a>' : '—' ?></td>
+              <td class="num"><span class="badge <?= (int)$w['kod'] >= 400 ? 'badge--lemondva' : 'badge--fizetve' ?>"><?= (int)$w['kod'] ?></span></td>
+              <td><?= h($w['eredmeny']) ?></td>
+            </tr>
+          <?php endforeach; ?>
+          </tbody>
+        </table>
+        <?php endif; ?>
+    <?php });
+    exit;
+}
+
 /* ---------- egy rendelés ---------- */
 if ($p === 'rendeles') {
     $id = (int)($_GET['id'] ?? 0);
@@ -177,6 +205,19 @@ if ($p === 'rendeles') {
                 db()->prepare('UPDATE rendelesek SET admin_megjegyzes = ?, frissitve = ? WHERE id = ?')->execute([$m, most(), $id]);
                 naplo($id, 'Belső megjegyzés módosítva.', $ki);
                 atiranyit($vissza, 'Megjegyzés mentve.');
+            case 'stripe_ellenoriz':
+                require_once FARO_APP . '/stripe.php';
+                if (!$r['stripe_session'] || !stripe_beallitva()) {
+                    atiranyit($vissza, 'Ehhez a rendeléshez nincs Stripe-fizetés.');
+                }
+                try {
+                    $sess = stripe_api('GET', '/v1/checkout/sessions/' . rawurlencode($r['stripe_session']));
+                    $eredmeny = stripe_fizetes_feldolgoz($r, $sess, $ki);
+                } catch (Throwable $e) {
+                    $eredmeny = 'A Stripe lekérdezése nem sikerült: ' . $e->getMessage();
+                }
+                naplo($id, 'Stripe-fizetés kézi ellenőrzése: ' . $eredmeny, $ki);
+                atiranyit($vissza, $eredmeny);
             case 'visszaigazolas':
                 $ok = level_vevo_visszaigazolas($r);
                 naplo($id, $ok ? 'Visszaigazoló e-mail újraküldve.' : 'A visszaigazoló e-mail újraküldése NEM sikerült.', $ki);
@@ -211,7 +252,11 @@ if ($p === 'rendeles') {
             <h2>Teendők</h2>
             <div class="actions">
               <?php if (in_array($r['allapot'], ['uj', 'fizetesre_var'], true) && $r['fizetes'] === 'kartya'): ?>
-                <p class="muted small" style="flex-basis:100%;margin:0">Bankkártyás rendelés: a „Fizetve” állapotot a Stripe automatikusan beállítja a sikeres fizetés után. Ha a vevő nem fizetett, a rendelést törölheted.</p>
+                <p class="muted small" style="flex-basis:100%;margin:0">Bankkártyás rendelés: a „Fizetve” állapotot a Stripe automatikusan beállítja a sikeres fizetés után. Ha mégsem frissült, kérdezd le a Stripe-tól. Ha a vevő nem fizetett, a rendelést törölheted.</p>
+                <?php if ($r['stripe_session']): ?>
+                <form method="post"><?= csrf_mezo() ?><input type="hidden" name="muvelet" value="stripe_ellenoriz">
+                  <button class="btn">Fizetés lekérdezése a Stripe-tól</button></form>
+                <?php endif; ?>
               <?php endif; ?>
               <?php if (in_array($r['allapot'], ['uj', 'fizetesre_var'], true)): ?>
                 <form method="post"><?= csrf_mezo() ?><input type="hidden" name="muvelet" value="fizetve">
@@ -393,6 +438,7 @@ function oldal(string $cim, callable $tartalom, bool $menu = true): void
     <?php if ($menu && !empty($admin)): ?>
     <nav>
       <a href="./">Rendelések</a>
+      <a href="./?p=ertesitesek">Stripe-értesítések</a>
       <a href="../" target="_blank" rel="noopener">Weboldal ↗</a>
       <a href="./?p=jelszo">Jelszócsere</a>
       <a href="./?p=kilepes">Kilépés (<?= h($admin['felhasznalo']) ?>)</a>
