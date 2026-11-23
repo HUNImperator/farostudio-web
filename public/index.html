@@ -8,7 +8,7 @@
   <title>Csengeri Zsuzsa – kineziológus, oktató, író | FARO</title>
   <meta name="description" content="Csengeri Zsuzsa kineziológus, a One Brain módszer haladó oktatója, az Informális kineziológia és a Bio-Narratíva megalkotója, író.">
   <link rel="preload" href="assets/fonts/oswald-var.woff" as="font" type="font/woff" crossorigin>
-  <link rel="stylesheet" href="assets/css/style.css?v=6">
+  <link rel="stylesheet" href="assets/css/style.css?v=7">
 </head>
 <body>
   <a class="skip-link" href="#tartalom">Ugrás a tartalomra</a>
@@ -26,12 +26,12 @@
 
       <nav class="nav" id="fomenu" aria-label="Főmenü">
         <ul class="nav__list">
-          <li><a class="nav__link" href="./" aria-current="page">Kezdőlap</a></li>
           <li><a class="nav__link" href="rolam.html">Rólam</a></li>
           <li><a class="nav__link" href="konyvek.html">Könyvek</a></li>
           <li><a class="nav__link" href="eloadasok.html">Előadások</a></li>
           <li><a class="nav__link" href="mentoralas.html">Mentorálás</a></li>
           <li><a class="nav__link" href="informalis-kineziologia.html">Informális kineziológia</a></li>
+          <li><a class="nav__link" href="bio-narrativa.html">Bio-Narratíva</a></li>
         </ul>
       </nav>
     </div>
@@ -40,7 +40,7 @@
   <main id="tartalom">
 
     <!-- 1. CSEMPE – Nyitó -->
-    <section class="hero" aria-labelledby="hero-cim">
+    <section class="hero" id="nyito" aria-labelledby="hero-cim">
       <div class="container hero__inner">
         <figure class="hero__media">
           <picture>
@@ -67,7 +67,7 @@
     </section>
 
     <!-- 2. CSEMPE – Írások és regények -->
-    <section class="words" aria-labelledby="szavak-cim">
+    <section class="words" id="irasok" aria-labelledby="szavak-cim">
       <div class="container words__inner">
         <div class="words__text">
           <p class="section-eyebrow">Írások és regények</p>
@@ -98,7 +98,7 @@
     </section>
 
     <!-- 3. CSEMPE – Előadások & Programok -->
-    <section class="talks" aria-labelledby="eloadas-cim">
+    <section class="talks" id="eloadasok" aria-labelledby="eloadas-cim">
       <div class="container talks__inner">
         <figure class="talks__media">
           <picture>
@@ -117,7 +117,7 @@
     </section>
 
     <!-- 4. CSEMPE – Szakmai mentorálás -->
-    <section class="mentor" aria-labelledby="mentor-cim">
+    <section class="mentor" id="mentoralas" aria-labelledby="mentor-cim">
       <div class="container mentor__inner">
         <figure class="mentor__media">
           <picture>
@@ -136,7 +136,7 @@
     </section>
 
     <!-- 5. CSEMPE – Informális kineziológia -->
-    <section class="ik" aria-labelledby="ik-cim">
+    <section class="ik" id="informalis-kineziologia" aria-labelledby="ik-cim">
       <div class="container ik__inner">
         <div class="ik__text">
           <p class="section-eyebrow">Saját módszerem</p>
@@ -173,7 +173,39 @@
       </div>
     </section>
 
+    <!-- 6. CSEMPE – Bio-Narratíva -->
+    <section class="bio" id="bio-narrativa" aria-labelledby="bio-cim">
+      <div class="container bio__inner">
+        <figure class="bio__media">
+          <picture>
+            <source type="image/webp" srcset="assets/img/bio-narrativa-500.webp 500w, assets/img/bio-narrativa-671.webp 671w" sizes="(max-width: 900px) 86vw, 480px">
+            <img src="assets/img/bio-narrativa-671.jpg" srcset="assets/img/bio-narrativa-500.jpg 500w, assets/img/bio-narrativa-671.jpg 671w" sizes="(max-width: 900px) 86vw, 480px" width="671" height="768" loading="lazy" alt="Asztalnál ülő nő tollal ír egy nyitott könyvbe, mellette kézzel írt lapok">
+          </picture>
+        </figure>
+
+        <div class="bio__card">
+          <p class="section-eyebrow">Exkluzív · Személyes · Mély</p>
+          <h2 class="section-title" id="bio-cim">Bio-Narratíva</h2>
+          <p class="bio__subtitle">Írd meg a saját életregényedet.</p>
+          <p>Életünk egy megíratlan regény, amelynek sorsfordító fejezeteit mi magunk alakítjuk. A Bio-Narratíva nem irodalmi tanfolyam és nem tucatstúdió: ez egy exkluzív, mély önismereti folyamat, amely ötvözi az évtizedes kineziológusi tapasztalatot és a narratív szemléletet. Segít átírni a korlátozó mintáidat, és formába önteni azt a belső utat, amit eddig talán csak szavak nélkül hordoztál.</p>
+          <p class="bio__meta">A folyamat végén egy kb. 50 oldalas személyes életregényt kapsz.</p>
+          <a class="btn" href="bio-narrativa.html">Bővebben&nbsp;<span class="btn__arrow" aria-hidden="true">→</span></a>
+        </div>
+      </div>
+    </section>
+
   </main>
+
+  <nav class="tile-nav" aria-label="Ugrás a kezdőlap csempéihez">
+    <ul class="tile-nav__list">
+      <li><a class="tile-nav__link" href="#nyito" data-tile="nyito"><span class="tile-nav__box" aria-hidden="true"></span><span class="tile-nav__label">Bemutatkozás</span></a></li>
+      <li><a class="tile-nav__link" href="#irasok" data-tile="irasok"><span class="tile-nav__box" aria-hidden="true"></span><span class="tile-nav__label">Írások és regények</span></a></li>
+      <li><a class="tile-nav__link" href="#eloadasok" data-tile="eloadasok"><span class="tile-nav__box" aria-hidden="true"></span><span class="tile-nav__label">Előadások</span></a></li>
+      <li><a class="tile-nav__link" href="#mentoralas" data-tile="mentoralas"><span class="tile-nav__box" aria-hidden="true"></span><span class="tile-nav__label">Mentorálás</span></a></li>
+      <li><a class="tile-nav__link" href="#informalis-kineziologia" data-tile="informalis-kineziologia"><span class="tile-nav__box" aria-hidden="true"></span><span class="tile-nav__label">Informális kineziológia</span></a></li>
+      <li><a class="tile-nav__link" href="#bio-narrativa" data-tile="bio-narrativa"><span class="tile-nav__box" aria-hidden="true"></span><span class="tile-nav__label">Bio-Narratíva</span></a></li>
+    </ul>
+  </nav>
 
   <footer class="site-footer">
     <div class="container">
@@ -181,6 +213,6 @@
     </div>
   </footer>
 
-  <script src="assets/js/main.js?v=2" defer></script>
+  <script src="assets/js/main.js?v=3" defer></script>
 </body>
 </html>

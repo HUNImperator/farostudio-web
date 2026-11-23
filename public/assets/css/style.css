@@ -691,6 +691,365 @@ p { margin: 0 0 1.1em; }
 }
 
 /* ==========================================================
+   6. CSEMPE – Bio-Narratíva
+   ========================================================== */
+.bio {
+  padding: clamp(80px, 9vw, 130px) 0;
+  overflow: hidden;
+}
+.bio__inner {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  align-items: center;
+}
+.bio__media {
+  position: relative;
+  margin: 0;
+  grid-column: 1;
+  grid-row: 1;
+}
+.bio__media::after {               /* csíkos kör balra lent */
+  content: "";
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  left: -50px;
+  bottom: -50px;
+  background: repeating-linear-gradient(-45deg, var(--ink) 0 2px, transparent 2px 10px);
+  z-index: 2;
+}
+.bio__media img {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  aspect-ratio: 671 / 768;
+  object-fit: cover;
+}
+.bio__card {
+  position: relative;
+  z-index: 3;
+  grid-column: 2;
+  grid-row: 1;
+  margin-left: -70px;
+  background: #faf6f2;
+  padding: clamp(34px, 4vw, 54px);
+  box-shadow: 0 30px 60px -34px rgba(0, 0, 0, .35);
+}
+.bio__inner::before {             /* bézs kör jobbra fent, a kártya mögött */
+  content: "";
+  position: absolute;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  background: var(--beige);
+  top: -40px;
+  right: -20px;
+  z-index: 0;
+}
+.bio__card .section-title { font-size: clamp(36px, 3.8vw, 52px); margin-bottom: 8px; }
+.bio__subtitle {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: clamp(22px, 2.2vw, 28px);
+  color: var(--ink);
+  margin: 0 0 22px;
+}
+.bio__card p { font-size: 16px; }
+.bio__card .bio__subtitle { font-size: clamp(22px, 2.2vw, 28px); }
+.bio__meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px !important;
+  color: var(--muted);
+  border-top: 1px solid rgba(0, 0, 0, .1);
+  padding-top: 16px;
+  margin: 24px 0 28px;
+}
+.bio__meta::before {
+  content: "";
+  width: 18px;
+  height: 22px;
+  border: 1.5px solid var(--beige-dark);
+  border-radius: 2px;
+  flex: none;
+}
+
+@media (max-width: 900px) {
+  .bio__inner { grid-template-columns: 1fr; }
+  .bio__media { width: 86%; }
+  .bio__media::after { width: 100px; height: 100px; left: -30px; bottom: -30px; }
+  .bio__card { grid-column: 1; grid-row: 2; margin: -60px 0 0 14%; }
+  .bio__inner::before { width: 120px; height: 120px; top: auto; bottom: 40%; right: -10px; }
+}
+@media (max-width: 480px) {
+  .bio__card { margin-left: 16px; }
+}
+
+/* ==========================================================
+   Aloldal – Bio-Narratíva
+   ========================================================== */
+.hook {
+  padding: clamp(64px, 8vw, 100px) 0 clamp(40px, 5vw, 60px);
+  text-align: center;
+}
+.hook__inner { max-width: 820px; margin: 0 auto; }
+.hook p { font-size: 19px; }
+.hook .hook__statement {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: clamp(28px, 3vw, 40px);
+  line-height: 1.3;
+  color: var(--ink);
+  margin: 36px 0 0;
+}
+
+.two-pillars {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px;
+  margin-top: 34px;
+}
+.two-pillars > div {
+  background: var(--beige-light);
+  padding: 34px 32px;
+}
+.two-pillars h3 { font-size: 26px; font-weight: 400; margin-bottom: 12px; }
+
+.levels {
+  list-style: none;
+  margin: 40px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px;
+  counter-reset: lvl;
+}
+.levels li {
+  counter-increment: lvl;
+  border-top: 2px solid var(--ink);
+  padding-top: 20px;
+}
+.levels li::before {
+  content: counter(lvl, decimal-leading-zero);
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: 40px;
+  color: var(--beige-dark);
+  display: block;
+  line-height: 1;
+  margin-bottom: 14px;
+}
+.levels h3 { font-size: 22px; font-weight: 400; margin-bottom: 8px; }
+.levels p { font-size: 16px; margin: 0; }
+
+.section-pad { padding: clamp(64px, 8vw, 100px) 0; }
+.section-pad--tint { background: var(--beige-light); }
+.narrow { max-width: 900px; }
+
+.big-quote {
+  background: var(--ink);
+  color: var(--beige-light);
+  padding: clamp(64px, 8vw, 100px) 0;
+  text-align: center;
+}
+.big-quote blockquote {
+  margin: 0 auto;
+  max-width: 860px;
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: clamp(26px, 3vw, 38px);
+  line-height: 1.4;
+}
+
+.phases {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  margin-top: 40px;
+}
+.phase {
+  background: var(--white);
+  padding: 32px 28px;
+  display: flex;
+  flex-direction: column;
+}
+.phase__num {
+  font-family: var(--font-display);
+  font-size: 13px;
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 10px;
+}
+.phase h3 { font-size: 24px; font-weight: 400; margin-bottom: 4px; }
+.phase__motto { font-style: italic; color: var(--muted); margin: 0 0 18px; font-size: 15px; }
+.phase dl { margin: 0; font-size: 15px; }
+.phase dt {
+  font-family: var(--font-display);
+  font-size: 13px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--ink);
+  margin-top: 14px;
+}
+.phase dd { margin: 4px 0 0; }
+
+.frame {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+  margin: 36px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.frame li {
+  border: 1px solid var(--beige-dark);
+  padding: 20px 18px;
+}
+.frame strong {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 13px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.price-wide {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: clamp(28px, 5vw, 60px);
+  align-items: center;
+  background: var(--beige-light);
+  padding: clamp(32px, 4vw, 50px);
+  margin-top: 40px;
+}
+.price-wide .price-card__amount { white-space: nowrap; }
+.price-wide p:last-child { margin-bottom: 0; }
+
+.faq { max-width: 860px; margin-top: 30px; }
+.faq details {
+  border-bottom: 1px solid rgba(0, 0, 0, .12);
+}
+.faq summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 22px 44px 22px 0;
+  position: relative;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 20px;
+  color: var(--ink);
+}
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after {
+  content: "+";
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 28px;
+  font-weight: 300;
+  color: var(--beige-dark);
+  transition: transform .2s ease;
+}
+.faq details[open] summary::after { transform: translateY(-50%) rotate(45deg); }
+.faq details p { margin: 0 0 22px; }
+
+@media (max-width: 900px) {
+  .levels, .phases { grid-template-columns: 1fr; }
+  .frame { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 640px) {
+  .two-pillars { grid-template-columns: 1fr; }
+  .price-wide { grid-template-columns: 1fr; text-align: center; }
+  .frame { grid-template-columns: 1fr; }
+}
+
+/* ==========================================================
+   Lebegő csempemenü (jobb oldalon, ha a fejléc kikerül a képből)
+   ========================================================== */
+.tile-nav {
+  position: fixed;
+  right: 22px;
+  top: 50%;
+  z-index: 50;
+  transform: translate(16px, -50%);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .3s ease, transform .3s ease, visibility .3s;
+}
+.tile-nav.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(0, -50%);
+}
+.tile-nav__list {
+  list-style: none;
+  margin: 0;
+  padding: 12px 9px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: rgba(255, 255, 255, .88);
+  -webkit-backdrop-filter: blur(6px);
+          backdrop-filter: blur(6px);
+  box-shadow: 0 10px 30px -14px rgba(0, 0, 0, .35);
+}
+.tile-nav__link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  text-decoration: none;
+}
+.tile-nav__box {
+  width: 13px;
+  height: 13px;
+  border: 1.5px solid var(--ink);
+  background: var(--white);
+  transition: background-color .2s ease, transform .2s ease;
+}
+.tile-nav__link:hover .tile-nav__box,
+.tile-nav__link:focus-visible .tile-nav__box { background: var(--beige); transform: scale(1.12); }
+.tile-nav__link[aria-current="true"] .tile-nav__box { background: var(--ink); }
+.tile-nav__label {
+  position: absolute;
+  right: calc(100% + 14px);
+  top: 50%;
+  transform: translate(6px, -50%);
+  white-space: nowrap;
+  background: var(--ink);
+  color: var(--white);
+  font-family: var(--font-display);
+  font-size: 13px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  padding: 6px 12px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s ease, transform .2s ease;
+}
+.tile-nav__link:hover .tile-nav__label,
+.tile-nav__link:focus-visible .tile-nav__label { opacity: 1; transform: translate(0, -50%); }
+
+@media (max-width: 640px) {
+  .tile-nav { right: 4px; }
+  .tile-nav__list { padding: 6px 2px; gap: 0; background: rgba(255, 255, 255, .72); }
+  .tile-nav__link { width: 20px; height: 24px; }
+  .tile-nav__box { width: 9px; height: 9px; border-width: 1.2px; }
+  .tile-nav__label { display: none; }
+}
+@media print { .tile-nav { display: none; } }
+
+/* ==========================================================
    Aloldal – Informális kineziológia
    ========================================================== */
 .page-hero.page-hero--cream { background: var(--cream); padding-bottom: 0; }
