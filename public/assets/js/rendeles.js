@@ -105,6 +105,16 @@
   });
 
   /* ---------- Foxpost-választó ---------- */
+  // A Foxpost egyes pontoknál (pl. Packeta Z-Pont) HTML-t küld a leírásban, benne fizetési
+  // és szolgáltatási adatokkal. Ebből csak a hely leírását tartjuk meg, sima szövegként.
+  // A DOMParser „inert” dokumentumot készít, így a szövegben lévő kód nem fut le.
+  function tisztaLeiras(html) {
+    if (!html) return "";
+    var elso = String(html).split(/<b>/i)[0].replace(/<br\s*\/?>/gi, "\n");
+    var szoveg = new DOMParser().parseFromString(elso, "text/html").body.textContent || "";
+    return szoveg.replace(/[ \t]+/g, " ").replace(/\s*\n\s*/g, "\n").trim();
+  }
+
   var terkep = document.querySelector("[data-apt-terkep]");
   var valasztott = document.querySelector("[data-apt-valasztott]");
   var aptHiba = document.querySelector("[data-apt-hiba]");
@@ -118,7 +128,7 @@
     document.getElementById("apt_cim").value = [apt.zip, apt.city, apt.street || apt.address].filter(Boolean).join(" ");
     document.querySelector("[data-apt-nev]").textContent = apt.name || "";
     document.querySelector("[data-apt-cim]").textContent = document.getElementById("apt_cim").value;
-    document.querySelector("[data-apt-leiras]").textContent = apt.findme || "";
+    document.querySelector("[data-apt-leiras]").textContent = tisztaLeiras(apt.findme);
     valasztott.hidden = false;
     terkep.hidden = true;
     aptHiba.textContent = "";
