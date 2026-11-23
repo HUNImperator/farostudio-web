@@ -3,20 +3,73 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- TESZT: élesítéskor törölni -->
   <meta name="robots" content="noindex, nofollow">
-  <title>Farostudio – hamarosan</title>
-  <style>
-    html,body{height:100%;margin:0}
-    body{display:flex;align-items:center;justify-content:center;font-family:system-ui,sans-serif;background:#f6f3ee;color:#2b2b2b}
-    main{text-align:center;padding:2rem}
-    h1{font-weight:600;letter-spacing:.02em;margin:0 0 .5rem}
-    p{margin:0;color:#6b6b6b}
-  </style>
+  <title>Csengeri Zsuzsa – kineziológus, oktató, író | FARO</title>
+  <meta name="description" content="Csengeri Zsuzsa kineziológus, a One Brain módszer haladó oktatója, az Informális kineziológia és a Bio-Narratíva megalkotója, író.">
+  <link rel="preload" href="assets/fonts/oswald-var.woff" as="font" type="font/woff" crossorigin>
+  <link rel="stylesheet" href="assets/css/style.css?v=2">
 </head>
 <body>
-  <main>
-    <h1>Farostudio</h1>
-    <p>Az új oldal hamarosan érkezik.</p>
+  <a class="skip-link" href="#tartalom">Ugrás a tartalomra</a>
+
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="logo" href="./" aria-label="FARO – Csengeri Zsuzsa, kezdőlap">
+        <span class="logo__mark">FARO</span>
+        <span class="logo__sub">Csengeri Zsuzsa</span>
+      </a>
+
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="fomenu" aria-label="Menü megnyitása">
+        <span class="nav-toggle__bar"></span>
+      </button>
+
+      <nav class="nav" id="fomenu" aria-label="Főmenü">
+        <ul class="nav__list">
+          <li><a class="nav__link" href="./" aria-current="page">Kezdőlap</a></li>
+          <li><a class="nav__link" href="rolam.html">Rólam</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="tartalom">
+
+    <!-- 1. CSEMPE – Nyitó -->
+    <section class="hero" aria-labelledby="hero-cim">
+      <div class="container hero__inner">
+        <figure class="hero__media">
+          <picture>
+            <source type="image/webp"
+                    srcset="assets/img/csengeri-zsuzsa-500.webp 500w, assets/img/csengeri-zsuzsa-800.webp 800w, assets/img/csengeri-zsuzsa-1200.webp 1200w"
+                    sizes="(max-width: 900px) 82vw, 460px">
+            <img src="assets/img/csengeri-zsuzsa-800.jpg"
+                 srcset="assets/img/csengeri-zsuzsa-500.jpg 500w, assets/img/csengeri-zsuzsa-800.jpg 800w, assets/img/csengeri-zsuzsa-1200.jpg 1200w"
+                 sizes="(max-width: 900px) 82vw, 460px"
+                 width="800" height="1000"
+                 alt="Csengeri Zsuzsa portréja"
+                 fetchpriority="high">
+          </picture>
+        </figure>
+
+        <div class="hero__content">
+          <p class="hero__eyebrow">Csengeri Zsuzsa</p>
+          <h1 class="hero__title" id="hero-cim">Ahol a belső út formát ölt</h1>
+          <p class="hero__roles">Kineziológus<span>·</span>Oktató<span>·</span>Író</p>
+          <p class="hero__lead">Évtizedek kineziológusi és oktatói tapasztalata, az Informális kineziológia és a Bio-Narratíva megalkotása, valamint öt megírt regény.</p>
+          <a class="btn" href="rolam.html">Ismerje meg a belső utat és a hátteremet <span class="btn__arrow" aria-hidden="true">→</span></a>
+        </div>
+      </div>
+    </section>
+
   </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© 2026 Csengeri Zsuzsa – FARO</p>
+    </div>
+  </footer>
+
+  <script src="assets/js/main.js?v=2" defer></script>
 </body>
 </html>
