@@ -115,8 +115,10 @@ p { margin: 0 0 1.1em; }
   transition: background-color .25s ease, color .25s ease;
 }
 .btn:hover { background: var(--ink); color: var(--white); }
-.btn__arrow { display: inline-block; margin-left: .5em; transition: transform .25s ease; }
+.btn__arrow { display: inline-block; margin-left: .2em; transition: transform .25s ease; }
 .btn:hover .btn__arrow { transform: translateX(4px); }
+.btn--dark { background: var(--ink); color: var(--white); }
+.btn--dark:hover { background: var(--white); color: var(--ink); }
 
 /* ---------- Fejléc ---------- */
 .site-header {
@@ -435,6 +437,126 @@ p { margin: 0 0 1.1em; }
 @media (max-width: 480px) {
   .booklist { padding: 26px 22px 20px; }
 }
+
+/* ==========================================================
+   3. CSEMPE – Előadások & Programok
+   ========================================================== */
+.talks {
+  padding: clamp(64px, 8vw, 110px) 0 clamp(80px, 10vw, 130px);
+  overflow: hidden;
+}
+.talks__inner {
+  position: relative;
+  min-height: 560px;
+}
+.talks__media {
+  position: relative;
+  margin: 0 0 0 auto;
+  width: 72%;
+}
+/* bézs kör jobbra fent és csíkos kör jobbra – a sablon motívumai */
+.talks__media::before,
+.talks__media::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  z-index: 0;
+}
+.talks__media::before {
+  width: 190px;
+  height: 190px;
+  background: var(--beige);
+  top: -70px;
+  right: 40px;
+}
+.talks__media::after {
+  width: 96px;
+  height: 96px;
+  right: -56px;
+  bottom: 70px;
+  background: repeating-linear-gradient(-45deg, var(--ink) 0 2px, transparent 2px 9px);
+}
+.talks__media img {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  object-position: 65% 40%;
+}
+
+.talks__card {
+  position: absolute;
+  z-index: 2;
+  left: 0;
+  bottom: -40px;
+  width: min(500px, 46%);
+  background: #faf6f2;
+  padding: clamp(32px, 4vw, 48px);
+  box-shadow: 0 30px 60px -36px rgba(0, 0, 0, .35);
+}
+.talks__card .section-title { font-size: clamp(34px, 3.4vw, 46px); margin-bottom: 20px; }
+.talks__card p { font-size: 16px; }
+.talks__card .btn { margin-top: 10px; }
+
+@media (max-width: 900px) {
+  .talks__inner { min-height: 0; }
+  .talks__media { width: 100%; }
+  .talks__media::before { width: 130px; height: 130px; top: -44px; right: 16px; }
+  .talks__media::after { display: none; }
+  .talks__card {
+    position: relative;
+    bottom: auto;
+    width: auto;
+    margin: -50px 16px 0;
+  }
+}
+
+/* ==========================================================
+   Aloldal – Előadások
+   ========================================================== */
+.topics {
+  padding: clamp(64px, 8vw, 100px) 0;
+}
+.topics__head { max-width: 680px; margin-bottom: 48px; }
+.topics__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  counter-reset: topic;
+}
+.topic {
+  background: var(--beige-light);
+  padding: 36px 36px 30px;
+  position: relative;
+}
+.topic__num {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: 44px;
+  line-height: 1;
+  color: var(--beige-dark);
+  display: block;
+  margin-bottom: 16px;
+}
+.topic__title {
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 1.3;
+  margin: 0 0 14px;
+}
+.topic p { font-size: 16px; margin-bottom: .8em; }
+.topic p:last-child { margin-bottom: 0; }
+
+@media (max-width: 820px) {
+  .topics__grid { grid-template-columns: 1fr; gap: 18px; }
+  .topic { padding: 28px 24px 22px; }
+}
+
+.closing .btn { margin-top: 30px; }
 
 /* ==========================================================
    Aloldal – Könyvek
