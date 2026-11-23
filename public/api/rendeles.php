@@ -35,15 +35,33 @@ if ($hibak) {
     valasz(['hiba' => implode(' ', $hibak)], 422);
 }
 
-if ($r['fizetes'] === 'kartya') {
-    // A Stripe-os fizetés a következő fejlesztési lépésben készül el.
-    if (empty(faro_config()['stripe']['secret_key'])) {
-        valasz(['hiba' => 'A bankkártyás fizetés még nem érhető el. Kérlek, válaszd a banki átutalást.'], 422);
-    }
+require FARO_APP . '/stripe.php';
+
+if ($r['fizetes'] === 'kartya' && !stripe_beallitva()) {
+    valasz(['hiba' => 'A bankkártyás fizetés még nem érhető el. Kérlek, válaszd a banki átutalást.'], 422);
 }
 
-$allapot = $r['fizetes'] === 'atutalas' ? 'fizetesre_var' : 'uj';
-$rendeles = rendeles_letrehoz($r, $allapot);
+$rendeles = rendeles_letrehoz($r, 'fizetesre_var');
+
+/* ---------- bankkártya: átirányítás a Stripe fizetőoldalára ----------
+ * A visszaigazoló e-mail csak a sikeres fizetés után megy ki (stripe-webhook.php). */
+if ($rendeles['fizetes'] === 'kartya') {
+    try {
+        $session = stripe_fizetooldal($rendeles);
+    } catch (Throwable $e) {
+        error_log('[FARO] ' . $e->getMessage());
+        naplo((int)$rendeles['id'], 'A Stripe fizetőoldal létrehozása NEM sikerült: ' . $e->getMessage(), 'rendszer');
+        valasz(['hiba' => 'A bankkártyás fizetés most nem indítható el. Kérlek, próbáld újra pár perc múlva, vagy válaszd a banki átutalást.'], 502);
+    }
+    db()->prepare('UPDATE rendelesek SET stripe_session = ? WHERE id = ?')->execute([$session['id'], $rendeles['id']]);
+    naplo((int)$rendeles['id'], 'Átirányítás a Stripe fizetőoldalára.', 'rendszer');
+    valasz([
+        'rendelesszam' => $rendeles['rendelesszam'],
+        'vegosszeg'    => (int)$rendeles['vegosszeg'],
+        'fizetes'      => 'kartya',
+        'atiranyitas'  => $session['url'],
+    ]);
+}
 
 $okVevo = level_vevo_visszaigazolas($rendeles);
 naplo((int)$rendeles['id'], $okVevo ? 'Visszaigazoló e-mail elküldve a vevőnek.' : 'A visszaigazoló e-mail küldése NEM sikerült.', 'rendszer');

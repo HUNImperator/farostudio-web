@@ -218,7 +218,17 @@
         return v.json().then(function (j) { if (!v.ok) throw new Error(j.hiba || "hiba"); return j; });
       })
       .then(function (valasz) {
-        if (valasz.atiranyitas) { window.location.href = valasz.atiranyitas; return; }
+        if (valasz.atiranyitas) {
+          // bankkártya: a polc csak a sikeres fizetés után ürül ki (köszönő oldal)
+          try {
+            sessionStorage.setItem("faro-utolso-rendeles", JSON.stringify({
+              rendelesszam: valasz.rendelesszam, vegosszeg: valasz.vegosszeg, fizetes: "kartya"
+            }));
+          } catch (x) {}
+          gomb.textContent = "Átirányítás a fizetőoldalra…";
+          window.location.href = valasz.atiranyitas;
+          return;
+        }
         try {
           sessionStorage.setItem("faro-utolso-rendeles", JSON.stringify({
             rendelesszam: valasz.rendelesszam, vegosszeg: valasz.vegosszeg, fizetes: valasz.fizetes
@@ -236,6 +246,17 @@
         }
       });
   });
+
+  /* ---------- megszakított bankkártyás fizetés ---------- */
+  var megszakitva = new URLSearchParams(location.search).get("megszakitva");
+  if (megszakitva) {
+    var doboz = document.querySelector("[data-megszakitva]");
+    if (doboz) {
+      doboz.textContent = "A bankkártyás fizetés megszakadt, a " + megszakitva +
+        " számú rendelés nincs kifizetve. Ellenőrizd az adatokat, és küldd el újra a rendelést – bankkártyával vagy átutalással.";
+      doboz.hidden = false;
+    }
+  }
 
   /* ---------- indulás ---------- */
   function indul() {

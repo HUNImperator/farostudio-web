@@ -1,0 +1,129 @@
+<?php
+defined('FARO') or exit;
+
+/**
+ * Stripe – bankkártyás fizetés a Stripe saját fizetőoldalán (Checkout).
+ * Külső könyvtár nélkül, a Stripe REST API-ját hívjuk cURL-lel.
+ *
+ * Beállítás (faro-config.php):
+ *   'stripe' => [
+ *       'secret_key'     => 'sk_test_…' vagy 'sk_live_…',
+ *       'webhook_secret' => 'whsec_…',
+ *   ],
+ *
+ * Forint: a Stripe API-ban két tizedesjegyű pénznemként kell átadni,
+ * vagyis 1500 Ft = 150000.
+ */
+
+function stripe_beallitva(): bool
+{
+    $s = faro_config()['stripe'] ?? [];
+    return !empty($s['secret_key']) && !empty($s['webhook_secret']);
+}
+
+function stripe_osszeg(int $forint): int
+{
+    return $forint * 100;
+}
+
+function stripe_api(string $metodus, string $ut, array $parameterek = []): array
+{
+    $s = faro_config()['stripe'];
+    $alap = rtrim($s['api_base'] ?? 'https://api.stripe.com', '/');
+    $ch = curl_init($alap . $ut);
+    $fejlec = ['Stripe-Version: 2024-06-20'];
+    curl_setopt_array($ch, [
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_USERPWD        => $s['secret_key'] . ':',
+        CURLOPT_TIMEOUT        => 30,
+        CURLOPT_CONNECTTIMEOUT => 10,
+        CURLOPT_HTTPHEADER     => $fejlec,
+    ]);
+    if ($metodus === 'POST') {
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($parameterek, '', '&'));
+    }
+    $valasz = curl_exec($ch);
+    $kod = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $hiba = curl_error($ch);
+    curl_close($ch);
+    if ($valasz === false) {
+        throw new RuntimeException('A Stripe nem érhető el: ' . $hiba);
+    }
+    $adat = json_decode((string)$valasz, true);
+    if ($kod >= 400 || !is_array($adat)) {
+        $uzenet = is_array($adat) && isset($adat['error']['message']) ? $adat['error']['message'] : ('HTTP ' . $kod);
+        throw new RuntimeException('Stripe hiba: ' . $uzenet);
+    }
+    return $adat;
+}
+
+/** Fizetőoldal (Checkout Session) létrehozása egy rendeléshez. Visszaadja a session-t (id, url). */
+function stripe_fizetooldal(array $r): array
+{
+    $site = rtrim(faro_config()['site_url'], '/');
+    $szam = $r['rendelesszam'];
+    $p = [
+        'mode'                => 'payment',
+        'locale'              => 'hu',
+        'payment_method_types' => ['card'],
+        'customer_email'      => $r['vevo_email'],
+        'client_reference_id' => $szam,
+        'metadata'            => ['rendeles_id' => (string)$r['id'], 'rendelesszam' => $szam],
+        'payment_intent_data' => [
+            'description' => 'FARO rendelés ' . $szam,
+            'metadata'    => ['rendeles_id' => (string)$r['id'], 'rendelesszam' => $szam],
+        ],
+        'success_url' => $site . '/rendeles-koszonjuk.html?rendeles=' . rawurlencode($szam) . '&fizetes=kartya',
+        'cancel_url'  => $site . '/rendeles.html?megszakitva=' . rawurlencode($szam),
+        'line_items'  => [],
+    ];
+    foreach ($r['tetelek'] as $t) {
+        $p['line_items'][] = [
+            'quantity'   => (int)$t['db'],
+            'price_data' => [
+                'currency'     => 'huf',
+                'unit_amount'  => stripe_osszeg((int)$t['egysegar']),
+                'product_data' => ['name' => $t['cim'] . ' – Csengeri Zsuzsa (dedikált példány)'],
+            ],
+        ];
+    }
+    $p['line_items'][] = [
+        'quantity'   => 1,
+        'price_data' => [
+            'currency'     => 'huf',
+            'unit_amount'  => stripe_osszeg((int)$r['szallitas']),
+            'product_data' => ['name' => 'Foxpost csomagautomata – ' . $r['apt_nev']],
+        ],
+    ];
+    return stripe_api('POST', '/v1/checkout/sessions', $p);
+}
+
+/**
+ * Webhook-aláírás ellenőrzése (Stripe-Signature: t=…,v1=…).
+ * Az aláírt tartalom: "{t}.{nyers törzs}", HMAC-SHA256 a webhook-titokkal.
+ */
+function stripe_alairas_ervenyes(string $torzs, string $fejlec, string $titok, int $turesMp = 300): bool
+{
+    $t = null;
+    $alairasok = [];
+    foreach (explode(',', $fejlec) as $resz) {
+        $kv = explode('=', trim($resz), 2);
+        if (count($kv) !== 2) continue;
+        if ($kv[0] === 't') $t = $kv[1];
+        if ($kv[0] === 'v1') $alairasok[] = $kv[1];
+    }
+    if ($t === null || !ctype_digit($t) || !$alairasok) {
+        return false;
+    }
+    if (abs(time() - (int)$t) > $turesMp) {
+        return false;
+    }
+    $varhato = hash_hmac('sha256', $t . '.' . $torzs, $titok);
+    foreach ($alairasok as $a) {
+        if (hash_equals($varhato, $a)) {
+            return true;
+        }
+    }
+    return false;
+}

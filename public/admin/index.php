@@ -199,7 +199,9 @@ if ($p === 'rendeles') {
         <div class="order-head">
           <div>
             <h1><?= h($r['rendelesszam']) ?></h1>
-            <p class="muted"><?= h(datum($r['letrehozva'])) ?> · <?= h(FIZETESI_MODOK[$r['fizetes']] ?? $r['fizetes']) ?> · <?= $db ?> kötet</p>
+            <p class="muted"><?= h(datum($r['letrehozva'])) ?> · <?= h(FIZETESI_MODOK[$r['fizetes']] ?? $r['fizetes']) ?> · <?= $db ?> kötet
+              <?php if ($r['fizetve_ekkor']): ?> · fizetve: <?= h(datum($r['fizetve_ekkor'])) ?><?php endif; ?></p>
+            <?php if ($r['stripe_session']): ?><p class="muted small">Stripe fizetési azonosító: <?= h($r['stripe_session']) ?></p><?php endif; ?>
           </div>
           <span class="badge badge--<?= h($r['allapot']) ?>"><?= h(allapot_nev($r['allapot'])) ?></span>
         </div>
@@ -208,6 +210,9 @@ if ($p === 'rendeles') {
           <section class="card">
             <h2>Teendők</h2>
             <div class="actions">
+              <?php if (in_array($r['allapot'], ['uj', 'fizetesre_var'], true) && $r['fizetes'] === 'kartya'): ?>
+                <p class="muted small" style="flex-basis:100%;margin:0">Bankkártyás rendelés: a „Fizetve” állapotot a Stripe automatikusan beállítja a sikeres fizetés után. Ha a vevő nem fizetett, a rendelést törölheted.</p>
+              <?php endif; ?>
               <?php if (in_array($r['allapot'], ['uj', 'fizetesre_var'], true)): ?>
                 <form method="post"><?= csrf_mezo() ?><input type="hidden" name="muvelet" value="fizetve">
                   <button class="btn">Fizetés beérkezett → Fizetve</button></form>

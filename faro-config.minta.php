@@ -43,5 +43,13 @@ return [
     // Hibák részletes kiírása – élesben maradjon false
     'debug' => false,
 
-    // Később: 'stripe' => [...], 'szamlazz' => [...], 'foxpost' => [...]
+    // Stripe – bankkártyás fizetés
+    // A test.farostudio.hu-hoz a Stripe TESZT módjának kulcsait használd (sk_test_…),
+    // élesítéskor cseréld az éles kulcsokra (sk_live_…) és az éles webhook titkára.
+    'stripe' => [
+        'secret_key'     => '<Stripe titkos kulcs: sk_test_… vagy sk_live_…>',
+        'webhook_secret' => '<a webhook aláíró titka: whsec_…>',
+    ],
+
+    // Később: 'szamlazz' => [...], 'foxpost' => [...]
 ];

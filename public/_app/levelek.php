@@ -124,6 +124,9 @@ function level_vevo_visszaigazolas(array $r): bool
         $szoveg .= "Fizetési adatok (banki átutalás)\nKedvezményezett: {$b['kedvezmenyezett']}\nBank: {$b['bank']}\nSzámlaszám: {$b['szamlaszam']}\n"
             . 'Összeg: ' . ft((int)$r['vegosszeg']) . "\nKözlemény: {$r['rendelesszam']}\n\n"
             . "Kérlek, az összeget{$hatarido} utald át, a közleményben a rendelésszámmal. Amint megérkezik, dedikálom és feladom a könyveket, a számlát pedig e-mailben küldöm.\n\n";
+    } elseif (!empty($r['fizetve_ekkor'])) {
+        $html .= '<p>A bankkártyás fizetésed sikeresen megérkezett. Hamarosan dedikálom és feladom a könyveket, a számlát e-mailben küldöm.</p>';
+        $szoveg .= "A bankkártyás fizetésed sikeresen megérkezett. Hamarosan dedikálom és feladom a könyveket, a számlát e-mailben küldöm.\n\n";
     } else {
         $html .= '<p>A fizetés beérkezése után dedikálom és feladom a könyveket, a számlát e-mailben küldöm.</p>';
         $szoveg .= "A fizetés beérkezése után dedikálom és feladom a könyveket, a számlát e-mailben küldöm.\n\n";
