@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="FARO világítótorony">
+  <!-- fénysugár -->
+  <path d="M37.5 15.6 L62 9.5 L62 25.5 L37.5 19.6 Z" fill="#c9a96b" opacity=".38"/>
+  <!-- tető -->
+  <path d="M26 14 L32 7.5 L38 14 Z" fill="#111111"/>
+  <!-- lámpaház -->
+  <rect x="27.2" y="14" width="9.6" height="7.6" fill="#ffffff" stroke="#111111" stroke-width="1.6"/>
+  <rect x="29.6" y="16" width="4.8" height="3.6" fill="#c9a96b"/>
+  <!-- körerkély -->
+  <line x1="23.8" y1="22.4" x2="40.2" y2="22.4" stroke="#111111" stroke-width="1.8" stroke-linecap="round"/>
+  <!-- torony -->
+  <path d="M27.4 23.2 L25 46 L39 46 L36.6 23.2 Z" fill="#ffffff" stroke="#111111" stroke-width="1.6" stroke-linejoin="round"/>
+  <!-- sáv -->
+  <path d="M26.55 31 L37.45 31 L37.87 35 L26.13 35 Z" fill="#cdb49b"/>
+  <!-- ajtó -->
+  <path d="M30.4 46 V42.4 A1.6 1.6 0 0 1 33.6 42.4 V46" fill="none" stroke="#111111" stroke-width="1.4"/>
+  <!-- hullámok -->
+  <path d="M4 50.5 q5 -3.6 10 0 t10 0 t10 0 t10 0 t10 0 t10 0" fill="none" stroke="#111111" stroke-width="1.6" stroke-linecap="round"/>
+  <path d="M11 56.5 q5 -3.6 10 0 t10 0 t10 0 t10 0" fill="none" stroke="#cdb49b" stroke-width="1.6" stroke-linecap="round"/>
+</svg>

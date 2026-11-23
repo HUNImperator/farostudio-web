@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- TESZT: élesítéskor törölni -->
+  <meta name="robots" content="noindex, nofollow">
+  <title>Gondolatok &amp; Rövid írások – Csengeri Zsuzsa | FARO</title>
+  <meta name="description" content="Gondolatok &amp; Rövid írások – Csengeri Zsuzsa jegyzetei önismeretről, családi mintákról, írói műhelytitkokról és újrakezdésről.">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/img/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="assets/img/favicon-180.png">
+  <link rel="preload" href="assets/fonts/oswald-var.woff" as="font" type="font/woff" crossorigin>
+  <link rel="stylesheet" href="assets/css/style.css?v=8">
+</head>
+<body>
+  <a class="skip-link" href="#tartalom">Ugrás a tartalomra</a>
+
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="logo" href="./" aria-label="FARO – Csengeri Zsuzsa, kezdőlap">
+        <img class="logo__jel" src="assets/img/logo-faro-jel.svg" width="58" height="58" alt="">
+        <span class="logo__text">
+          <span class="logo__mark">FARO</span>
+          <span class="logo__sub">Csengeri Zsuzsa</span>
+        </span>
+      </a>
+
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="fomenu" aria-label="Menü megnyitása">
+        <span class="nav-toggle__bar"></span>
+      </button>
+
+      <nav class="nav" id="fomenu" aria-label="Főmenü">
+        <ul class="nav__list">
+          <li><a class="nav__link" href="rolam.html">Rólam</a></li>
+          <li><a class="nav__link" href="konyvek.html">Könyvek</a></li>
+          <li><a class="nav__link" href="eloadasok.html">Előadások</a></li>
+          <li><a class="nav__link" href="mentoralas.html">Mentorálás</a></li>
+          <li><a class="nav__link" href="informalis-kineziologia.html">Informális kineziológia</a></li>
+          <li><a class="nav__link" href="bio-narrativa.html">Bio-Narratíva</a></li>
+          <li><a class="nav__link" href="gondolatok.html" aria-current="page">Gondolatok</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="tartalom">
+
+    <section class="page-hero" aria-labelledby="oldal-cim">
+      <div class="container page-hero__inner">
+        <div>
+          <p class="page-hero__eyebrow">Gondolatok &amp; Rövid írások</p>
+          <h1 class="page-hero__title" id="oldal-cim">Pillanatképek a belső útról</h1>
+          <p class="page-hero__lead">Vannak felismerések, amelyek nem kívánnak egy egész regényt, mégis képesek új irányba fordítani a napunkat – vagy akár az életünket. Ezen az oldalon olyan rövidebb írásokat, jegyzeteket és történetmorzsákat gyűjtök össze, amelyek a kineziológusi praxisom tapasztalataiból, az írói műhelyem csendjéből és a mindennapok apró csodáiból születnek. Olvasd őket úgy, mint egy jó beszélgetést egy csésze tea mellett.</p>
+        </div>
+        <figure class="page-hero__media page-hero__media--plain" style="margin:0">
+          <img src="assets/img/gondolatok-illusztracio.svg" width="420" height="330" alt="Nyitott jegyzetfüzet tollal és egy gőzölgő teáscsésze" style="-webkit-mask-image:none;mask-image:none">
+        </figure>
+      </div>
+    </section>
+
+    <section class="section-pad" aria-labelledby="irasok-cim">
+      <div class="container">
+        <h2 class="visually-hidden" id="irasok-cim">Írások</h2>
+        <ul class="filters" aria-label="Szűrés témakör szerint">
+          <li><button class="filter" type="button" data-filter="osszes" aria-pressed="true" data-desc="">Minden írás</button></li>
+          <li><button class="filter" type="button" data-filter="belso-beke" aria-pressed="false" data-desc="Gondolatok a stresszoldásról, az elengedésről és a tudatosságról.">Belső béke & Önismeret</button></li>
+          <li><button class="filter" type="button" data-filter="csaladi-mintak" aria-pressed="false" data-desc="Transzgenerációs összefüggések közérthetően.">Családi minták & Sorsfonalak</button></li>
+          <li><button class="filter" type="button" data-filter="iroi-muhely" aria-pressed="false" data-desc="Hogyan születnek a karakterek és a történetek.">Írói műhelytitkok</button></li>
+          <li><button class="filter" type="button" data-filter="ujrakezdes" aria-pressed="false" data-desc="Inspiráció a változáshoz, kortól függetlenül.">Újrakezdés & Életerő</button></li>
+        </ul>
+        <p class="filter-desc" aria-live="polite"></p>
+
+        <div class="posts">
+          <!--
+            Új írás sablonja (data-tema: belso-beke | csaladi-mintak | iroi-muhely | ujrakezdes):
+            <article class="post" data-tema="belso-beke">
+              <p class="post__meta">2026. november · Belső béke &amp; Önismeret</p>
+              <h3 class="post__title"><a href="gondolatok/iras-cime.html">Az írás címe</a></h3>
+              <p>Rövid bevezető két-három mondatban…</p>
+            </article>
+          -->
+          <div class="posts-empty" data-empty>
+            <img src="assets/img/gondolatok-illusztracio.svg" width="160" height="126" alt="">
+            <p>Az első írások hamarosan megérkeznek ide.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <nav class="tile-nav" aria-label="Ugrás a kezdőlap csempéihez">
+    <ul class="tile-nav__list">
+      <li><a class="tile-nav__link" href="./#nyito" data-tile="nyito"><span class="tile-nav__box" aria-hidden="true"></span><span class="tile-nav__label">Bemutatkozás</span></a></li>
+      <li><a class="tile-nav__link" href="./#irasok" data-tile="irasok"><span class="tile-nav__box" aria-hidden="true"></span><span class="tile-nav__label">Írások és regények</span></a></li>
+      <li><a class="tile-nav__link" href="./#eloadasok" data-tile="eloadasok"><span class="tile-nav__box" aria-hidden="true"></span><span class="tile-nav__label">Előadások</span></a></li>
+      <li><a class="tile-nav__link" href="./#mentoralas" data-tile="mentoralas"><span class="tile-nav__box" aria-hidden="true"></span><span class="tile-nav__label">Mentorálás</span></a></li>
+      <li><a class="tile-nav__link" href="./#informalis-kineziologia" data-tile="informalis-kineziologia"><span class="tile-nav__box" aria-hidden="true"></span><span class="tile-nav__label">Informális kineziológia</span></a></li>
+      <li><a class="tile-nav__link" href="./#bio-narrativa" data-tile="bio-narrativa"><span class="tile-nav__box" aria-hidden="true"></span><span class="tile-nav__label">Bio-Narratíva</span></a></li>
+      <li><a class="tile-nav__link" href="./#gondolatok" data-tile="gondolatok"><span class="tile-nav__box" aria-hidden="true"></span><span class="tile-nav__label">Gondolatok</span></a></li>
+    </ul>
+  </nav>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© 2026 Csengeri Zsuzsa – FARO</p>
+    </div>
+  </footer>
+
+  <script src="assets/js/main.js?v=4" defer></script>
+</body>
+</html>

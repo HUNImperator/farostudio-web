@@ -55,3 +55,39 @@
   }, { rootMargin: "-45% 0px -50% 0px" });
   sections.forEach(function (s) { spy.observe(s); });
 })();
+
+// Gondolatok oldal: témakör-szűrő (a kezdőlapi címkékről #tema hivatkozással is működik)
+(function () {
+  var buttons = Array.prototype.slice.call(document.querySelectorAll(".filter"));
+  if (!buttons.length) return;
+  var desc = document.querySelector(".filter-desc");
+  var posts = Array.prototype.slice.call(document.querySelectorAll(".post"));
+  var empty = document.querySelector("[data-empty]");
+
+  function apply(tema) {
+    var found = 0;
+    buttons.forEach(function (b) {
+      var on = b.getAttribute("data-filter") === tema;
+      b.setAttribute("aria-pressed", on ? "true" : "false");
+      if (on && desc) desc.textContent = b.getAttribute("data-desc") || "";
+    });
+    posts.forEach(function (p) {
+      var show = tema === "osszes" || p.getAttribute("data-tema") === tema;
+      p.hidden = !show;
+      if (show) found++;
+    });
+    if (empty) empty.hidden = found > 0;
+  }
+
+  buttons.forEach(function (b) {
+    b.addEventListener("click", function () {
+      var tema = b.getAttribute("data-filter");
+      apply(tema);
+      history.replaceState(null, "", tema === "osszes" ? location.pathname : "#" + tema);
+    });
+  });
+
+  var start = location.hash.replace("#", "");
+  var valid = buttons.some(function (b) { return b.getAttribute("data-filter") === start; });
+  apply(valid ? start : "osszes");
+})();
