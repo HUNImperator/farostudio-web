@@ -1,0 +1,8 @@
+---
+deployment:
+  tasks:
+    # A public/ mappa tartalmát másolja a teszt aldomain gyökérmappájába.
+    # Ha az aldomain document rootja más, itt kell átírni.
+    - export DEPLOYPATH=$HOME/test.farostudio.hu/
+    - /bin/mkdir -p $DEPLOYPATH
+    - /bin/cp -R public/. $DEPLOYPATH
