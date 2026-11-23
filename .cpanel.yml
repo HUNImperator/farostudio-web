@@ -6,3 +6,5 @@ deployment:
     - export DEPLOYPATH=$HOME/test.farostudio.hu/
     - /bin/mkdir -p $DEPLOYPATH
     - /bin/cp -R public/. $DEPLOYPATH
+    # A lecserélt előadásfotó régi fájljainak törlése a szerverről
+    - /bin/rm -f $DEPLOYPATH/assets/img/eloadas-*
