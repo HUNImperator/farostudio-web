@@ -2023,3 +2023,9 @@ body[data-rendeles] .tile-nav { display: none; }
   .btn--dark:hover { background: var(--ink); color: var(--white); }
   .btn--white:hover { background: var(--white); color: var(--ink); }
 }
+.bank-table { border-collapse: collapse; font-size: 16px; }
+.bank-table th { text-align: left; font-weight: 400; color: var(--muted); padding: 4px 22px 4px 0; }
+.bank-table td { padding: 4px 0; }
+.next-steps { padding-left: 20px; margin: 0 0 14px; }
+.next-steps li { margin-bottom: 8px; }
+.step[hidden] { display: none; }

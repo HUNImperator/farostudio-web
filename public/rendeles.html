@@ -145,14 +145,14 @@
               <legend><span class="step__num">05</span>Fizetés</legend>
               <div class="pay">
                 <label class="pay__option">
-                  <input type="radio" name="fizetes" value="kartya" checked>
+                  <input type="radio" name="fizetes" value="kartya">
                   <span>
                     <span class="pay__title">Bankkártyás fizetés</span>
                     <span class="pay__desc">A Stripe biztonságos fizetőoldalán fizetsz. A számlát e-mailben küldöm.</span>
                   </span>
                 </label>
                 <label class="pay__option">
-                  <input type="radio" name="fizetes" value="atutalas">
+                  <input type="radio" name="fizetes" value="atutalas" checked>
                   <span>
                     <span class="pay__title">Banki átutalás</span>
                     <span class="pay__desc">A rendelés után e-mailben megkapod a fizetési adatokat. A könyveket az összeg beérkezése után adom fel, a számlát akkor küldöm.</span>
@@ -160,6 +160,11 @@
                 </label>
               </div>
             </fieldset>
+
+            <div class="visually-hidden" aria-hidden="true">
+              <label for="weboldal">Ezt a mezőt hagyd üresen</label>
+              <input id="weboldal" name="weboldal" type="text" tabindex="-1" autocomplete="off">
+            </div>
 
             <fieldset class="step">
               <legend><span class="step__num">06</span>Megjegyzés</legend>
@@ -216,6 +221,6 @@
 
   <script src="assets/js/main.js?v=5" defer></script>
   <script src="assets/js/konyvespolc.js?v=1" defer></script>
-  <script src="assets/js/rendeles.js?v=1" defer></script>
+  <script src="assets/js/rendeles.js?v=2" defer></script>
 </body>
 </html>

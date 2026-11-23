@@ -190,7 +190,8 @@
         return { id: t.id, db: t.db, dedikalas: ta ? ta.value.trim() : "" };
       }),
       fizetes: urlap.querySelector("input[name=fizetes]:checked").value,
-      megjegyzes: f("megjegyzes")
+      megjegyzes: f("megjegyzes"),
+      weboldal: (document.getElementById("weboldal") || {}).value || ""
     };
   }
 
@@ -218,6 +219,11 @@
       })
       .then(function (valasz) {
         if (valasz.atiranyitas) { window.location.href = valasz.atiranyitas; return; }
+        try {
+          sessionStorage.setItem("faro-utolso-rendeles", JSON.stringify({
+            rendelesszam: valasz.rendelesszam, vegosszeg: valasz.vegosszeg, fizetes: valasz.fizetes
+          }));
+        } catch (x) {}
         window.Konyvespolc.urit();
         window.location.href = "rendeles-koszonjuk.html?rendeles=" + encodeURIComponent(valasz.rendelesszam || "");
       })

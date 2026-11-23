@@ -1,0 +1,86 @@
+@font-face { font-family: "Oswald"; src: url("../assets/fonts/oswald-var.woff") format("woff"); font-weight: 200 700; }
+@font-face { font-family: "Open Sans"; src: url("../assets/fonts/opensans-var.woff") format("woff"); font-weight: 300 800; }
+
+:root { --ink: #111; --muted: #6e6a66; --beige: #e4d2c0; --beige-light: #f0e5db; --line: #e6ddd3; --err: #a23a2a; }
+* { box-sizing: border-box; }
+body { margin: 0; font-family: "Open Sans", Arial, sans-serif; font-size: 15px; color: #2b2b2b; background: #f7f3ee; line-height: 1.55; }
+a { color: var(--ink); }
+h1, h2, h3 { font-family: "Oswald", sans-serif; font-weight: 400; color: var(--ink); line-height: 1.2; }
+h1 { font-size: 30px; margin: 0 0 6px; }
+h2 { font-size: 20px; margin: 0 0 14px; }
+h3 { font-size: 15px; letter-spacing: .1em; text-transform: uppercase; margin: 18px 0 6px; }
+.muted { color: var(--muted); }
+.small { font-size: 13px; }
+
+.top { display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; padding: 12px 28px; background: #fff; border-bottom: 3px solid var(--ink); }
+.brand { display: flex; align-items: center; gap: 10px; font-family: "Oswald", sans-serif; font-size: 22px; letter-spacing: .3em; text-decoration: none; }
+.brand span { font-size: 12px; letter-spacing: .2em; color: var(--muted); text-transform: uppercase; }
+.top nav { display: flex; gap: 22px; flex-wrap: wrap; }
+.top nav a { font-family: "Oswald", sans-serif; font-size: 14px; letter-spacing: .08em; text-transform: uppercase; text-decoration: none; }
+.top nav a:hover { text-decoration: underline; }
+.wrap { max-width: 1180px; margin: 0 auto; padding: 28px; }
+
+.btn { display: inline-block; padding: 10px 18px; background: var(--ink); color: #fff; border: 1px solid var(--ink); font-family: "Oswald", sans-serif; font-size: 14px; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; text-decoration: none; }
+.btn:hover { background: #333; }
+.btn--light { background: #fff; color: var(--ink); }
+.btn--light:hover { background: var(--beige-light); }
+.btn--danger { background: var(--err); border-color: var(--err); }
+
+input, select, textarea { font: inherit; padding: 9px 11px; border: 1px solid #cfc6bd; background: #fff; border-radius: 0; width: 100%; }
+input:focus, select:focus, textarea:focus { outline: 2px solid var(--ink); }
+label { display: block; font-family: "Oswald", sans-serif; font-size: 13px; letter-spacing: .1em; text-transform: uppercase; margin: 0 0 14px; }
+label input { margin-top: 6px; text-transform: none; letter-spacing: 0; font-family: "Open Sans", sans-serif; }
+
+.login { max-width: 420px; margin: 40px auto; background: #fff; padding: 32px; border-top: 3px solid var(--ink); }
+.alert { background: #fff; border-left: 3px solid var(--ink); padding: 10px 14px; margin: 0 0 16px; }
+.alert--err { border-left-color: var(--err); color: var(--err); }
+
+.list-head { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 14px; }
+.search { display: flex; gap: 8px; min-width: 320px; }
+.tabs { display: flex; gap: 6px; flex-wrap: wrap; margin: 0 0 18px; }
+.tabs a { padding: 7px 12px; background: #fff; border: 1px solid var(--line); text-decoration: none; font-size: 14px; }
+.tabs a span { color: var(--muted); font-size: 12px; margin-left: 4px; }
+.tabs a.is-on { background: var(--ink); color: #fff; border-color: var(--ink); }
+.tabs a.is-on span { color: #ccc; }
+.empty { background: #fff; padding: 40px; text-align: center; color: var(--muted); }
+
+.table { width: 100%; border-collapse: collapse; background: #fff; }
+.table th { text-align: left; font-family: "Oswald", sans-serif; font-weight: 400; font-size: 13px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); padding: 10px 12px; border-bottom: 2px solid var(--line); }
+.table td { padding: 11px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.table .num { text-align: right; white-space: nowrap; }
+.table--list tbody tr { cursor: pointer; }
+.table--list tbody tr:hover { background: #fcfaf7; }
+.table .total td { font-family: "Oswald", sans-serif; font-size: 18px; border-top: 2px solid var(--ink); }
+.dedik { max-width: 360px; }
+
+.badge { display: inline-block; padding: 3px 10px; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; font-family: "Oswald", sans-serif; background: #eee; white-space: nowrap; }
+.badge--uj { background: #dfe8f5; }
+.badge--fizetesre_var { background: #fbe7c6; }
+.badge--fizetve { background: #d9efd9; }
+.badge--csomag_letrehozva, .badge--feladva { background: var(--beige); }
+.badge--teljesitve { background: var(--ink); color: #fff; }
+.badge--lemondva { background: #f2d6d1; color: var(--err); }
+
+.order-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 18px; }
+.order-head .badge { font-size: 15px; padding: 6px 14px; }
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.card { background: #fff; padding: 22px 24px; margin-bottom: 18px; }
+.card p { margin: 0 0 8px; }
+.card--danger { border-top: 3px solid var(--err); }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; }
+.actions form { margin: 0; }
+.inline-form { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.inline-form input, .inline-form select { width: auto; min-width: 240px; }
+.more summary { cursor: pointer; font-size: 14px; margin: 8px 0; }
+.note { background: var(--beige-light); padding: 12px 14px; }
+.log { list-style: none; margin: 0; padding: 0; max-height: 320px; overflow: auto; }
+.log li { padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
+textarea { min-height: 90px; margin-bottom: 10px; }
+
+@media (max-width: 860px) {
+  .grid { grid-template-columns: 1fr; }
+  .wrap { padding: 18px; }
+  .table--list thead { display: none; }
+  .table--list tr { display: block; border-bottom: 1px solid var(--line); padding: 8px 0; }
+  .table--list td { display: inline-block; border: 0; padding: 4px 10px; }
+}
