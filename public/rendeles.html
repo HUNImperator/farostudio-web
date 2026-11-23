@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- TESZT: élesítéskor törölni -->
+  <meta name="robots" content="noindex, nofollow">
+  <title>Rendelés – Könyvespolcom | Csengeri Zsuzsa</title>
+  <meta name="description" content="Csengeri Zsuzsa könyveinek megrendelése Foxpost csomagautomatába, bankkártyás fizetéssel vagy banki átutalással.">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/img/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="assets/img/favicon-180.png">
+  <link rel="preload" href="assets/fonts/oswald-var.woff" as="font" type="font/woff" crossorigin>
+  <link rel="stylesheet" href="assets/css/style.css?v=11">
+</head>
+<body data-rendeles>
+  <a class="skip-link" href="#tartalom">Ugrás a tartalomra</a>
+
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="logo" href="./" aria-label="FARO – Csengeri Zsuzsa, kezdőlap">
+        <img class="logo__jel" src="assets/img/logo-faro-jel.svg" width="58" height="58" alt="">
+        <span class="logo__text">
+          <span class="logo__mark">FARO</span>
+          <span class="logo__sub">Csengeri Zsuzsa</span>
+        </span>
+      </a>
+
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="fomenu" aria-label="Menü megnyitása">
+        <span class="nav-toggle__bar"></span>
+      </button>
+
+      <nav class="nav" id="fomenu" aria-label="Főmenü">
+        <ul class="nav__list">
+          <li><a class="nav__link" href="rolam.html">Rólam</a></li>
+          <li><a class="nav__link" href="konyvek.html">Könyvek</a></li>
+          <li><a class="nav__link" href="eloadasok.html">Előadások</a></li>
+          <li><a class="nav__link" href="mentoralas.html">Mentorálás</a></li>
+          <li><a class="nav__link" href="informalis-kineziologia.html">Informális kineziológia</a></li>
+          <li><a class="nav__link" href="bio-narrativa.html">Bio-Narratíva</a></li>
+          <li><a class="nav__link" href="gondolatok.html">Gondolatok</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="tartalom">
+
+    <section class="checkout">
+      <div class="container">
+        <p class="section-eyebrow"><a href="konyvek.html" style="text-decoration:none">← Vissza a könyvekhez</a></p>
+        <h1 class="checkout__title">Rendelés</h1>
+        <p class="checkout__intro">A könyveket dedikálva, Foxpost csomagautomatába küldöm.</p>
+
+        <div class="empty-order" data-ures hidden>
+          <p>A Könyvespolcod még üres.</p>
+          <a class="btn" href="konyvek.html">Válassz könyvet&nbsp;<span class="btn__arrow" aria-hidden="true">→</span></a>
+        </div>
+
+        <form class="checkout__inner" id="rendeles-urlap" novalidate data-urlap>
+          <div class="checkout__form">
+
+            <fieldset class="step">
+              <legend><span class="step__num">01</span>Elérhetőség</legend>
+              <div class="fields">
+                <div class="field">
+                  <label for="nev">Teljes név</label>
+                  <input id="nev" name="nev" type="text" autocomplete="name" required>
+                  <span class="field__error" aria-live="polite"></span>
+                </div>
+                <div class="field field--half">
+                  <label for="email">E-mail-cím</label>
+                  <input id="email" name="email" type="email" autocomplete="email" required>
+                  <span class="field__error" aria-live="polite"></span>
+                </div>
+                <div class="field field--half">
+                  <label for="telefon">Mobilszám</label>
+                  <input id="telefon" name="telefon" type="tel" autocomplete="tel" placeholder="+36 30 123 4567" required>
+                  <span class="field__error" aria-live="polite"></span>
+                </div>
+              </div>
+              <p class="step__note" style="margin:14px 0 0">A mobilszámra a Foxpost SMS-ben küldi az átvételi kódot.</p>
+            </fieldset>
+
+            <fieldset class="step">
+              <legend><span class="step__num">02</span>Számlázási adatok</legend>
+              <label class="check"><input type="checkbox" id="szamla-nev-azonos" checked> A számlán a fenti név szerepeljen</label>
+              <div class="fields">
+                <div class="field billing-extra" data-szamlanev hidden>
+                  <label for="szamla_nev">Számlázási név</label>
+                  <input id="szamla_nev" name="szamla_nev" type="text" autocomplete="organization">
+                  <span class="field__error" aria-live="polite"></span>
+                </div>
+                <div class="field field--third">
+                  <label for="irsz">Irányítószám</label>
+                  <input id="irsz" name="irsz" type="text" inputmode="numeric" autocomplete="postal-code" maxlength="4" required>
+                  <span class="field__error" aria-live="polite"></span>
+                </div>
+                <div class="field field--twothirds">
+                  <label for="telepules">Település</label>
+                  <input id="telepules" name="telepules" type="text" autocomplete="address-level2" required>
+                  <span class="field__error" aria-live="polite"></span>
+                </div>
+                <div class="field">
+                  <label for="cim">Utca, házszám</label>
+                  <input id="cim" name="cim" type="text" autocomplete="street-address" required>
+                  <span class="field__error" aria-live="polite"></span>
+                </div>
+              </div>
+              <label class="check" style="margin-top:14px"><input type="checkbox" id="cegkent"> Cégként rendelek (adószámmal)</label>
+              <div class="fields billing-extra" data-ceg hidden>
+                <div class="field field--half">
+                  <label for="adoszam">Adószám</label>
+                  <input id="adoszam" name="adoszam" type="text" placeholder="12345678-1-12">
+                  <span class="field__error" aria-live="polite"></span>
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset class="step">
+              <legend><span class="step__num">03</span>Foxpost csomagautomata</legend>
+              <p class="step__note">Válaszd ki a térképen, melyik automatába kéred a csomagot, majd kattints a „Kiválasztom” gombra.</p>
+              <div class="apt-chosen" data-apt-valasztott hidden>
+                <div>
+                  <p class="apt-chosen__name" data-apt-nev></p>
+                  <p data-apt-cim></p>
+                  <p data-apt-leiras style="color:var(--muted)"></p>
+                </div>
+                <button class="apt-chosen__change" type="button" data-apt-csere>Másikat választok</button>
+              </div>
+              <iframe class="apt-frame" data-apt-terkep title="Foxpost csomagautomata-választó térkép" src="https://cdn.foxpost.hu/apt-finder/v1/app/" loading="lazy"></iframe>
+              <input type="hidden" name="apt_id" id="apt_id">
+              <input type="hidden" name="apt_nev" id="apt_nev">
+              <input type="hidden" name="apt_cim" id="apt_cim">
+              <span class="field__error" data-apt-hiba aria-live="polite"></span>
+            </fieldset>
+
+            <fieldset class="step">
+              <legend><span class="step__num">04</span>Dedikálás</legend>
+              <p class="step__note">Kinek dedikáljam? Ha nem írsz semmit, aláírással küldöm. Több példánynál írd le, melyik kinek szóljon.</p>
+              <div class="dedic" data-dedikalas></div>
+            </fieldset>
+
+            <fieldset class="step">
+              <legend><span class="step__num">05</span>Fizetés</legend>
+              <div class="pay">
+                <label class="pay__option">
+                  <input type="radio" name="fizetes" value="kartya" checked>
+                  <span>
+                    <span class="pay__title">Bankkártyás fizetés</span>
+                    <span class="pay__desc">A Stripe biztonságos fizetőoldalán fizetsz. A számlát e-mailben küldöm.</span>
+                  </span>
+                </label>
+                <label class="pay__option">
+                  <input type="radio" name="fizetes" value="atutalas">
+                  <span>
+                    <span class="pay__title">Banki átutalás</span>
+                    <span class="pay__desc">A rendelés után e-mailben megkapod a fizetési adatokat. A könyveket az összeg beérkezése után adom fel, a számlát akkor küldöm.</span>
+                  </span>
+                </label>
+              </div>
+            </fieldset>
+
+            <fieldset class="step">
+              <legend><span class="step__num">06</span>Megjegyzés</legend>
+              <div class="fields">
+                <div class="field">
+                  <label for="megjegyzes">Üzenet <span class="opt">(nem kötelező)</span></label>
+                  <textarea id="megjegyzes" name="megjegyzes" maxlength="1000"></textarea>
+                </div>
+              </div>
+            </fieldset>
+          </div>
+
+          <aside class="order-summary" aria-labelledby="osszesito-cim">
+            <h2 id="osszesito-cim">Könyvespolcom</h2>
+            <ul class="order-summary__list" data-osszesito></ul>
+            <p class="order-summary__row"><span>Könyvek</span><span data-reszosszeg></span></p>
+            <p class="order-summary__row"><span>Foxpost csomagautomata</span><span data-szallitas></span></p>
+            <p class="order-summary__row order-summary__row--total"><span>Összesen</span><span data-vegosszeg></span></p>
+            <p class="order-summary__note">Csengeri Zsuzsa alanyi adómentes egyéni vállalkozó, a végösszeg nem tartalmaz ÁFA-t.</p>
+
+            <div style="margin-top:22px">
+              <label class="check"><input type="checkbox" name="aszf" id="aszf" required> <span>Elolvastam és elfogadom az <a href="aszf.html" target="_blank">Általános Szerződési Feltételeket</a>.</span></label>
+              <label class="check"><input type="checkbox" name="adatkezeles" id="adatkezeles" required> <span>Elolvastam az <a href="adatkezeles.html" target="_blank">Adatkezelési tájékoztatót</a>.</span></label>
+              <span class="field__error" data-elfogadas-hiba aria-live="polite"></span>
+            </div>
+
+            <button class="btn btn--dark order-submit" type="submit" data-bekuld>Megrendelés elküldése&nbsp;<span class="btn__arrow" aria-hidden="true">→</span></button>
+            <p class="order-msg" data-uzenet role="status" hidden></p>
+          </aside>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <nav class="tile-nav" aria-label="Ugrás a kezdőlap csempéihez">
+    <button class="tile-nav__toggle" type="button" aria-expanded="false" aria-controls="csempe-lista">Tartalom</button>
+    <ul class="tile-nav__list" id="csempe-lista">
+      <li><a class="tile-nav__link" href="./#nyito" data-tile="nyito">Bemutatkozás</a></li>
+      <li><a class="tile-nav__link" href="./#irasok" data-tile="irasok">Írások és regények</a></li>
+      <li><a class="tile-nav__link" href="./#eloadasok" data-tile="eloadasok">Előadások</a></li>
+      <li><a class="tile-nav__link" href="./#mentoralas" data-tile="mentoralas">Mentorálás</a></li>
+      <li><a class="tile-nav__link" href="./#informalis-kineziologia" data-tile="informalis-kineziologia">Informális kineziológia</a></li>
+      <li><a class="tile-nav__link" href="./#bio-narrativa" data-tile="bio-narrativa">Bio-Narratíva</a></li>
+      <li><a class="tile-nav__link" href="./#gondolatok" data-tile="gondolatok">Gondolatok</a></li>
+    </ul>
+  </nav>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© 2026 Csengeri Zsuzsa – FARO</p>
+    </div>
+  </footer>
+
+  <script src="assets/js/main.js?v=5" defer></script>
+  <script src="assets/js/konyvespolc.js?v=1" defer></script>
+  <script src="assets/js/rendeles.js?v=1" defer></script>
+</body>
+</html>
