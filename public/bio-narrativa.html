@@ -11,7 +11,7 @@
   <link rel="icon" href="assets/img/favicon-32.png" sizes="32x32" type="image/png">
   <link rel="apple-touch-icon" href="assets/img/favicon-180.png">
   <link rel="preload" href="assets/fonts/oswald-var.woff" as="font" type="font/woff" crossorigin>
-  <link rel="stylesheet" href="assets/css/style.css?v=8">
+  <link rel="stylesheet" href="assets/css/style.css?v=10">
 </head>
 <body>
   <a class="skip-link" href="#tartalom">Ugrás a tartalomra</a>
@@ -260,14 +260,15 @@
   </main>
 
   <nav class="tile-nav" aria-label="Ugrás a kezdőlap csempéihez">
-    <ul class="tile-nav__list">
-      <li><a class="tile-nav__link" href="./#nyito" data-tile="nyito"><span class="tile-nav__box" aria-hidden="true"></span><span class="tile-nav__label">Bemutatkozás</span></a></li>
-      <li><a class="tile-nav__link" href="./#irasok" data-tile="irasok"><span class="tile-nav__box" aria-hidden="true"></span><span class="tile-nav__label">Írások és regények</span></a></li>
-      <li><a class="tile-nav__link" href="./#eloadasok" data-tile="eloadasok"><span class="tile-nav__box" aria-hidden="true"></span><span class="tile-nav__label">Előadások</span></a></li>
-      <li><a class="tile-nav__link" href="./#mentoralas" data-tile="mentoralas"><span class="tile-nav__box" aria-hidden="true"></span><span class="tile-nav__label">Mentorálás</span></a></li>
-      <li><a class="tile-nav__link" href="./#informalis-kineziologia" data-tile="informalis-kineziologia"><span class="tile-nav__box" aria-hidden="true"></span><span class="tile-nav__label">Informális kineziológia</span></a></li>
-      <li><a class="tile-nav__link" href="./#bio-narrativa" data-tile="bio-narrativa"><span class="tile-nav__box" aria-hidden="true"></span><span class="tile-nav__label">Bio-Narratíva</span></a></li>
-      <li><a class="tile-nav__link" href="./#gondolatok" data-tile="gondolatok"><span class="tile-nav__box" aria-hidden="true"></span><span class="tile-nav__label">Gondolatok</span></a></li>
+    <button class="tile-nav__toggle" type="button" aria-expanded="false" aria-controls="csempe-lista">Tartalom</button>
+    <ul class="tile-nav__list" id="csempe-lista">
+      <li><a class="tile-nav__link" href="./#nyito" data-tile="nyito">Bemutatkozás</a></li>
+      <li><a class="tile-nav__link" href="./#irasok" data-tile="irasok">Írások és regények</a></li>
+      <li><a class="tile-nav__link" href="./#eloadasok" data-tile="eloadasok">Előadások</a></li>
+      <li><a class="tile-nav__link" href="./#mentoralas" data-tile="mentoralas">Mentorálás</a></li>
+      <li><a class="tile-nav__link" href="./#informalis-kineziologia" data-tile="informalis-kineziologia">Informális kineziológia</a></li>
+      <li><a class="tile-nav__link" href="./#bio-narrativa" data-tile="bio-narrativa">Bio-Narratíva</a></li>
+      <li><a class="tile-nav__link" href="./#gondolatok" data-tile="gondolatok">Gondolatok</a></li>
     </ul>
   </nav>
 
@@ -277,6 +278,6 @@
     </div>
   </footer>
 
-  <script src="assets/js/main.js?v=4" defer></script>
+  <script src="assets/js/main.js?v=5" defer></script>
 </body>
 </html>

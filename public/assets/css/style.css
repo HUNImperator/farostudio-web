@@ -778,6 +778,48 @@ p { margin: 0 0 1.1em; }
 }
 .bio__card p { font-size: 16px; }
 .bio__card .bio__subtitle { font-size: clamp(22px, 2.2vw, 28px); }
+.price {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  margin: 0 0 18px;
+}
+.price__old {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: 22px;
+  color: var(--muted);
+  text-decoration-thickness: 1.5px;
+}
+.price__now {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 34px;
+  line-height: 1.1;
+  color: var(--ink);
+}
+.price__tag {
+  font-family: var(--font-display);
+  font-size: 12px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  background: var(--ink);
+  color: var(--white);
+  padding: 4px 10px;
+  align-self: center;
+}
+.price--na {
+  font-family: var(--font-display);
+  font-size: 16px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border: 1px solid var(--beige-dark);
+  padding: 12px 22px;
+  display: inline-block;
+}
+
 .bio__meta {
   display: flex;
   align-items: center;
@@ -1099,14 +1141,15 @@ p { margin: 0 0 1.1em; }
 }
 
 /* ==========================================================
-   Lebegő csempemenü (jobb oldalon, ha a fejléc kikerül a képből)
+   Lebegő csempemenü – szöveges, jobbra igazított lista
+   (akkor jelenik meg, amikor a fejléc kikerül a képből)
    ========================================================== */
 .tile-nav {
   position: fixed;
-  right: 22px;
+  right: 0;
   top: 50%;
   z-index: 50;
-  transform: translate(16px, -50%);
+  transform: translate(20px, -50%);
   opacity: 0;
   visibility: hidden;
   transition: opacity .3s ease, transform .3s ease, visibility .3s;
@@ -1116,63 +1159,68 @@ p { margin: 0 0 1.1em; }
   visibility: visible;
   transform: translate(0, -50%);
 }
+.tile-nav__toggle { display: none; }
 .tile-nav__list {
   list-style: none;
   margin: 0;
-  padding: 12px 9px;
+  padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  background: rgba(255, 255, 255, .88);
-  -webkit-backdrop-filter: blur(6px);
-          backdrop-filter: blur(6px);
-  box-shadow: 0 10px 30px -14px rgba(0, 0, 0, .35);
+  align-items: flex-end;
+  gap: 4px;
 }
 .tile-nav__link {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 26px;
-  height: 26px;
-  text-decoration: none;
-}
-.tile-nav__box {
-  width: 13px;
-  height: 13px;
-  border: 1.5px solid var(--ink);
-  background: var(--white);
-  transition: background-color .2s ease, transform .2s ease;
-}
-.tile-nav__link:hover .tile-nav__box,
-.tile-nav__link:focus-visible .tile-nav__box { background: var(--beige); transform: scale(1.12); }
-.tile-nav__link[aria-current="true"] .tile-nav__box { background: var(--ink); }
-.tile-nav__label {
-  position: absolute;
-  right: calc(100% + 14px);
-  top: 50%;
-  transform: translate(6px, -50%);
-  white-space: nowrap;
-  background: var(--ink);
-  color: var(--white);
+  display: block;
+  padding: 7px 16px 7px 14px;
+  background: rgba(255, 255, 255, .9);
+  -webkit-backdrop-filter: blur(6px);
+          backdrop-filter: blur(6px);
+  box-shadow: 0 6px 18px -12px rgba(0, 0, 0, .4);
   font-family: var(--font-display);
   font-size: 13px;
-  letter-spacing: .12em;
+  letter-spacing: .1em;
   text-transform: uppercase;
-  padding: 6px 12px;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity .2s ease, transform .2s ease;
+  text-decoration: none;
+  white-space: nowrap;
+  color: var(--ink);
+  transition: background-color .2s ease, color .2s ease, padding .2s ease;
 }
-.tile-nav__link:hover .tile-nav__label,
-.tile-nav__link:focus-visible .tile-nav__label { opacity: 1; transform: translate(0, -50%); }
+.tile-nav__link:hover,
+.tile-nav__link:focus-visible,
+.tile-nav__link[aria-current="true"] {
+  background: var(--ink);
+  color: var(--white);
+  padding-right: 22px;
+}
 
-@media (max-width: 640px) {
-  .tile-nav { right: 4px; }
-  .tile-nav__list { padding: 6px 2px; gap: 0; background: rgba(255, 255, 255, .72); }
-  .tile-nav__link { width: 20px; height: 24px; }
-  .tile-nav__box { width: 9px; height: 9px; border-width: 1.2px; }
-  .tile-nav__label { display: none; }
+/* Keskenyebb képernyőn a lista nem takarhatja a tartalmat:
+   egy „Tartalom” gomb nyitja és csukja. */
+@media (max-width: 1279px) {
+  .tile-nav { top: auto; bottom: 18px; transform: translateY(20px); }
+  .tile-nav.is-visible { transform: translateY(0); }
+  .tile-nav__toggle {
+    display: block;
+    margin: 0 12px 0 auto;
+    padding: 10px 16px;
+    background: var(--ink);
+    color: var(--white);
+    border: 0;
+    font-family: var(--font-display);
+    font-size: 13px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 0 8px 22px -10px rgba(0, 0, 0, .5);
+  }
+  .tile-nav__toggle::after { content: " ▴"; }
+  .tile-nav.is-open .tile-nav__toggle::after { content: " ▾"; }
+  .tile-nav__list {
+    display: none;
+    margin: 0 12px 8px 0;
+  }
+  .tile-nav.is-open .tile-nav__list { display: flex; }
+  .tile-nav__list { order: -1; }
+  .tile-nav { display: flex; flex-direction: column; }
 }
 @media print { .tile-nav { display: none; } }
 

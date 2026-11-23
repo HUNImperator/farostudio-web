@@ -31,11 +31,30 @@
     return;
   }
 
+  var toggle = nav.querySelector(".tile-nav__toggle");
+  function setOpen(open) {
+    nav.classList.toggle("is-open", open);
+    if (toggle) toggle.setAttribute("aria-expanded", open ? "true" : "false");
+  }
+  if (toggle) {
+    toggle.addEventListener("click", function () {
+      setOpen(!nav.classList.contains("is-open"));
+    });
+  }
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") setOpen(false);
+  });
+
   new IntersectionObserver(function (entries) {
-    nav.classList.toggle("is-visible", !entries[0].isIntersecting);
+    var visible = !entries[0].isIntersecting;
+    nav.classList.toggle("is-visible", visible);
+    if (!visible) setOpen(false);
   }).observe(header);
 
   var links = Array.prototype.slice.call(nav.querySelectorAll(".tile-nav__link"));
+  links.forEach(function (a) {
+    a.addEventListener("click", function () { setOpen(false); });
+  });
   var sections = links
     .map(function (a) { return document.getElementById(a.getAttribute("data-tile")); })
     .filter(Boolean);
