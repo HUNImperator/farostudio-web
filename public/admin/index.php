@@ -184,6 +184,60 @@ if ($p === 'feltoltes') {
     exit;
 }
 
+/* ---------- videófájlok ellenőrzése a szerveren ---------- */
+if ($p === 'videok-ellenorzes') {
+    require_once FARO_APP . '/video_munkamenet.php';
+    $mappa = video_mappa();
+    $sorok = [];
+    foreach (video_sorozatok() as $s) {
+        $sm = $mappa . '/' . $s['id'];
+        $kulcs = is_file($sm . '/kulcs.key') ? filesize($sm . '/kulcs.key') : null;
+        $kesz = 0;
+        $hianyzo = [];
+        $darabHiba = [];
+        foreach ($s['videok'] as $i => $cim) {
+            $nn = str_pad((string)($i + 1), 2, '0', STR_PAD_LEFT);
+            $lista = $sm . '/' . $nn . '/index.m3u8';
+            if (!is_file($lista)) { $hianyzo[] = $nn; continue; }
+            $kesz++;
+            // a listában szereplő darabok megvannak-e
+            foreach (file($lista, FILE_IGNORE_NEW_LINES) as $sor) {
+                $sor = trim($sor);
+                if ($sor !== '' && $sor[0] !== '#' && !is_file($sm . '/' . $nn . '/' . basename($sor))) { $darabHiba[] = $nn; break; }
+            }
+        }
+        $sorok[] = ['s' => $s, 'mappa' => is_dir($sm), 'kulcs' => $kulcs, 'kesz' => $kesz, 'hianyzo' => $hianyzo, 'darabHiba' => $darabHiba];
+    }
+    $talalt = is_dir($mappa) ? array_values(array_diff(scandir($mappa), ['.', '..'])) : [];
+    oldal('Videófájlok ellenőrzése', function () use ($mappa, $sorok, $talalt) { ?>
+        <p><a href="./?p=felhasznalok">← Felhasználók</a></p>
+        <h1>Videófájlok ellenőrzése</h1>
+        <section class="card">
+          <p>Videók mappája a szerveren: <strong><?= h($mappa) ?></strong> –
+            <?= is_dir($mappa) ? '<span class="ok">megvan</span>' : '<span class="err">NEM TALÁLHATÓ</span>' ?></p>
+          <p class="small muted">A mappában ezt látom: <?= $talalt ? h(implode(', ', array_slice($talalt, 0, 20))) : '–' ?></p>
+          <?php if (ini_get('open_basedir')): ?><p class="small muted">PHP open_basedir: <?= h(ini_get('open_basedir')) ?></p><?php endif; ?>
+          <table class="table table--compact">
+            <thead><tr><th>Sorozat</th><th>Mappa</th><th>Kulcs</th><th>Videók</th><th>Hiány / hiba</th></tr></thead>
+            <tbody>
+            <?php foreach ($sorok as $x): $ok = $x['mappa'] && $x['kulcs'] === 16 && !$x['hianyzo'] && !$x['darabHiba']; ?>
+              <tr>
+                <td><?= h($x['s']['rovidCim']) ?><br><span class="muted small"><?= h($x['s']['id']) ?></span></td>
+                <td><?= $x['mappa'] ? '<span class="ok">✓</span>' : '<span class="err">nincs</span>' ?></td>
+                <td><?= $x['kulcs'] === 16 ? '<span class="ok">✓</span>' : '<span class="err">' . ($x['kulcs'] === null ? 'nincs' : 'hibás (' . (int)$x['kulcs'] . ' bájt)') . '</span>' ?></td>
+                <td><?= $x['kesz'] ?> / <?= count($x['s']['videok']) ?></td>
+                <td><?= $ok ? '<span class="ok">rendben</span>' : '<span class="err">'
+                    . ($x['hianyzo'] ? 'hiányzik: ' . h(implode(', ', $x['hianyzo'])) . ' ' : '')
+                    . ($x['darabHiba'] ? 'hiányos darabok: ' . h(implode(', ', $x['darabHiba'])) : '') . '</span>' ?></td>
+              </tr>
+            <?php endforeach; ?>
+            </tbody>
+          </table>
+        </section>
+    <?php });
+    exit;
+}
+
 /* ---------- videós felhasználók és hozzáférések ---------- */
 if ($p === 'felhasznalok') {
     $ki = $admin['felhasznalo'];
@@ -225,7 +279,7 @@ if ($p === 'felhasznalok') {
     $felhasznalok = $st->fetchAll();
     oldal('Felhasználók', function () use ($fuggok, $felhasznalok, $kereses, $uzenet) { ?>
         <?php if ($uzenet): ?><p class="alert"><?= h($uzenet) ?></p><?php endif; ?>
-        <h1>Felhasználók – videós hozzáférések</h1>
+        <div class="list-head"><h1 style="margin:0">Felhasználók – videós hozzáférések</h1><a class="btn btn--light" href="./?p=videok-ellenorzes">Videófájlok ellenőrzése</a></div>
 
         <section class="card">
           <h2>Jóváhagyásra vár <span class="count"><?= count($fuggok) ?></span></h2>
@@ -637,7 +691,7 @@ function oldal(string $cim, callable $tartalom, bool $menu = true): void
   <meta name="robots" content="noindex, nofollow">
   <title><?= h($cim) ?> – FARO admin</title>
   <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="admin.css?v=2">
+  <link rel="stylesheet" href="admin.css?v=3">
 </head>
 <body>
   <header class="top">
