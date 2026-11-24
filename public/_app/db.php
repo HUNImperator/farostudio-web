@@ -39,6 +39,7 @@ function db_migrate(PDO $pdo): void
 {
     db_migrate_webhook($pdo);
     db_migrate_sztorno($pdo);
+    db_migrate_video($pdo);
     // ha a táblák már megvannak, nincs teendő
     try {
         $pdo->query('SELECT 1 FROM belepesi_kiserletek LIMIT 1');
@@ -161,4 +162,75 @@ function db_migrate_sztorno(PDO $pdo): void
         return; // a tábla még nincs meg – a létrehozáskor már benne lesz
     }
     $pdo->exec('ALTER TABLE rendelesek ADD COLUMN sztorno_szamlaszam VARCHAR(50) NULL');
+}
+
+/**
+ * Videósorozatok: tételtípus, elvégzett modulok, feltöltött igazolások,
+ * videós felhasználók és hozzáférések.
+ */
+function db_migrate_video(PDO $pdo): void
+{
+    try {
+        $pdo->query('SELECT 1 FROM video_hozzaferesek LIMIT 1');
+        return;
+    } catch (PDOException $e) {
+    }
+    try {
+        $pdo->query('SELECT 1 FROM rendelesek LIMIT 1');
+    } catch (PDOException $e) {
+        return; // az alaptáblák még nincsenek meg – a következő kéréskor jövünk vissza
+    }
+    $mysql = db_driver() === 'mysql';
+    $id   = $mysql ? 'INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY' : 'INTEGER PRIMARY KEY AUTOINCREMENT';
+    $dt   = $mysql ? 'DATETIME' : 'TEXT';
+    $tail = $mysql ? ' ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_hungarian_ci' : '';
+    foreach ([
+        "ALTER TABLE rendeles_tetelek ADD COLUMN tipus VARCHAR(20) NOT NULL DEFAULT 'konyv'",
+        "ALTER TABLE rendelesek ADD COLUMN elvegzett_modulok VARCHAR(40) NOT NULL DEFAULT ''",
+    ] as $sql) {
+        try { $pdo->exec($sql); } catch (PDOException $e) { /* már megvan */ }
+    }
+    $pdo->exec("CREATE TABLE IF NOT EXISTS rendeles_feltoltesek (
+        id $id,
+        rendeles_id INT NOT NULL,
+        eredeti_nev VARCHAR(190) NOT NULL,
+        fajl VARCHAR(100) NOT NULL,
+        mime VARCHAR(60) NOT NULL,
+        meret INT NOT NULL,
+        letrehozva $dt NOT NULL
+    )$tail");
+    $pdo->exec("CREATE TABLE IF NOT EXISTS video_felhasznalok (
+        id $id,
+        email VARCHAR(190) NOT NULL,
+        nev VARCHAR(150) NOT NULL,
+        jelszo_hash VARCHAR(255) NOT NULL,
+        letrehozva $dt NOT NULL,
+        utolso_belepes $dt NULL,
+        munkamenet VARCHAR(64) NULL,
+        munkamenet_ido $dt NULL,
+        jelszo_token VARCHAR(64) NULL,
+        jelszo_token_lejar $dt NULL
+    )$tail");
+    $pdo->exec("CREATE TABLE IF NOT EXISTS video_hozzaferesek (
+        id $id,
+        rendeles_id INT NOT NULL,
+        email VARCHAR(190) NOT NULL,
+        sorozat VARCHAR(40) NOT NULL,
+        allapot VARCHAR(20) NOT NULL,
+        felhasznalo_id INT NULL,
+        letrehozva $dt NOT NULL,
+        dontes_ekkor $dt NULL,
+        dontes_megj VARCHAR(500) NULL,
+        kezdete $dt NULL,
+        lejarat $dt NULL,
+        figyelmeztetve INT NOT NULL DEFAULT 0
+    )$tail");
+    foreach ([
+        'CREATE UNIQUE INDEX ux_video_email ON video_felhasznalok (email)',
+        'CREATE INDEX ix_hozzaferes_email ON video_hozzaferesek (email, sorozat)',
+        'CREATE INDEX ix_hozzaferes_rendeles ON video_hozzaferesek (rendeles_id)',
+        'CREATE INDEX ix_feltoltes_rendeles ON rendeles_feltoltesek (rendeles_id)',
+    ] as $sql) {
+        try { $pdo->exec($sql); } catch (PDOException $e) { /* már létezik */ }
+    }
 }

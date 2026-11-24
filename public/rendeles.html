@@ -11,7 +11,7 @@
   <link rel="icon" href="assets/img/favicon-32.png" sizes="32x32" type="image/png">
   <link rel="apple-touch-icon" href="assets/img/favicon-180.png">
   <link rel="preload" href="assets/fonts/oswald-var.woff" as="font" type="font/woff" crossorigin>
-  <link rel="stylesheet" href="assets/css/style.css?v=20">
+  <link rel="stylesheet" href="assets/css/style.css?v=23">
 </head>
 <body data-rendeles>
   <a class="skip-link" href="#tartalom">Ugrás a tartalomra</a>
@@ -48,14 +48,16 @@
 
     <section class="checkout">
       <div class="container">
-        <p class="section-eyebrow"><a href="konyvek.html" style="text-decoration:none">← Vissza a könyvekhez</a></p>
+        <p class="section-eyebrow"><a href="konyvek.html" data-vissza style="text-decoration:none">← Vissza a könyvekhez</a></p>
         <h1 class="checkout__title">Rendelés</h1>
-        <p class="checkout__intro">A könyveket dedikálva, Foxpost csomagautomatába küldöm.</p>
+        <p class="checkout__intro" data-csak-konyv>A könyveket dedikálva, Foxpost csomagautomatába küldöm.</p>
+        <p class="checkout__intro" data-csak-video hidden>A videósorozatot az elvégzett modulod igazolása után nyitom meg: a jóváhagyás után e-mailben kapod a belépési adatokat.</p>
         <p class="order-msg order-msg--error" data-megszakitva role="alert" hidden style="margin:0 0 28px"></p>
 
         <div class="empty-order" data-ures hidden>
-          <p>A Könyvespolcod még üres.</p>
-          <a class="btn" href="konyvek.html">Válassz könyvet&nbsp;<span class="btn__arrow" aria-hidden="true">→</span></a>
+          <p>A megrendelésed még üres.</p>
+          <a class="btn" href="konyvek.html">Könyvek&nbsp;<span class="btn__arrow" aria-hidden="true">→</span></a>
+          <a class="btn" href="oktato-videok.html">One Brain® oktató videók&nbsp;<span class="btn__arrow" aria-hidden="true">→</span></a>
         </div>
 
         <form class="checkout__inner" id="rendeles-urlap" novalidate data-urlap>
@@ -75,12 +77,13 @@
                   <span class="field__error" aria-live="polite"></span>
                 </div>
                 <div class="field field--half">
-                  <label for="telefon">Mobilszám</label>
+                  <label for="telefon" data-telefon-cimke>Mobilszám</label>
                   <input id="telefon" name="telefon" type="tel" autocomplete="tel" placeholder="+36 30 123 4567" required>
                   <span class="field__error" aria-live="polite"></span>
                 </div>
               </div>
-              <p class="step__note" style="margin:14px 0 0">A mobilszámra a Foxpost SMS-ben küldi az átvételi kódot.</p>
+              <p class="step__note" style="margin:14px 0 0" data-csak-konyv>A mobilszámra a Foxpost SMS-ben küldi az átvételi kódot.</p>
+              <p class="step__note" style="margin:14px 0 0" data-csak-video hidden>A videós oldal belépési adatait erre az e-mail-címre küldöm, ez lesz a felhasználóneved is.</p>
             </fieldset>
 
             <fieldset class="step">
@@ -118,7 +121,37 @@
               </div>
             </fieldset>
 
-            <fieldset class="step">
+            <fieldset class="step" data-csak-video hidden>
+              <legend><span class="step__num">03</span>Elvégzett modulok és igazolás</legend>
+              <p class="step__note">A videókhoz csak azokhoz a modulokhoz kapsz hozzáférést, amelyeket már elvégeztél. Ezt az „útleveled” bejegyzésével vagy az okleveled fotójával igazolhatod.</p>
+              <div class="fields">
+                <div class="field" role="group" aria-labelledby="modulok-cim" data-modulok>
+                  <span class="field__label" id="modulok-cim">Mely modulokat végezted el? <span class="req" aria-hidden="true">*</span> <span class="opt">(több is jelölhető)</span></span>
+                  <div class="checklist">
+                    <label class="check"><input type="checkbox" name="modulok" value="1"> <span>One Brain I. – A szakma eszközei</span></label>
+                    <label class="check"><input type="checkbox" name="modulok" value="2"> <span>One Brain II. – A One Brain alapjai</span></label>
+                    <label class="check"><input type="checkbox" name="modulok" value="3"> <span>One Brain III. – Testkód</span></label>
+                    <label class="check"><input type="checkbox" name="modulok" value="4"> <span>One Brain IV. – Haladó One Brain</span></label>
+                    <label class="check"><input type="checkbox" name="modulok" value="5"> <span>One Brain V. – Szavaknál is hangosabban</span></label>
+                    <label class="check"><input type="checkbox" name="modulok" value="6"> <span>One Brain VI. – Szerkezeti idegtan</span></label>
+                  </div>
+                  <span class="field__error" aria-live="polite"></span>
+                </div>
+                <div class="field" data-igazolas>
+                  <label for="igazolas">„Útleveled” vagy okleveled fotója <span class="req" aria-hidden="true">*</span></label>
+                  <label class="upload" for="igazolas">
+                    <svg class="upload__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0l-4.5 4.5M12 4l4.5 4.5M4 15v4h16v-4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+                    <span class="upload__text"><strong>Fájl kiválasztása</strong> vagy fotó készítése</span>
+                    <span class="upload__hint">JPG, PNG vagy PDF · legfeljebb 3 fájl, összesen 10 MB</span>
+                  </label>
+                  <input class="upload__input" id="igazolas" name="igazolas" type="file" multiple accept="image/jpeg,image/png,image/webp,application/pdf,.jpg,.jpeg,.png,.webp,.pdf">
+                  <ul class="upload__list" data-feltoltes-lista></ul>
+                  <span class="field__error" aria-live="polite"></span>
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset class="step" data-csak-konyv>
               <legend><span class="step__num">03</span>Foxpost csomagautomata</legend>
               <p class="step__note">Kattints a gombra, keresd meg a térképen vagy a listában, melyik automatába kéred a csomagot, majd kattints a „Kiválasztom” gombra.</p>
               <div class="apt-chosen" data-apt-valasztott hidden>
@@ -149,7 +182,7 @@
               <span class="field__error" data-apt-hiba aria-live="polite"></span>
             </fieldset>
 
-            <fieldset class="step">
+            <fieldset class="step" data-csak-konyv>
               <legend><span class="step__num">04</span>Dedikálás</legend>
               <p class="step__note">Kinek dedikáljam? Ha nem írsz semmit, aláírással küldöm. Több példánynál írd le, melyik kinek szóljon.</p>
               <div class="dedic" data-dedikalas></div>
@@ -169,7 +202,7 @@
                   <input type="radio" name="fizetes" value="atutalas" checked>
                   <span>
                     <span class="pay__title">Banki átutalás</span>
-                    <span class="pay__desc">A rendelés után e-mailben megkapod a fizetési adatokat. A könyveket az összeg beérkezése után adom fel, a számlát akkor küldöm.</span>
+                    <span class="pay__desc">A rendelés után e-mailben megkapod a fizetési adatokat. Az összeg beérkezése után teljesítem a rendelést, a számlát akkor küldöm.</span>
                   </span>
                 </label>
               </div>
@@ -192,16 +225,17 @@
           </div>
 
           <aside class="order-summary" aria-labelledby="osszesito-cim">
-            <h2 id="osszesito-cim">Könyvespolcom</h2>
+            <h2 id="osszesito-cim">Megrendelésem</h2>
             <ul class="order-summary__list" data-osszesito></ul>
-            <p class="order-summary__row"><span>Könyvek</span><span data-reszosszeg></span></p>
-            <p class="order-summary__row"><span>Foxpost csomagautomata</span><span data-szallitas></span></p>
+            <p class="order-summary__row" data-csak-konyv><span>Részösszeg</span><span data-reszosszeg></span></p>
+            <p class="order-summary__row" data-csak-konyv><span>Foxpost csomagautomata</span><span data-szallitas></span></p>
             <p class="order-summary__row order-summary__row--total"><span>Összesen</span><span data-vegosszeg></span></p>
             <p class="order-summary__note">Csengeri Zsuzsa alanyi adómentes egyéni vállalkozó, a végösszeg nem tartalmaz ÁFA-t.</p>
 
             <div style="margin-top:22px">
               <label class="check"><input type="checkbox" name="aszf" id="aszf" required> <span>Elolvastam és elfogadom az <a href="aszf.html" target="_blank">Általános Szerződési Feltételeket</a>.</span></label>
               <label class="check"><input type="checkbox" name="adatkezeles" id="adatkezeles" required> <span>Elolvastam az <a href="adatkezeles.html" target="_blank">Adatkezelési tájékoztatót</a>.</span></label>
+              <label class="check" data-csak-digitalis hidden><input type="checkbox" name="digitalis" id="digitalis"> <span>Kérem, hogy a videós hozzáférés a jóváhagyás után azonnal megnyíljon, és tudomásul veszem, hogy ezzel elveszítem a 14 napos elállási jogomat.</span></label>
               <span class="field__error" data-elfogadas-hiba aria-live="polite"></span>
             </div>
 
@@ -234,7 +268,7 @@
   </footer>
 
   <script src="assets/js/main.js?v=5" defer></script>
-  <script src="assets/js/konyvespolc.js?v=1" defer></script>
-  <script src="assets/js/rendeles.js?v=6" defer></script>
+  <script src="assets/js/konyvespolc.js?v=2" defer></script>
+  <script src="assets/js/rendeles.js?v=7" defer></script>
 </body>
 </html>

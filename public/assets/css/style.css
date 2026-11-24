@@ -2196,3 +2196,101 @@ body[data-urlap-oldal] .tile-nav { display: none; }
 .request__confirm .check { margin-bottom: 4px; }
 @media (max-width: 860px) { .howto__steps { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 480px) { .howto__steps { grid-template-columns: 1fr; } }
+
+/* ---------- One Brain videósorozatok ---------- */
+.cover--video .cover__frame { justify-content: space-between; }
+.cover__numeral {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: 96px;
+  line-height: 1;
+  letter-spacing: .02em;
+}
+.cover--video .cover__title { font-size: 24px; }
+.cover--video.cover--dark .cover__numeral { color: #c9a96b; }
+.video-series .book__subtitle { margin-bottom: 18px; }
+.video-series__meta { list-style: none; margin: 0 0 22px; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.video-series__meta li {
+  font-family: var(--font-display);
+  font-size: 13px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  border: 1px solid var(--beige-dark);
+  padding: 6px 12px;
+}
+.video-list { border-top: 1px solid rgba(0, 0, 0, .12); border-bottom: 1px solid rgba(0, 0, 0, .12); }
+.video-list summary {
+  cursor: pointer;
+  list-style: none;
+  padding: 14px 0;
+  font-family: var(--font-display);
+  font-size: 16px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.video-list summary::-webkit-details-marker { display: none; }
+.video-list summary::after { content: "+"; font-size: 24px; font-weight: 300; line-height: 1; }
+.video-list[open] summary::after { content: "–"; }
+.video-list ol { margin: 0 0 18px; padding-left: 1.6em; columns: 2; column-gap: 32px; }
+.video-list li { break-inside: avoid; padding: 3px 0; font-size: 15px; }
+.video-series__note { font-size: 13px; color: var(--muted); margin: 14px 0 0; max-width: 46ch; }
+.video-login-hint { margin: 26px 0 0; font-size: 15px; }
+.video-login-hint a { color: var(--ink); }
+@media (max-width: 640px) { .video-list ol { columns: 1; } .cover__numeral { font-size: 72px; } }
+
+/* kis videós borító a Megrendelésem panelben és az összesítőben */
+.mini-video {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 72px;
+  flex: none;
+  background: #2f2f2f;
+  color: #c9a96b;
+  font-family: var(--font-display);
+  text-align: center;
+  line-height: 1;
+}
+.mini-video__brand { font-size: 7px; letter-spacing: .12em; text-transform: uppercase; color: var(--beige-light); margin-bottom: 6px; }
+.mini-video__num { font-size: 22px; font-weight: 300; }
+.mini-video__plus { font-size: 9px; letter-spacing: .06em; color: var(--beige-light); margin-top: 6px; }
+.shelf__meta { margin: 6px 0 0; font-size: 12px; color: var(--muted); }
+
+/* ---------- igazolás feltöltése (rendelés) ---------- */
+.field .upload, .upload {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 26px 18px;
+  border: 1px dashed var(--beige-dark);
+  background: var(--beige-light);
+  text-align: center;
+  cursor: pointer;
+  transition: border-color .2s ease, background-color .2s ease;
+  font-family: var(--font-body);
+  font-size: 15px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--text);
+}
+.field .upload:hover, .upload:hover { border-color: var(--ink); background: #fff; }
+.upload__icon { width: 30px; height: 30px; color: var(--ink); }
+.upload__text strong { font-weight: 600; color: var(--ink); }
+.upload__hint { font-size: 13px; color: var(--muted); }
+.upload__input { position: absolute; width: 1px; height: 1px; opacity: 0; overflow: hidden; }
+.upload__input:focus-visible + .upload__list, .field:focus-within .upload { outline: 2px solid var(--ink); outline-offset: 2px; }
+.upload__list { list-style: none; margin: 10px 0 0; padding: 0; }
+.upload__item { display: flex; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid rgba(0, 0, 0, .08); font-size: 14px; }
+.upload__name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.upload__size { color: var(--muted); font-size: 13px; }
+.field.is-invalid .upload { border-color: #a23a2a; }
+.order-summary__item .mini-video { width: 44px; height: 66px; }
+
+/* a hidden attribútum mindig rejtsen (egyes komponensek display-szabályai felülírnák) */
+[hidden] { display: none !important; }

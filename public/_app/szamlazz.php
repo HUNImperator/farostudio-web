@@ -115,7 +115,7 @@ function szamlazz_szamla_xml(array $r): string
         'fizmod'                => $kartya ? 'Bankkártya' : 'Átutalás',
         'penznem'               => 'Ft',
         'szamlaNyelve'          => 'hu',
-        'megjegyzes'            => 'Rendelésszám: ' . $r['rendelesszam'] . '. Szállítás Foxpost csomagautomatába: ' . $r['apt_nev'] . '.',
+        'megjegyzes'            => 'Rendelésszám: ' . $r['rendelesszam'] . '.' . ($r['apt_nev'] !== '' ? ' Szállítás Foxpost csomagautomatába: ' . $r['apt_nev'] . '.' : ''),
         'rendelesSzam'          => $r['rendelesszam'],
         'fizetve'               => true,
     ]);
@@ -149,10 +149,14 @@ function szamlazz_szamla_xml(array $r): string
     $w->startElement('tetelek');
     $sorok = [];
     foreach ($r['tetelek'] as $t) {
-        $nev = 'Csengeri Zsuzsa: ' . $t['cim'] . (trim((string)($t['dedikalas'] ?? '')) !== '' ? ' (dedikált példány)' : '');
+        $nev = ($t['tipus'] ?? 'konyv') === 'konyv'
+            ? 'Csengeri Zsuzsa: ' . $t['cim'] . (trim((string)($t['dedikalas'] ?? '')) !== '' ? ' (dedikált példány)' : '')
+            : $t['cim'] . ' – online videós hozzáférés';
         $sorok[] = [$nev, (int)$t['db'], (int)$t['egysegar']];
     }
-    $sorok[] = ['Szállítás – Foxpost csomagautomata', 1, (int)$r['szallitas']];
+    if ((int)$r['szallitas'] > 0) {
+        $sorok[] = ['Szállítás – Foxpost csomagautomata', 1, (int)$r['szallitas']];
+    }
     foreach ($sorok as [$megnevezes, $db, $ar]) {
         $w->startElement('tetel');
         szamlazz_elemek($w, [

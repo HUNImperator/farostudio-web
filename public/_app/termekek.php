@@ -20,10 +20,35 @@ function katalogus(): array
     }
     $termekek = [];
     foreach ($adat['termekek'] as $t) {
+        $t['tipus'] = $t['tipus'] ?? 'konyv';
         $termekek[$t['id']] = $t;
+        // minden videósorozathoz tartozik egy „hosszabbítás” tétel (+90 nap, ugyanazon az áron)
+        if ($t['tipus'] === 'video') {
+            $termekek[$t['id'] . '-hosszabbitas'] = [
+                'id'       => $t['id'] . '-hosszabbitas',
+                'tipus'    => 'hosszabbitas',
+                'sorozat'  => $t['id'],
+                'modul'    => $t['modul'],
+                'cim'      => $t['rovidCim'] . ' – hosszabbítás (+' . (int)($adat['videoHozzaferesNap'] ?? 90) . ' nap)',
+                'ar'       => $t['ar'],
+                'elerheto' => !empty($t['elerheto']),
+            ];
+        }
     }
-    $k = ['szallitas' => $adat['szallitas'], 'termekek' => $termekek];
+    $k = ['szallitas' => $adat['szallitas'], 'termekek' => $termekek, 'video_nap' => (int)($adat['videoHozzaferesNap'] ?? 90)];
     return $k;
+}
+
+/** A videósorozatok (a katalógus sorrendjében). */
+function video_sorozatok(): array
+{
+    return array_values(array_filter(katalogus()['termekek'], function ($t) { return $t['tipus'] === 'video'; }));
+}
+
+function video_sorozat(string $id): ?array
+{
+    $t = termek($id);
+    return $t && $t['tipus'] === 'video' ? $t : null;
 }
 
 function termek(string $id): ?array

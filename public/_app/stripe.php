@@ -84,18 +84,20 @@ function stripe_fizetooldal(array $r): array
             'price_data' => [
                 'currency'     => 'huf',
                 'unit_amount'  => stripe_osszeg((int)$t['egysegar']),
-                'product_data' => ['name' => $t['cim'] . ' – Csengeri Zsuzsa (dedikált példány)'],
+                'product_data' => ['name' => (($t['tipus'] ?? 'konyv') === 'konyv' ? $t['cim'] . ' – Csengeri Zsuzsa (dedikált példány)' : $t['cim'])],
             ],
         ];
     }
-    $p['line_items'][] = [
-        'quantity'   => 1,
-        'price_data' => [
-            'currency'     => 'huf',
-            'unit_amount'  => stripe_osszeg((int)$r['szallitas']),
-            'product_data' => ['name' => 'Foxpost csomagautomata – ' . $r['apt_nev']],
-        ],
-    ];
+    if ((int)$r['szallitas'] > 0) {
+        $p['line_items'][] = [
+            'quantity'   => 1,
+            'price_data' => [
+                'currency'     => 'huf',
+                'unit_amount'  => stripe_osszeg((int)$r['szallitas']),
+                'product_data' => ['name' => 'Foxpost csomagautomata – ' . $r['apt_nev']],
+            ],
+        ];
+    }
     return stripe_api('POST', '/v1/checkout/sessions', $p);
 }
 
@@ -158,5 +160,22 @@ function stripe_fizetes_feldolgoz(array $r, array $s, string $szerzo): string
         naplo($id, 'Az értesítő e-mail (új rendelés) küldése NEM sikerült.', 'rendszer');
     }
     $szla = szamlazz_szamla_kiallit(rendeles_betolt($id), 'rendszer');
-    return 'Rendben: a rendelés Fizetve, e-mailek elküldve. ' . $szla;
+    $video = video_fizetve(rendeles_betolt($id), 'rendszer');
+    return trim('Rendben: a rendelés Fizetve, e-mailek elküldve. ' . $szla . ' ' . $video);
+}
+
+/** Részleges (vagy teljes) visszatérítés a rendelés bankkártyás fizetéséből. */
+function stripe_visszaterites(array $r, int $forint): array
+{
+    $s = stripe_api('GET', '/v1/checkout/sessions/' . rawurlencode($r['stripe_session']));
+    $pi = $s['payment_intent'] ?? '';
+    if (!$pi) {
+        throw new RuntimeException('A Stripe-munkamenethez nem tartozik fizetés.');
+    }
+    return stripe_api('POST', '/v1/refunds', [
+        'payment_intent' => is_array($pi) ? $pi['id'] : $pi,
+        'amount'         => stripe_osszeg($forint),
+        'reason'         => 'requested_by_customer',
+        'metadata'       => ['rendelesszam' => $r['rendelesszam']],
+    ]);
 }

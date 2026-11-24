@@ -1,14 +1,19 @@
 /* ==========================================================
-   Könyvespolcom – a kiválasztott könyvek lebegő panelje
+   Megrendelésem (korábban: Könyvespolcom) – a kiválasztott könyvek
+   és videósorozatok lebegő panelje.
    A tartalom a böngészőben tárolódik (localStorage), így oldalak
    között járva is megmarad, és a panel nyitott/csukott állapota is.
+   Tételtípusok: konyv (darabszám 1–10), video és hosszabbitas (1 db).
    ========================================================== */
 (function () {
   "use strict";
 
   var KULCS = "faro-konyvespolc";
   var MAX_DB = 10;
-  var adatUrl = "assets/data/termekek.json";
+  // a webhely gyökere a szkript helyéből (…/assets/js/konyvespolc.js), így alkönyvtárból is működik
+  var szkript = document.currentScript;
+  var GYOKER = szkript ? new URL("../../", szkript.src).href : "./";
+  var adatUrl = GYOKER + "assets/data/termekek.json";
 
   var katalogus = null;
   var mobil = window.matchMedia("(max-width: 759px)");
@@ -43,28 +48,40 @@
     for (var i = 0; i < allapot.tetelek.length; i++) if (allapot.tetelek[i].id === id) return allapot.tetelek[i];
     return null;
   }
-  // csak a katalógusban létező, elérhető könyvek maradhatnak a polcon
+  // csak a katalógusban létező, elérhető tételek maradhatnak; videóból 1 db
   function tisztit() {
     if (!katalogus) return;
     allapot.tetelek = allapot.tetelek.filter(function (t) {
       var k = katalogus.termekek[t.id];
       return k && k.elerheto && t.db > 0;
     });
+    allapot.tetelek.forEach(function (t) { if (katalogus.termekek[t.id].tipus !== "konyv") t.db = 1; });
+  }
+  function egyediTipus(id) {
+    var k = katalogus && katalogus.termekek[id];
+    return !!k && k.tipus !== "konyv";
   }
 
   /* ---------- nyilvános műveletek ---------- */
   var Polc = {
+    // visszaad: true, ha bekerült / nőtt; false, ha (videóként) már benne volt
     hozzaad: function (id) {
       mobilCsukva = false;
       var t = tetel(id);
-      if (t) t.db = Math.min(MAX_DB, t.db + 1);
-      else allapot.tetelek.push({ id: id, db: 1 });
+      var uj = true;
+      if (t) {
+        if (egyediTipus(id)) uj = false;
+        else t.db = Math.min(MAX_DB, t.db + 1);
+      } else {
+        allapot.tetelek.push({ id: id, db: 1 });
+      }
       allapot.nyitva = true;
       ment();
+      return uj;
     },
     beallit: function (id, db) {
       var t = tetel(id);
-      if (!t) return;
+      if (!t || egyediTipus(id)) return;
       t.db = Math.max(1, Math.min(MAX_DB, db));
       ment();
     },
@@ -83,26 +100,54 @@
     },
     darab: function () { return allapot.tetelek.reduce(function (s, t) { return s + t.db; }, 0); },
     reszosszeg: function () { return Polc.tetelek().reduce(function (s, t) { return s + t.osszeg; }, 0); },
-    szallitas: function () { return katalogus ? katalogus.szallitas : null; },
+    vanTipus: function (tipus) { return Polc.tetelek().some(function (t) { return t.termek.tipus === tipus; }); },
+    // szállítás csak akkor van, ha könyv is van a megrendelésben
+    szallitas: function () { return katalogus && Polc.vanTipus("konyv") ? katalogus.szallitas : null; },
+    vegosszeg: function () { var sz = Polc.szallitas(); return Polc.reszosszeg() + (sz ? sz.ar : 0); },
+    termek: function (id) { return katalogus ? katalogus.termekek[id] || null : null; },
+    videoSorozatok: function () {
+      if (!katalogus) return [];
+      return Object.keys(katalogus.termekek).map(function (k) { return katalogus.termekek[k]; })
+        .filter(function (t) { return t.tipus === "video"; });
+    },
+    GYOKER: GYOKER,
     feliratkozik: function (fn) { feliratkozok.push(fn); },
     ft: ft,
     MAX_DB: MAX_DB
   };
+  // kis borító: könyvnél kép, videónál tipográfiai jel (római szám)
+  Polc.kisBorito = function (termek, osztaly) {
+    if (termek.tipus === "konyv") {
+      var kep = el("img", osztaly);
+      kep.src = GYOKER + termek.borito;
+      kep.alt = "";
+      kep.width = 48;
+      kep.height = 72;
+      return kep;
+    }
+    var d = el("span", (osztaly || "") + " mini-video");
+    d.setAttribute("aria-hidden", "true");
+    d.appendChild(el("span", "mini-video__brand", "One Brain"));
+    d.appendChild(el("span", "mini-video__num", termek.romai || ""));
+    if (termek.tipus === "hosszabbitas") d.appendChild(el("span", "mini-video__plus", "+90"));
+    return d;
+  };
   window.Konyvespolc = Polc;
+  window.Megrendelesem = Polc;
 
   /* ---------- panel ---------- */
   var panel, lista, osszesites, darabJel, csukoGomb, hirdeto;
 
   function panelEpit() {
     panel = el("aside", "shelf");
-    panel.setAttribute("aria-label", "Könyvespolcom");
+    panel.setAttribute("aria-label", "Megrendelésem");
     panel.hidden = true;
 
     var fej = el("div", "shelf__head");
     csukoGomb = el("button", "shelf__toggle");
     csukoGomb.type = "button";
     csukoGomb.setAttribute("aria-controls", "konyvespolc-tartalom");
-    var cim = el("span", "shelf__title", "Könyvespolcom");
+    var cim = el("span", "shelf__title", "Megrendelésem");
     darabJel = el("span", "shelf__count");
     var ikon = el("span", "shelf__chevron");
     ikon.setAttribute("aria-hidden", "true");
@@ -121,7 +166,7 @@
     lista = el("ul", "shelf__list");
     osszesites = el("div", "shelf__summary");
     var tovabb = el("a", "btn btn--dark shelf__checkout");
-    tovabb.href = "rendeles.html";
+    tovabb.href = GYOKER + "rendeles.html";
     tovabb.innerHTML = "Tovább a rendeléshez&nbsp;<span class=\"btn__arrow\" aria-hidden=\"true\">→</span>";
     tartalom.appendChild(lista);
     tartalom.appendChild(osszesites);
@@ -177,16 +222,12 @@
     document.documentElement.classList.toggle("has-shelf", tetelek.length > 0);
     panel.classList.toggle("is-collapsed", !nyitvaLatszik());
     csukoGomb.setAttribute("aria-expanded", nyitvaLatszik() ? "true" : "false");
-    darabJel.textContent = db + " kötet";
+    darabJel.textContent = tetelek.length === 1 && tetelek[0].termek.tipus === "konyv" ? db + " kötet" : db + " tétel";
 
     lista.innerHTML = "";
     tetelek.forEach(function (t) {
       var li = el("li", "shelf__item");
-      var kep = el("img", "shelf__cover");
-      kep.src = t.termek.borito;
-      kep.alt = "";
-      kep.width = 48;
-      kep.height = 72;
+      var kep = Polc.kisBorito(t.termek, "shelf__cover");
       var info = el("div", "shelf__info");
       info.appendChild(el("p", "shelf__name", t.termek.cim));
       var ar = el("p", "shelf__price");
@@ -197,15 +238,16 @@
       }
       ar.appendChild(document.createTextNode(ft(t.termek.ar)));
       info.appendChild(ar);
-      info.appendChild(szamlalo(t));
+      if (t.termek.tipus === "konyv") info.appendChild(szamlalo(t));
+      else info.appendChild(el("p", "shelf__meta", katalogus.videoNap + " napos hozzáférés"));
       var jobb = el("div", "shelf__right");
       var torles = el("button", "shelf__remove");
       torles.type = "button";
-      torles.setAttribute("aria-label", t.termek.cim + " levétele a polcról");
+      torles.setAttribute("aria-label", t.termek.cim + " törlése a megrendelésből");
       torles.innerHTML = "<span aria-hidden=\"true\">×</span>";
       torles.addEventListener("click", function () {
         Polc.torol(t.id);
-        hirdeto.textContent = t.termek.cim + " lekerült a polcról.";
+        hirdeto.textContent = t.termek.cim + " kikerült a megrendelésedből.";
       });
       jobb.appendChild(torles);
       jobb.appendChild(el("p", "shelf__line", ft(t.osszeg)));
@@ -223,9 +265,11 @@
       s.appendChild(el("span", null, ertek));
       osszesites.appendChild(s);
     }
-    sor("Könyvek", ft(Polc.reszosszeg()));
-    if (szall) sor(szall.nev, ft(szall.ar));
-    sor("Összesen", ft(Polc.reszosszeg() + (szall ? szall.ar : 0)), "shelf__row--total");
+    if (szall) {
+      sor("Részösszeg", ft(Polc.reszosszeg()));
+      sor(szall.nev, ft(szall.ar));
+    }
+    sor("Összesen", ft(Polc.vegosszeg()), "shelf__row--total");
 
     helyzetJelez();
   }
@@ -243,8 +287,8 @@
       var k = katalogus.termekek[id];
       if (!k || !k.elerheto) { gomb.hidden = true; return; }
       gomb.addEventListener("click", function () {
-        Polc.hozzaad(id);
-        if (hirdeto) hirdeto.textContent = k.cim + " felkerült a Könyvespolcodra.";
+        var uj = Polc.hozzaad(id);
+        if (hirdeto) hirdeto.textContent = uj ? k.cim + " bekerült a megrendelésedbe." : k.cim + " már a megrendelésedben van.";
         if (panel) {
           panel.classList.remove("is-flash");
           void panel.offsetWidth;
@@ -256,8 +300,18 @@
 
   /* ---------- indulás ---------- */
   function indul(adat) {
-    katalogus = { szallitas: adat.szallitas, termekek: {} };
-    adat.termekek.forEach(function (t) { katalogus.termekek[t.id] = t; });
+    var nap = adat.videoHozzaferesNap || 90;
+    katalogus = { szallitas: adat.szallitas, termekek: {}, videoNap: nap };
+    adat.termekek.forEach(function (t) {
+      t.tipus = t.tipus || "konyv";
+      katalogus.termekek[t.id] = t;
+      if (t.tipus === "video") {
+        katalogus.termekek[t.id + "-hosszabbitas"] = {
+          id: t.id + "-hosszabbitas", tipus: "hosszabbitas", sorozat: t.id, modul: t.modul, romai: t.romai,
+          cim: t.rovidCim + " – hosszabbítás (+" + nap + " nap)", ar: t.ar, eredetiAr: null, elerheto: !!t.elerheto
+        };
+      }
+    });
     tisztit();
     Polc.kesz = true;
 

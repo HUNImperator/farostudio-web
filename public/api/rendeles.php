@@ -20,8 +20,16 @@ function valasz(array $adat, int $kod = 200): void
 if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
     valasz(['hiba' => 'Csak POST kérés fogadható.'], 405);
 }
-$nyers = file_get_contents('php://input', false, null, 0, 50000);
-$be = json_decode((string)$nyers, true);
+// videósorozatnál a rendelés fájlfeltöltéssel (multipart) érkezik: „adatok” (JSON) + „igazolas[]”
+$multipart = stripos($_SERVER['CONTENT_TYPE'] ?? '', 'multipart/form-data') === 0;
+if ($multipart) {
+    if (empty($_POST) && (int)($_SERVER['CONTENT_LENGTH'] ?? 0) > 0) {
+        valasz(['hiba' => 'A feltöltött fájlok túl nagyok (összesen legfeljebb 10 MB).'], 413);
+    }
+    $be = json_decode((string)($_POST['adatok'] ?? ''), true);
+} else {
+    $be = json_decode((string)file_get_contents('php://input', false, null, 0, 50000), true);
+}
 if (!is_array($be)) {
     valasz(['hiba' => 'Hibás kérés.'], 400);
 }
@@ -31,6 +39,11 @@ if (!empty($be['weboldal'])) {
 }
 
 [$r, $hibak] = rendeles_ellenoriz($be);
+$fajlok = [];
+if ($r['van_video']) {
+    [$fajlok, $fHibak] = feltoltes_ellenoriz($_FILES['igazolas'] ?? null);
+    $hibak = array_merge($hibak, $fHibak);
+}
 if ($hibak) {
     valasz(['hiba' => implode(' ', $hibak)], 422);
 }
@@ -42,6 +55,18 @@ if ($r['fizetes'] === 'kartya' && !stripe_beallitva()) {
 }
 
 $rendeles = rendeles_letrehoz($r, 'fizetesre_var');
+if ($fajlok) {
+    try {
+        feltoltes_ment((int)$rendeles['id'], $fajlok);
+        naplo((int)$rendeles['id'], 'Igazolás feltöltve (' . count($fajlok) . ' fájl). Elvégzett modulok a vevő szerint: ' . video_modulok_szoveg($rendeles['elvegzett_modulok']) . '.', 'rendszer');
+    } catch (Throwable $e) {
+        error_log('[FARO] ' . $e->getMessage());
+        naplo((int)$rendeles['id'], 'Az igazolás mentése NEM sikerült: ' . $e->getMessage(), 'rendszer');
+    }
+}
+if (!empty($be['digitalis'])) {
+    naplo((int)$rendeles['id'], 'A vevő elfogadta: a digitális tartalom (videós hozzáférés) a jóváhagyással azonnal teljesül, és ezzel elveszíti a 14 napos elállási jogát.', 'rendszer');
+}
 
 /* ---------- bankkártya: átirányítás a Stripe fizetőoldalára ----------
  * A visszaigazoló e-mail csak a sikeres fizetés után megy ki (stripe-webhook.php). */
