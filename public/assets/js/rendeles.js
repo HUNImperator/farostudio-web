@@ -129,9 +129,29 @@
     document.querySelector("[data-apt-nev]").textContent = apt.name || "";
     document.querySelector("[data-apt-cim]").textContent = document.getElementById("apt_cim").value;
     document.querySelector("[data-apt-leiras]").textContent = tisztaLeiras(apt.findme);
+    nagyitas(false);
     valasztott.hidden = false;
     terkep.hidden = true;
     aptHiba.textContent = "";
+  });
+
+  // Nagyítás: a térkép teljes képernyőre nyílik (az iframe a helyén marad, így nem töltődik újra)
+  var nagyitGomb = document.querySelector("[data-apt-nagyit]");
+  var nagyitFelirat = document.querySelector("[data-apt-nagyit-felirat]");
+  function nagyitas(be) {
+    if (terkep.classList.contains("is-full") === be) return;
+    terkep.classList.toggle("is-full", be);
+    document.body.classList.toggle("apt-nyitva", be);
+    nagyitGomb.setAttribute("aria-expanded", be ? "true" : "false");
+    nagyitFelirat.textContent = be ? "Bezárás" : "Nagyítás";
+    if (!be) terkep.scrollIntoView({ block: "nearest" });
+    nagyitGomb.focus({ preventScroll: true });
+  }
+  nagyitGomb.addEventListener("click", function () {
+    nagyitas(!terkep.classList.contains("is-full"));
+  });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && terkep.classList.contains("is-full")) nagyitas(false);
   });
   document.querySelector("[data-apt-csere]").addEventListener("click", function () {
     terkep.hidden = false;

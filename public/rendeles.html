@@ -11,7 +11,7 @@
   <link rel="icon" href="assets/img/favicon-32.png" sizes="32x32" type="image/png">
   <link rel="apple-touch-icon" href="assets/img/favicon-180.png">
   <link rel="preload" href="assets/fonts/oswald-var.woff" as="font" type="font/woff" crossorigin>
-  <link rel="stylesheet" href="assets/css/style.css?v=12">
+  <link rel="stylesheet" href="assets/css/style.css?v=13">
 </head>
 <body data-rendeles>
   <a class="skip-link" href="#tartalom">Ugrás a tartalomra</a>
@@ -129,7 +129,17 @@
                 </div>
                 <button class="apt-chosen__change" type="button" data-apt-csere>Másikat választok</button>
               </div>
-              <iframe class="apt-frame" data-apt-terkep title="Foxpost csomagautomata-választó térkép" src="https://cdn.foxpost.hu/apt-finder/v1/app/" loading="lazy"></iframe>
+              <div class="apt-box" data-apt-terkep>
+                <div class="apt-box__bar">
+                  <span class="apt-box__title">Foxpost csomagautomata kiválasztása</span>
+                  <button class="apt-box__toggle" type="button" data-apt-nagyit aria-expanded="false">
+                    <svg class="apt-box__icon apt-box__icon--open" viewBox="0 0 20 20" aria-hidden="true"><path d="M3 8V3h5M12 3h5v5M17 12v5h-5M8 17H3v-5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+                    <svg class="apt-box__icon apt-box__icon--close" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 4l12 12M16 4L4 16" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+                    <span data-apt-nagyit-felirat>Nagyítás</span>
+                  </button>
+                </div>
+                <iframe class="apt-frame" title="Foxpost csomagautomata-választó térkép" src="https://cdn.foxpost.hu/apt-finder/v1/app/" loading="lazy"></iframe>
+              </div>
               <input type="hidden" name="apt_id" id="apt_id">
               <input type="hidden" name="apt_nev" id="apt_nev">
               <input type="hidden" name="apt_cim" id="apt_cim">
@@ -222,6 +232,6 @@
 
   <script src="assets/js/main.js?v=5" defer></script>
   <script src="assets/js/konyvespolc.js?v=1" defer></script>
-  <script src="assets/js/rendeles.js?v=4" defer></script>
+  <script src="assets/js/rendeles.js?v=5" defer></script>
 </body>
 </html>

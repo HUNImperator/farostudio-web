@@ -1939,6 +1939,54 @@ p { margin: 0 0 1.1em; }
 }
 .apt-frame[hidden] { display: none; }
 
+/* térképdoboz + nagyítás teljes képernyőre */
+.apt-box[hidden] { display: none; }
+.apt-box__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 8px 8px 14px;
+  background: var(--beige-light);
+  border: 1px solid #e1dad2;
+  border-bottom: 0;
+}
+.apt-box__title { font-family: var(--font-display); font-size: 15px; letter-spacing: .04em; color: var(--ink); }
+.apt-box__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  background: var(--white);
+  color: var(--ink);
+  border: 1px solid var(--beige-dark);
+  font-family: var(--font-display);
+  font-size: 14px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background .2s ease, color .2s ease;
+}
+.apt-box__toggle:hover { background: var(--ink); color: var(--white); border-color: var(--ink); }
+.apt-box__icon { width: 16px; height: 16px; flex: none; }
+.apt-box__icon--close { display: none; }
+.apt-box.is-full {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: flex;
+  flex-direction: column;
+  background: var(--white);
+}
+.apt-box.is-full .apt-box__bar { border: 0; border-bottom: 1px solid #e1dad2; padding-top: max(8px, env(safe-area-inset-top)); }
+.apt-box.is-full .apt-frame { flex: 1 1 auto; height: auto; max-height: none; border: 0; }
+.apt-box.is-full .apt-box__icon--open { display: none; }
+.apt-box.is-full .apt-box__icon--close { display: block; }
+body.apt-nyitva { overflow: hidden; }
+@media (max-width: 560px) {
+  .apt-box__title { font-size: 14px; }
+}
+
 /* dedikálás */
 .dedic { display: grid; gap: 14px; }
 .dedic__row { display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 14px; align-items: start; }
