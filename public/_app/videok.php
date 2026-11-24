@@ -455,6 +455,13 @@ function level_gomb(string $url, string $szoveg): string
     return '<p><a href="' . h($url) . '" style="display:inline-block;background:#111;color:#fff;padding:12px 20px;text-decoration:none">' . h($szoveg) . '</a></p>';
 }
 
+/* ---------- a digitális tartalom teljesítésének megerősítése (45/2014. Korm. r. 29. § (1) m) ---------- */
+function video_teljesites_megerosites(): array
+{
+    $t = 'A hozzáférés megnyitásával a szerződés teljesítése megkezdődött. Ahogy a rendeléskor kifejezetten kérted és tudomásul vetted, ezzel a 14 napos elállási jogod megszűnt.';
+    return ['<p style="font-size:13px;color:#6e6a66">' . h($t) . '</p>', $t . "\n\n"];
+}
+
 function level_video_jovahagyva(array $r, ?array $sorozat, string $lejarat, ?string $jelszo): bool
 {
     $nev = $sorozat['rovidCim'] ?? 'videósorozat';
@@ -475,8 +482,9 @@ function level_video_jovahagyva(array $r, ?array $sorozat, string $lejarat, ?str
         $html .= '<p>A szokásos belépési adataiddal éred el a videós oldalon.</p>';
         $szoveg .= "A szokásos belépési adataiddal éred el a videós oldalon: $url\n\n";
     }
-    $html .= level_gomb($url, 'Belépés a videókhoz') . '<p>Jó tanulást kívánok!</p><p>Szeretettel:<br>Csengeri Zsuzsa</p>';
-    $szoveg .= "Jó tanulást kívánok!\n\nSzeretettel:\nCsengeri Zsuzsa\n";
+    [$mHtml, $mSzoveg] = video_teljesites_megerosites();
+    $html .= level_gomb($url, 'Belépés a videókhoz') . '<p>Jó tanulást kívánok!</p><p>Szeretettel:<br>Csengeri Zsuzsa</p>' . $mHtml;
+    $szoveg .= "Jó tanulást kívánok!\n\nSzeretettel:\nCsengeri Zsuzsa\n\n" . $mSzoveg;
     return level_kuld($r['vevo_email'], $r['vevo_nev'], 'Hozzáférés: ' . $nev . ' videósorozat', level_keret('Megnyílt a videósorozatod', $html), $szoveg);
 }
 
@@ -498,8 +506,8 @@ function level_video_hosszabbitva(array $r, ?array $sorozat, string $lejarat): b
 {
     $nev = $sorozat['rovidCim'] ?? 'videósorozat';
     $html = '<p>Kedves ' . h($r['vevo_nev']) . '!</p><p>Köszönöm! A(z) <strong>' . h($nev) . '</strong> videósorozathoz a hozzáférésedet meghosszabbítottam, mostantól <strong>'
-        . h(video_datum_ig($lejarat)) . '</strong> nézheted.</p>' . level_gomb(video_url(), 'Belépés a videókhoz') . '<p>Szeretettel:<br>Csengeri Zsuzsa</p>';
-    $szoveg = "Kedves {$r['vevo_nev']}!\n\nKöszönöm! A(z) $nev videósorozathoz a hozzáférésedet meghosszabbítottam, mostantól " . video_datum_ig($lejarat) . " nézheted.\n\n" . video_url() . "\n\nSzeretettel:\nCsengeri Zsuzsa\n";
+        . h(video_datum_ig($lejarat)) . '</strong> nézheted.</p>' . level_gomb(video_url(), 'Belépés a videókhoz') . '<p>Szeretettel:<br>Csengeri Zsuzsa</p>' . video_teljesites_megerosites()[0];
+    $szoveg = "Kedves {$r['vevo_nev']}!\n\nKöszönöm! A(z) $nev videósorozathoz a hozzáférésedet meghosszabbítottam, mostantól " . video_datum_ig($lejarat) . " nézheted.\n\n" . video_url() . "\n\nSzeretettel:\nCsengeri Zsuzsa\n\n" . video_teljesites_megerosites()[1];
     return level_kuld($r['vevo_email'], $r['vevo_nev'], 'Meghosszabbítva: ' . $nev, level_keret('Meghosszabbítottam a hozzáférésed', $html), $szoveg);
 }
 

@@ -162,11 +162,32 @@ function level_vevo_visszaigazolas(array $r): bool
         $html .= '<p>A fizetés beérkezése után ' . h($teendo) . ', a számlát e-mailben küldöm.</p>';
         $szoveg .= "A fizetés beérkezése után $teendo, a számlát e-mailben küldöm.\n\n";
     }
-    $html .= '<p>Ha kérdésed van, válaszolj erre a levélre.</p><p>Szeretettel:<br>Csengeri Zsuzsa</p>';
-    $szoveg .= "Ha kérdésed van, válaszolj erre a levélre.\n\nSzeretettel:\nCsengeri Zsuzsa\n";
+    if (rendeles_van($r, 'video') || rendeles_van($r, 'hosszabbitas')) {
+        $nyil = 'Visszaigazolom, hogy a rendeléskor kifejezetten kérted: a videós hozzáférés az elállási határidő lejárta előtt – új sorozatnál a jóváhagyáskor, hosszabbításnál a fizetéskor – azonnal nyíljon meg, és tudomásul vetted, hogy a hozzáférés megnyitásával elveszíted a 14 napos elállási jogodat. A megnyitásig elállhatsz a videós tételek megrendelésétől.';
+        $html .= '<p>' . h($nyil) . '</p>';
+        $szoveg .= $nyil . "\n\n";
+    }
+    $html .= '<p>Ha kérdésed van, válaszolj erre a levélre.</p><p>Szeretettel:<br>Csengeri Zsuzsa</p>' . level_jogi_lab();
+    $szoveg .= "Ha kérdésed van, válaszolj erre a levélre.\n\nSzeretettel:\nCsengeri Zsuzsa\n\n" . level_jogi_lab(false);
 
     return level_kuld($r['vevo_email'], $r['vevo_nev'], 'Rendelésed visszaigazolása – ' . $r['rendelesszam'],
         level_keret('Köszönöm a rendelésed!', $html), $szoveg);
+}
+
+/* ---------- jogi lábjegyzet a vevői visszaigazoláshoz (ÁSZF, elállás) ---------- */
+function level_jogi_lab(bool $html = true): string
+{
+    $alap = rtrim(faro_config()['site_url'], '/');
+    $sz = 'A rendelésre az Általános Szerződési Feltételek vonatkoznak: ' . $alap . '/aszf.html'
+        . ' · Elállás a szerződéstől: ' . $alap . '/elallas.html'
+        . ' · Csengeri Zsuzsa e.v., 2310 Szigetszentmiklós, Szent Miklós útja 18/A/1., adószám: 60804295-1-13';
+    if (!$html) {
+        return $sz . "\n";
+    }
+    return '<p style="font-size:12px;color:#6e6a66;border-top:1px solid #e6ddd4;padding-top:12px;margin-top:24px">'
+        . 'A rendelésre az <a href="' . h($alap) . '/aszf.html" style="color:#6e6a66">Általános Szerződési Feltételek</a> vonatkoznak. '
+        . '<a href="' . h($alap) . '/elallas.html" style="color:#6e6a66">Elállás a szerződéstől</a><br>'
+        . 'Csengeri Zsuzsa e.v., 2310 Szigetszentmiklós, Szent Miklós útja 18/A/1., adószám: 60804295-1-13</p>';
 }
 
 /* ---------- neked: értesítés új rendelésről ---------- */

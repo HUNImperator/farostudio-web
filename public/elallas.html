@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- TESZT: élesítéskor törölni -->
+  <meta name="robots" content="noindex, nofollow">
+  <title>Elállás a szerződéstől | Csengeri Zsuzsa</title>
+  <meta name="description" content="Elállási nyilatkozat online beküldése a farostudio.hu oldalon leadott rendeléshez.">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/img/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="assets/img/favicon-180.png">
+  <link rel="preload" href="assets/fonts/oswald-var.woff" as="font" type="font/woff" crossorigin>
+  <link rel="stylesheet" href="assets/css/style.css?v=25">
+</head>
+<body data-urlap-oldal>
+  <a class="skip-link" href="#tartalom">Ugrás a tartalomra</a>
+
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="logo" href="./" aria-label="FARO – Csengeri Zsuzsa, kezdőlap">
+        <img class="logo__jel" src="assets/img/logo-faro-jel.svg" width="58" height="58" alt="">
+        <span class="logo__text">
+          <span class="logo__mark">FARO</span>
+          <span class="logo__sub">Csengeri Zsuzsa</span>
+        </span>
+      </a>
+
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="fomenu" aria-label="Menü megnyitása">
+        <span class="nav-toggle__bar"></span>
+      </button>
+
+      <nav class="nav" id="fomenu" aria-label="Főmenü">
+        <ul class="nav__list">
+          <li><a class="nav__link" href="rolam.html">Bemutatkozás</a></li>
+          <li><a class="nav__link" href="konyvek.html">Írások és regények</a></li>
+          <li><a class="nav__link" href="eloadasok.html">Előadások és programok</a></li>
+          <li><a class="nav__link" href="mentoralas.html">Szakmai mentorálás</a></li>
+          <li><a class="nav__link" href="informalis-kineziologia.html">Informális Kineziológia</a></li>
+          <li><a class="nav__link" href="bio-narrativa.html">Bio-Narratíva program</a></li>
+          <li><a class="nav__link" href="gondolatok.html">Gondolatok, blogok</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="tartalom">
+
+    <section class="request-hero">
+      <div class="container request__container">
+        <h1 class="checkout__title">Elállás a szerződéstől</h1>
+        <p class="request__intro">Ha egy rendelésedtől el szeretnél állni, itt online megteheted. Az elküldés után azonnal e-mailben visszaigazolom a nyilatkozatod tartalmát és elküldésének időpontját.</p>
+      </div>
+    </section>
+
+    <section class="request">
+      <div class="container request__container">
+        <div class="request__thanks" data-koszonjuk tabindex="-1" hidden>
+          <h2>Megkaptam az elállási nyilatkozatodat</h2>
+          <p data-valasz-szoveg>A visszaigazolást elküldtem a megadott e-mail-címre.</p>
+          <p>Könyveknél kérlek, a könyveket 14 napon belül küldd vissza erre a címre: Csengeri Zsuzsa, 2310 Szigetszentmiklós, Szent Miklós útja 18/A/1. A visszatérítésről az <a href="aszf.html#elallas-menete">ÁSZF 11. pontjában</a> olvashatsz.</p>
+          <a class="btn" href="./">Vissza a kezdőlapra&nbsp;<span class="btn__arrow" aria-hidden="true">→</span></a>
+        </div>
+
+        <div class="legal__box" data-elallas-info>
+          <p><strong>Mikor állhatsz el?</strong> Könyveknél az átvételtől számított 14 napon belül. Videósorozatnál a megrendeléstől számított 14 napon belül, de csak addig, amíg a hozzáférésed meg nem nyílt: a megnyitással – a rendeléskor tett nyilatkozatod szerint – az elállási jog megszűnik. A névre szólóan dedikált könyvekre és a kifizetett hosszabbításokra nem vonatkozik elállási jog. Részletek: <a href="aszf.html#elallas">ÁSZF 10–11. pont</a>.</p>
+        </div>
+      </div>
+
+      <form class="request__form" novalidate data-urlap data-vegpont="api/elallas.php">
+        <div class="container request__container">
+          <p class="request__required">A <span aria-hidden="true">*</span>-gal jelölt mezők kitöltése kötelező.</p>
+
+          <fieldset class="step">
+            <legend><span class="step__num">01</span>Melyik szerződésről van szó?</legend>
+            <div class="fields">
+              <div class="field field--half">
+                <label for="rendelesszam">Rendelésszám <span class="req" aria-hidden="true">*</span></label>
+                <input id="rendelesszam" name="rendelesszam" data-hiba="Kérlek, add meg a rendelésszámot." type="text" maxlength="40" required>
+                <span class="field__hint">A visszaigazoló e-mailben találod (pl. FARO-2026-0012). Ha nincs meg, írd ide, mikor és mit rendeltél.</span>
+                <span class="field__error" aria-live="polite"></span>
+              </div>
+              <div class="field field--half">
+                <label for="nev">Név <span class="req" aria-hidden="true">*</span></label>
+                <input id="nev" name="nev" data-hiba="Kérlek, add meg a neved." type="text" autocomplete="name" maxlength="150" required>
+                <span class="field__error" aria-live="polite"></span>
+              </div>
+              <div class="field" data-csoport="terjedelem" data-kotelezo="Kérlek, válaszd ki, mire vonatkozik az elállás.">
+                <span class="field__label" id="terjedelem-cim">Mire vonatkozik az elállás? <span class="req" aria-hidden="true">*</span></span>
+                <div class="chips" role="radiogroup" aria-labelledby="terjedelem-cim">
+                  <label class="chip"><input type="radio" name="terjedelem" value="A teljes rendelés"><span>A teljes rendelésre</span></label>
+                  <label class="chip"><input type="radio" name="terjedelem" value="A rendelés egyes tételei"><span>A rendelés egyes tételeire</span></label>
+                </div>
+                <span class="field__error" aria-live="polite"></span>
+              </div>
+              <div class="field" data-mutat-ha="terjedelem=A rendelés egyes tételei" hidden>
+                <label for="tetelek">Mely tételekre? <span class="req" aria-hidden="true">*</span></label>
+                <textarea id="tetelek" name="tetelek" data-hiba="Kérlek, írd le, mely tételekre vonatkozik az elállás." maxlength="1000" required></textarea>
+                <span class="field__error" aria-live="polite"></span>
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset class="step">
+            <legend><span class="step__num">02</span>Hová küldjem a visszaigazolást?</legend>
+            <div class="fields">
+              <div class="field field--half">
+                <label for="email">E-mail-cím <span class="req" aria-hidden="true">*</span></label>
+                <input id="email" name="email" data-hiba="Kérlek, add meg az e-mail-címed." type="email" autocomplete="email" maxlength="190" required>
+                <span class="field__hint">Erre a címre küldöm a nyilatkozatod visszaigazolását.</span>
+                <span class="field__error" aria-live="polite"></span>
+              </div>
+              <div class="field">
+                <label for="megjegyzes">Megjegyzés <span class="opt">(nem kötelező)</span></label>
+                <textarea id="megjegyzes" name="megjegyzes" maxlength="1000"></textarea>
+                <span class="field__hint">Az elállást nem kell megindokolnod. Ha más bankszámlára kéred az átutalt összeg visszatérítését, itt jelezheted.</span>
+              </div>
+            </div>
+          </fieldset>
+
+          <div class="visually-hidden" aria-hidden="true">
+            <label for="weboldal">Ezt a mezőt hagyd üresen</label>
+            <input id="weboldal" name="weboldal" type="text" tabindex="-1" autocomplete="off">
+          </div>
+        </div>
+
+        <div class="request__submit">
+          <div class="container request__container">
+            <p style="margin:0">A gombra kattintva kijelentem, hogy a fent megjelölt szerződéstől elállok. Az adataidat az elállás kezeléséhez használom fel, az <a href="adatkezeles.html#panasz">Adatkezelési tájékoztató</a> szerint.</p>
+            <button class="btn btn--dark" type="submit" data-bekuld>Elállás megerősítése&nbsp;<span class="btn__arrow" aria-hidden="true">→</span></button>
+            <p class="order-msg" data-uzenet role="status" hidden></p>
+            <p class="request__direct">Elállhatsz e-mailben is az <a href="mailto:info@farostudio.hu">info@farostudio.hu</a> címen, postán, vagy az <a href="aszf.html#minta">elállási nyilatkozatmintával</a>.</p>
+          </div>
+        </div>
+      </form>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <ul class="site-footer__links">
+        <li><a href="aszf.html">ÁSZF</a></li>
+        <li><a href="adatkezeles.html">Adatkezelési tájékoztató</a></li>
+        <li><a href="elallas.html">Elállás a szerződéstől</a></li>
+        <li><a href="impresszum.html">Impresszum</a></li>
+      </ul>
+      <p>© 2026 Csengeri Zsuzsa – FARO</p>
+    </div>
+  </footer>
+
+  <script src="assets/js/main.js?v=5" defer></script>
+  <script src="assets/js/konyvespolc.js?v=3" defer></script>
+  <script src="assets/js/urlap.js?v=4" defer></script>
+</body>
+</html>

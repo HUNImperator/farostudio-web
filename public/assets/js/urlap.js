@@ -7,7 +7,8 @@
  *  - „Egyéb” szövegmező: data-egyeb-hez="<a jelölőnégyzet id-je>" + data-hiba
  *  - feltételes rész: data-mutat-ha="mezonev=érték" (csak akkor látszik és küldődik, ha az a választás be van jelölve)
  *  - kötelező egyedi jelölő (pl. „Láttam a kereteket”): <div class="field"><label class="check"><input type="checkbox" required data-egyedi data-hiba>…
- *  - elfogadás: #adatkezeles + [data-elfogadas-hiba]
+ *  - elfogadás: #adatkezeles + [data-elfogadas-hiba] (ha nincs ilyen jelölő, nem kötelező)
+ *  - a válasz „uzenet” mezője a [data-koszonjuk] doboz [data-valasz-szoveg] elemébe kerül
  * Sikeres küldés után az űrlap eltűnik, és a [data-koszonjuk] doboz jelenik meg.
  */
 (function () {
@@ -148,7 +149,10 @@
           return j;
         });
       })
-      .then(function () {
+      .then(function (j) {
+        // a szerver visszaküldhet egy kiegészítő sort (pl. az elállás beérkezésének ideje)
+        var kieg = koszonjuk.querySelector("[data-valasz-szoveg]");
+        if (kieg && j && j.uzenet) kieg.textContent = j.uzenet;
         urlap.hidden = true;
         koszonjuk.hidden = false;
         koszonjuk.scrollIntoView({ block: "center" });

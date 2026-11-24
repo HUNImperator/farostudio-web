@@ -328,7 +328,7 @@ function videok_oldal(string $cim, callable $tartalom, bool $lejatszo = false): 
   <meta name="robots" content="noindex, nofollow">
   <title><?= h($cim) ?> | Csengeri Zsuzsa</title>
   <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="../assets/css/style.css?v=24">
+  <link rel="stylesheet" href="../assets/css/style.css?v=25">
 </head>
 <body data-nincs-panel<?= $f ? ' data-vevo-email="' . h($f['email']) . '" data-vevo-nev="' . h($f['nev']) . '"' : '' ?>>
   <header class="site-header video-header">
@@ -347,7 +347,17 @@ function videok_oldal(string $cim, callable $tartalom, bool $lejatszo = false): 
     </div>
   </header>
   <main id="tartalom"><?php $tartalom(); ?></main>
-  <footer class="site-footer"><div class="container"><p>© <?= date('Y') ?> Csengeri Zsuzsa – FARO · <a href="mailto:info@farostudio.hu">info@farostudio.hu</a></p></div></footer>
+  <footer class="site-footer">
+    <div class="container">
+      <ul class="site-footer__links">
+        <li><a href="../aszf.html">ÁSZF</a></li>
+        <li><a href="../adatkezeles.html">Adatkezelési tájékoztató</a></li>
+        <li><a href="../elallas.html">Elállás a szerződéstől</a></li>
+        <li><a href="../impresszum.html">Impresszum</a></li>
+      </ul>
+      <p>© <?= date('Y') ?> Csengeri Zsuzsa – FARO · <a href="mailto:info@farostudio.hu">info@farostudio.hu</a></p>
+    </div>
+  </footer>
   <script src="../assets/js/konyvespolc.js?v=3" defer></script>
   <?php if ($lejatszo): ?><script src="../assets/vendor/hls/hls.min.js?v=1.6.13" defer></script><?php endif; ?>
   <script src="../assets/js/videok.js?v=1" defer></script>
