@@ -2166,3 +2166,7 @@ body[data-urlap-oldal] .tile-nav { display: none; }
 .field__label .opt { margin-left: 4px; }
 @media (max-width: 560px) { .checklist__other { grid-template-columns: 1fr; } .checklist__other .check { padding-top: 0; } }
 .field .check input, .field .chip input { padding: 0; border: 0; }
+.field__hint { font-size: 13px; color: var(--muted); }
+.step__small { font-size: 13px; color: var(--muted); margin: 16px 0 0; max-width: 70ch; }
+.field[hidden] { display: none; }
+@media (max-width: 760px) { .request .field--third { grid-column: span 6; } }

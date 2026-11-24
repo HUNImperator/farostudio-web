@@ -5,6 +5,7 @@
  *  - kötelező jelölőcsoport: <div class="field" data-csoport="nev" data-kotelezo="hibaüzenet">
  *  - kizáró jelölő (pl. „Még egyiket sem”): data-kizaro
  *  - „Egyéb” szövegmező: data-egyeb-hez="<a jelölőnégyzet id-je>" + data-hiba
+ *  - feltételes rész: data-mutat-ha="mezonev=érték" (csak akkor látszik és küldődik, ha az a választás be van jelölve)
  *  - elfogadás: #adatkezeles + [data-elfogadas-hiba]
  * Sikeres küldés után az űrlap eltűnik, és a [data-koszonjuk] doboz jelenik meg.
  */
@@ -42,6 +43,19 @@
     if (csoport) hiba(csoport, "");
     if (t === elf && elf.checked) elfHiba.textContent = "";
   });
+  // feltételes részek (pl. „Gyermekemnek” → életkor mező)
+  var feltetelesek = urlap.querySelectorAll("[data-mutat-ha]");
+  function feltetelek() {
+    Array.prototype.forEach.call(feltetelesek, function (el) {
+      var p = el.getAttribute("data-mutat-ha").split("=");
+      var latszik = !!urlap.querySelector('input[name="' + p[0] + '"][value="' + p[1] + '"]:checked');
+      el.hidden = !latszik;
+      Array.prototype.forEach.call(el.querySelectorAll("input, select, textarea"), function (i) { i.disabled = !latszik; });
+    });
+  }
+  feltetelek();
+  urlap.addEventListener("change", feltetelek);
+
   // az „Egyéb” szöveg beírásakor a hozzá tartozó jelölő bekapcsol
   Array.prototype.forEach.call(urlap.querySelectorAll("[data-egyeb-hez]"), function (inp) {
     var cb = document.getElementById(inp.getAttribute("data-egyeb-hez"));
@@ -55,7 +69,7 @@
     var elso = null;
     function rossz(el, szoveg, fokusz) { hiba(el, szoveg); if (!elso) elso = fokusz || el; }
     Array.prototype.forEach.call(urlap.querySelectorAll("input[required], textarea[required], select[required]"), function (i) {
-      if (i === elf) return;
+      if (i === elf || i.disabled) return;
       var v = i.value.trim();
       if (!v) rossz(i, i.getAttribute("data-hiba") || "Kérlek, töltsd ki ezt a mezőt.");
       else if (i.type === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) rossz(i, "Kérlek, adj meg egy érvényes e-mail-címet.");
