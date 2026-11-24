@@ -57,5 +57,10 @@ return [
         'eszamla'     => true,   // true = e-számla (PDF), false = papír alapú
     ],
 
+    // One Brain® videók: a HLS-videók és a feltöltött igazolások helye (a webgyökéren KÍVÜL).
+    // Ha nem adod meg, az alapértelmezés: /home/whiteman/faro-videok és /home/whiteman/faro-feltoltesek
+    // 'video_mappa'     => '/home/whiteman/faro-videok',
+    // 'feltoltes_mappa' => '/home/whiteman/faro-feltoltesek',
+
     // Később: 'foxpost' => [...]
 ];

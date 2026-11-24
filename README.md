@@ -28,3 +28,13 @@ Oswald és Open Sans saját tárhelyről (`public/assets/fonts`, OFL licenc), la
 - Termékadatok és szállítási díj: `public/assets/data/termekek.json` – az árakat a szerver is innen veszi.
 - Bankkártya: Stripe Checkout (`_app/stripe.php`), a fizetésről a `public/api/stripe-webhook.php` értesít.
 - Számla: Számlázz.hu Számla Agent (`_app/szamlazz.php`). Amikor a rendelés Fizetve lesz (Stripe-webhook, kézi Stripe-lekérdezés vagy az admin „Fizetve” gombja), automatikusan elkészül az e-számla (alanyi adómentes, ÁFA-kulcs: AAM), és a Számlázz.hu e-mailben elküldi a vevőnek. Az adminban kézzel újra lehet próbálni, és sztornózni lehet. Beállítás: `faro-config.php` → `szamlazz` → `agent_kulcs`.
+
+## One Brain® videósorozatok
+
+- Termékek: `public/assets/data/termekek.json` (`tipus: "video"`, ár, videócímek); minden sorozathoz automatikusan tartozik egy „hosszabbítás (+90 nap)” tétel.
+- Oldalak: `oktato-videok.html` (a 6 sorozat), `videok/` (belépés, saját sorozatok, lejátszó), `videok/media.php` (a videók kiszolgálása csak jogosultnak).
+- Rendelés: videósorozatnál kötelező az elvégzett modulok megjelölése és az igazolás feltöltése (JPG/PNG/WEBP/PDF, max. 3 fájl, 10 MB). A fájlok a webgyökéren kívülre kerülnek (`/home/whiteman/faro-feltoltesek`), és csatolmányként mennek az info@ címre.
+- Admin → Felhasználók: jóváhagyás (jelszó-generálás, levél), elutasítás (Stripe-visszatérítés, sztornó), kézi hosszabbítás, új jelszó.
+- Videók: titkosított HLS (AES-128) a `/home/whiteman/faro-videok/one-brain-N/` mappákban (`kulcs.key`, `NN/index.m3u8`, `NN/d0000.ts` …). Átalakítás: `eszkozok/hls-atalakito.ps1` (Windows, ffmpeg).
+- Lejátszó: hls.js 1.6.13 (`public/assets/vendor/hls/`, Apache 2.0), a böngésző saját vezérlőivel; vízjel (a néző e-mail-címe), egy munkamenet felhasználónként.
+- Napi feladat (cPanel → Cron Jobs, naponta): `php /home/whiteman/test.farostudio.hu/_app/napi.php` – figyelmeztetés 10 nappal lejárat előtt, lejárat, adattakarítás egy év után.

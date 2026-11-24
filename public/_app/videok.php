@@ -537,3 +537,15 @@ function level_video_jelszo_link(array $f, string $link): bool
     $szoveg = "Kedves {$f['nev']}!\n\nJelszó-visszaállítást kértél a videós oldalhoz. Az alábbi linken 1 órán belül új jelszót adhatsz meg:\n$link\n\nHa nem te kérted, nyugodtan hagyd figyelmen kívül ezt a levelet.\n";
     return level_kuld($f['email'], $f['nev'], 'Jelszó-visszaállítás – videós oldal', level_keret('Jelszó-visszaállítás', $html), $szoveg);
 }
+
+function level_video_lejart(array $f, array $h): bool
+{
+    $s = termek($h['sorozat']);
+    $nev = $s['rovidCim'] ?? $h['sorozat'];
+    $html = '<p>Kedves ' . h($f['nev']) . '!</p><p>A(z) <strong>' . h($nev) . '</strong> videósorozathoz a hozzáférésed ma lejárt.</p>'
+        . '<p>Ha szeretnéd még nézni, a videós oldalon belépve a „Meghosszabbítom” gombbal bármikor újabb ' . video_nap() . ' napra megnyithatod, új igazolás nélkül ('
+        . h(ft((int)($s['ar'] ?? 0))) . ').</p>' . level_gomb(video_url(), 'Belépés és hosszabbítás') . '<p>Szeretettel:<br>Csengeri Zsuzsa</p>';
+    $szoveg = "Kedves {$f['nev']}!\n\nA(z) $nev videósorozathoz a hozzáférésed ma lejárt.\n\nHa szeretnéd még nézni, a videós oldalon belépve a „Meghosszabbítom” gombbal bármikor újabb "
+        . video_nap() . ' napra megnyithatod, új igazolás nélkül (' . ft((int)($s['ar'] ?? 0)) . ").\n\n" . video_url() . "\n\nSzeretettel:\nCsengeri Zsuzsa\n";
+    return level_kuld($f['email'], $f['nev'], 'Lejárt: ' . $nev, level_keret('Lejárt a hozzáférésed', $html), $szoveg);
+}
