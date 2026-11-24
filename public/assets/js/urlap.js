@@ -153,6 +153,7 @@
         // a szerver visszaküldhet egy kiegészítő sort (pl. az elállás beérkezésének ideje)
         var kieg = koszonjuk.querySelector("[data-valasz-szoveg]");
         if (kieg && j && j.uzenet) kieg.textContent = j.uzenet;
+        if (window.FaroMeres) window.FaroMeres.esemeny("urlap:" + location.pathname);
         urlap.hidden = true;
         koszonjuk.hidden = false;
         koszonjuk.scrollIntoView({ block: "center" });

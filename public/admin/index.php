@@ -136,6 +136,13 @@ if ($p === 'jelszo') {
     exit;
 }
 
+/* ---------- látogatottság ---------- */
+if ($p === 'statisztika') {
+    require FARO_APP . '/admin_statisztika.php';
+    admin_statisztika_oldal();
+    exit;
+}
+
 /* ---------- külső értesítések naplója (Stripe) ---------- */
 if ($p === 'ertesitesek') {
     $sorok = db()->query('SELECT * FROM ertesites_naplo ORDER BY id DESC LIMIT 100')->fetchAll();
@@ -691,7 +698,7 @@ function oldal(string $cim, callable $tartalom, bool $menu = true): void
   <meta name="robots" content="noindex, nofollow">
   <title><?= h($cim) ?> – FARO admin</title>
   <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="admin.css?v=3">
+  <link rel="stylesheet" href="admin.css?v=4">
 </head>
 <body>
   <header class="top">
@@ -701,6 +708,7 @@ function oldal(string $cim, callable $tartalom, bool $menu = true): void
       <a href="./">Rendelések</a>
       <?php $fuggoDb = (int)db()->query("SELECT COUNT(*) FROM video_hozzaferesek WHERE allapot = 'fuggoben'")->fetchColumn(); ?>
       <a href="./?p=felhasznalok">Felhasználók<?= $fuggoDb ? ' <span class="nav-count">' . $fuggoDb . '</span>' : '' ?></a>
+      <a href="./?p=statisztika">Statisztika</a>
       <a href="./?p=ertesitesek">Stripe-értesítések</a>
       <a href="../" target="_blank" rel="noopener">Weboldal ↗</a>
       <a href="./?p=jelszo">Jelszócsere</a>
@@ -709,6 +717,10 @@ function oldal(string $cim, callable $tartalom, bool $menu = true): void
     <?php endif; ?>
   </header>
   <main class="wrap"><?php $tartalom(); ?></main>
+  <?php if (!empty($admin)): ?>
+  <script>/* az admin böngészője ne számítson bele a látogatottságba (a statisztika oldalon visszakapcsolható) */
+  try { if (localStorage.getItem("faro-szamol-admin") !== "1") localStorage.setItem("faro-nem-szamol", "1"); } catch (e) {}</script>
+  <?php endif; ?>
 </body>
 </html>
 <?php }

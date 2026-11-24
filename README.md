@@ -38,3 +38,11 @@ Oswald és Open Sans saját tárhelyről (`public/assets/fonts`, OFL licenc), la
 - Videók: titkosított HLS (AES-128) a `/home/whiteman/faro-videok/one-brain-N/` mappákban (`kulcs.key`, `NN/index.m3u8`, `NN/d0000.ts` …). Átalakítás: `eszkozok/hls-atalakito.ps1` (Windows, ffmpeg).
 - Lejátszó: hls.js 1.6.13 (`public/assets/vendor/hls/`, Apache 2.0), a böngésző saját vezérlőivel; vízjel (a néző e-mail-címe), egy munkamenet felhasználónként.
 - Napi feladat (cPanel → Cron Jobs, naponta): `php /home/whiteman/test.farostudio.hu/_app/napi.php` – figyelmeztetés 10 nappal lejárat előtt, lejárat, adattakarítás egy év után.
+
+## Látogatottságmérés (saját, süti nélkül)
+
+- Böngésző: `public/assets/js/meres.js` (minden oldalon) → `public/api/meres.php` → `_app/statisztika.php`.
+- Nincs süti, az IP-cím nem tárolódik: a napi egyedi látogatót egy naponta cserélődő titkos kulccsal képzett HMAC-kód jelöli (`stat_napi_latogato`, `stat_so`), ezek a nap lezárásakor törlődnek (az első mai kéréskor és a napi feladatban). Minden más összesített napi számláló (`stat_szamlalo`).
+- Események: `kosarba:<termék>`, `urlap:<oldal>`, `video:<sorozat>`, `kattintas:email|telefon` (`window.FaroMeres.esemeny()`).
+- Nem számít bele: robotok, „Ne kövess” / GPC, és az admin böngészője (az admin oldal `localStorage: faro-nem-szamol` jelzőt tesz; a Statisztika oldal alján visszakapcsolható).
+- Admin → Statisztika (`_app/admin_statisztika.php`, `admin/statisztika.js`): időszakválasztó, mutatók az előző időszakhoz képest, napi/heti grafikon, oldalak, források, hivatkozók, kampányok, eszközök, böngészők, rendszerek, belépő oldalak, napszak, hét napjai, vásárlási lépések, űrlapok, videólejátszások.

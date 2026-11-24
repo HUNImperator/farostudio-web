@@ -77,6 +77,7 @@
       }
       allapot.nyitva = true;
       ment();
+      if (uj && window.FaroMeres) window.FaroMeres.esemeny("kosarba:" + id);
       return uj;
     },
     beallit: function (id, db) {

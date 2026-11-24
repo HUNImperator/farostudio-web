@@ -9,6 +9,7 @@
  *    hozzáférés, a videós fiók és a feltöltött igazolások törlődnek
  *    (a rendelések megmaradnak – azokat csak kézzel lehet törölni).
  * 4. Régi belépési próbálkozások törlése (30 nap).
+ * 5. Látogatottságmérés: a korábbi napok lezárása (napi kódok és kulcsok törlése).
  */
 declare(strict_types=1);
 if (PHP_SAPI !== 'cli') {
@@ -85,5 +86,9 @@ foreach ($emailek as $email) {
 
 /* 4. régi belépési próbálkozások */
 db()->prepare('DELETE FROM belepesi_kiserletek WHERE ido < ?')->execute([date('Y-m-d H:i:s', $most - 30 * 86400)]);
+
+/* 5. látogatottságmérés: a korábbi napok lezárása (napi kódok és kulcsok törlése) */
+require_once FARO_APP . '/statisztika.php';
+stat_lezar(date('Y-m-d'));
 
 echo date('Y-m-d H:i') . ' – napi feladat kész. ' . ($naplo ? implode('; ', $naplo) : 'Nem volt teendő.') . "\n";

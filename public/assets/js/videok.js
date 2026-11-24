@@ -117,6 +117,11 @@
   });
   video.addEventListener("ended", function () { tar.set("faro-video-poz-" + kulcs, 0); });
 
+  // statisztika: egy lejátszás videónként, az oldal betöltése után az első indításkor
+  video.addEventListener("play", function () {
+    if (window.FaroMeres) window.FaroMeres.esemeny("video:" + sorozat);
+  }, { once: true });
+
   // nincs jobb klikkes „Videó mentése”
   doboz.addEventListener("contextmenu", function (e) { e.preventDefault(); });
 

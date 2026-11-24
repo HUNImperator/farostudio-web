@@ -70,7 +70,7 @@
             <li><a href="#videos-fiok">Videós fiók és lejátszás</a></li>
             <li><a href="#urlapok">Űrlapok és kapcsolatfelvétel</a></li>
             <li><a href="#panasz">Panaszok és elállás</a></li>
-            <li><a href="#naplok">Szervernaplók, biztonság</a></li>
+            <li><a href="#naplok">Szervernaplók, látogatottságmérés</a></li>
             <li><a href="#sutik">Sütik és helyi tárolás</a></li>
             <li><a href="#feldolgozok">Adatfeldolgozók és címzettek</a></li>
             <li><a href="#harmadik-orszag">Adattovábbítás az EU-n kívülre</a></li>
@@ -98,7 +98,7 @@
         <ul>
           <li>Csak azokat az adatokat kérem, amelyek az adott célhoz szükségesek, és csak addig őrzöm meg őket, ameddig szükséges.</li>
           <li>Adataidat nem adom el, nem használom reklámcélra, és nem küldök hírlevelet.</li>
-          <li>A weboldalon nincs látogatottságmérő, hirdetési vagy közösségi média követőkód.</li>
+          <li>A weboldalon nincs hirdetési vagy közösségi média követőkód, és nem használok külső látogatottságmérőt (pl. Google Analytics). A látogatottságot saját, süti nélküli módszerrel mérem (11. pont).</li>
           <li>Automatizált döntéshozatalt (profilalkotást) nem alkalmazok.</li>
         </ul>
         <p>Ha más személy (például gyermeked vagy az a személy, akinek a dedikáció szól) adatait adod meg, kérlek, csak akkor tedd, ha erre jogosult vagy: gyermek adatait a szülő vagy törvényes képviselő adhatja meg.</p>
@@ -189,16 +189,30 @@
           <tr><th scope="row">Időtartam</th><td>a panaszról felvett jegyzőkönyvet és a válasz másolatát, valamint a szavatossági igényről felvett jegyzőkönyvet 3 évig; az elállási nyilatkozatot a rendelés adataival együtt (3. pont)</td></tr>
         </table>
 
-        <h2 id="naplok">11. Szervernaplók, biztonság</h2>
+        <h2 id="naplok">11. Szervernaplók, látogatottságmérés</h2>
+        <h3>Szervernaplók</h3>
         <p>A weboldal megnyitásakor a tárhely szervere – mint minden webszerver – automatikusan naplózza a látogatás technikai adatait: az IP-címet, a látogatás idejét, a megnyitott oldal címét, a böngésző típusát és a hivatkozó oldalt. Ezeket az adatokat nem kapcsolom össze más adatokkal, és csak üzemeltetési hiba vagy visszaélés (pl. támadás) kivizsgálásához használom.</p>
         <table class="legal__data">
           <tr><th scope="row">Jogalap</th><td>jogos érdek (GDPR 6. cikk (1) f) pont): a weboldal biztonságos és zavartalan működése</td></tr>
           <tr><th scope="row">Időtartam</th><td>a tárhelyszolgáltató naplózási rendje szerint, jellemzően néhány hétig</td></tr>
           <tr><th scope="row">Adatfeldolgozó</th><td>SystemLock Kft. (tárhelyszolgáltató)</td></tr>
         </table>
+        <h3 id="latogatottsag">Látogatottságmérés (saját, süti nélkül)</h3>
+        <p>Hogy lássam, hányan és milyen oldalakat néznek meg, saját látogatottságmérést használok, külső szolgáltató nélkül. Egy oldal megnyitásakor a böngésződ elküldi a weboldal szerverének a megnyitott oldal címét, azt, hogy honnan érkeztél (a hivatkozó oldal címe, illetve egy esetleges kampányjelölés, pl. <em>utm_source</em>), és – a szokásos módon – a böngésződ típusát. Néhány műveletnél (termék a Megrendelésembe, űrlap elküldése, videó elindítása, kattintás az e-mail-címre vagy a telefonszámra) csak a művelet tényét rögzítem.</p>
+        <ul>
+          <li><strong>Nem használok sütit</strong>, és semmit nem tárolok a böngésződben.</li>
+          <li><strong>Az IP-címedet nem tárolom.</strong> A napi egyedi látogatók számolásához az IP-címből és a böngésző típusából egy naponta cserélődő, véletlen titkos kulccsal visszafejthetetlen kódot képzek. A kódot és a kulcsot a nap végén törlöm, így a kód nem köthető vissza hozzád, és napokon át sem követhető, ki mit nézett meg.</li>
+          <li>Minden más adatot csak <strong>összesített napi számként</strong> tárolok (pl. „aznap 37 mobilos látogató, a Könyvek oldalt 52-szer nyitották meg, 12-en jöttek a Google-ből”). A böngésző típusából csak a kategóriát (mobil / tablet / asztali gép, böngésző és operációs rendszer neve) őrzöm meg, a hivatkozó oldalnak csak a domainjét.</li>
+          <li>Az adatokat senkinek nem adom át, és csak a weboldal fejlesztéséhez használom.</li>
+        </ul>
+        <table class="legal__data">
+          <tr><th scope="row">Jogalap</th><td>jogos érdek (GDPR 6. cikk (1) f) pont): annak megismerése, hogyan használják a weboldalt, hogy jobbá tehessem. Mivel csak összesített, névtelen számok maradnak meg, és sütit nem használok, ez a mérés a magánszférádat nem érinti érdemben.</td></tr>
+          <tr><th scope="row">Időtartam</th><td>a napi kód és a titkos kulcs legfeljebb a nap végéig; az összesített, névtelen számok korlátlan ideig</td></tr>
+          <tr><th scope="row">Tiltakozás</th><td>bármikor tiltakozhatsz (16. pont). Ha a böngésződben be van kapcsolva a „Ne kövess” (Do Not Track) vagy a Global Privacy Control beállítás, a mérés téged automatikusan kihagy.</td></tr>
+        </table>
 
         <h2 id="sutik">12. Sütik és helyi tárolás</h2>
-        <p>A weboldal <strong>csak a működéséhez feltétlenül szükséges</strong> sütiket és böngészőbeli tárolást használ; ezekhez jogszabály szerint nem kell hozzájárulás, ezért nincs süti-felugró ablak. Követő, statisztikai vagy hirdetési süti nincs.</p>
+        <p>A weboldal <strong>csak a működéséhez feltétlenül szükséges</strong> sütiket és böngészőbeli tárolást használ; ezekhez jogszabály szerint nem kell hozzájárulás, ezért nincs süti-felugró ablak. Követő, statisztikai vagy hirdetési süti nincs; a látogatottságmérés (11. pont) sütit nem használ.</p>
         <div class="legal__scroll legal__scroll--stack">
           <table class="legal__data">
             <thead>
@@ -282,6 +296,7 @@
   </footer>
 
   <script src="assets/js/main.js?v=5" defer></script>
-  <script src="assets/js/konyvespolc.js?v=3" defer></script>
+  <script src="assets/js/meres.js?v=1" defer></script>
+  <script src="assets/js/konyvespolc.js?v=4" defer></script>
 </body>
 </html>

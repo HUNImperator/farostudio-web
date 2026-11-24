@@ -40,6 +40,7 @@ function db_migrate(PDO $pdo): void
     db_migrate_webhook($pdo);
     db_migrate_sztorno($pdo);
     db_migrate_video($pdo);
+    db_migrate_stat($pdo);
     // ha a táblák már megvannak, nincs teendő
     try {
         $pdo->query('SELECT 1 FROM belepesi_kiserletek LIMIT 1');
@@ -233,4 +234,40 @@ function db_migrate_video(PDO $pdo): void
     ] as $sql) {
         try { $pdo->exec($sql); } catch (PDOException $e) { /* már létezik */ }
     }
+}
+
+/**
+ * Látogatottságmérés (süti nélkül): csak összesített napi számlálók,
+ * a napi egyedi látogatók kódja és a napi titkos kulcs a nap végéig él.
+ */
+function db_migrate_stat(PDO $pdo): void
+{
+    try {
+        $pdo->query('SELECT 1 FROM stat_szamlalo LIMIT 1');
+        return;
+    } catch (PDOException $e) {
+    }
+    $mysql = db_driver() === 'mysql';
+    $d    = $mysql ? 'DATE' : 'TEXT';
+    $dt   = $mysql ? 'DATETIME' : 'TEXT';
+    $tail = $mysql ? ' ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin' : '';
+    $pdo->exec("CREATE TABLE IF NOT EXISTS stat_szamlalo (
+        nap $d NOT NULL,
+        tipus VARCHAR(20) NOT NULL,
+        kulcs VARCHAR(190) NOT NULL,
+        db INT NOT NULL DEFAULT 0,
+        PRIMARY KEY (nap, tipus, kulcs)
+    )$tail");
+    $pdo->exec("CREATE TABLE IF NOT EXISTS stat_napi_latogato (
+        nap $d NOT NULL,
+        kod CHAR(16) NOT NULL,
+        oldalak INT NOT NULL DEFAULT 0,
+        utolso $dt NOT NULL,
+        PRIMARY KEY (nap, kod)
+    )$tail");
+    $pdo->exec("CREATE TABLE IF NOT EXISTS stat_so (
+        nap $d NOT NULL PRIMARY KEY,
+        so VARCHAR(64) NOT NULL
+    )$tail");
+    try { $pdo->exec('CREATE INDEX ix_stat_tipus ON stat_szamlalo (tipus, nap)'); } catch (PDOException $e) { /* már létezik */ }
 }

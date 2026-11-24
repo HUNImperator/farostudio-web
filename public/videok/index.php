@@ -358,9 +358,10 @@ function videok_oldal(string $cim, callable $tartalom, bool $lejatszo = false): 
       <p>© <?= date('Y') ?> Csengeri Zsuzsa – FARO · <a href="mailto:info@farostudio.hu">info@farostudio.hu</a></p>
     </div>
   </footer>
-  <script src="../assets/js/konyvespolc.js?v=3" defer></script>
+  <script src="../assets/js/meres.js?v=1" defer></script>
+  <script src="../assets/js/konyvespolc.js?v=4" defer></script>
   <?php if ($lejatszo): ?><script src="../assets/vendor/hls/hls.min.js?v=1.6.13" defer></script><?php endif; ?>
-  <script src="../assets/js/videok.js?v=1" defer></script>
+  <script src="../assets/js/videok.js?v=2" defer></script>
 </body>
 </html>
 <?php }
