@@ -113,7 +113,7 @@ function szamlazz_szamla_xml(array $r): string
         'teljesitesDatum'       => $ma,
         'fizetesiHataridoDatum' => $ma,
         'fizmod'                => $kartya ? 'Bankkártya' : 'Átutalás',
-        'penznem'               => 'HUF',
+        'penznem'               => 'Ft',
         'szamlaNyelve'          => 'hu',
         'megjegyzes'            => 'Rendelésszám: ' . $r['rendelesszam'] . '. Szállítás Foxpost csomagautomatába: ' . $r['apt_nev'] . '.',
         'rendelesSzam'          => $r['rendelesszam'],
