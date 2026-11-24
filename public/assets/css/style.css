@@ -2170,3 +2170,16 @@ body[data-urlap-oldal] .tile-nav { display: none; }
 .step__small { font-size: 13px; color: var(--muted); margin: 16px 0 0; max-width: 70ch; }
 .field[hidden] { display: none; }
 @media (max-width: 760px) { .request .field--third { grid-column: span 6; } }
+/* Bio-Narratíva jelentkezés: „Hogyan zajlik?” */
+.howto { padding: clamp(40px, 6vw, 64px) 0 0; }
+.howto__title, .request__title { font-size: clamp(24px, 2.6vw, 30px); margin: 0 0 22px; }
+.howto__steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.howto__step { border-top: 2px solid var(--beige); padding: 16px 4px 0; }
+.howto__step p { margin: 0; font-size: 15px; }
+.howto__num { display: block; font-family: var(--font-display); font-weight: 300; font-size: 28px; color: var(--beige-dark); margin-bottom: 6px; }
+.howto__closing { font-family: var(--font-display); font-size: 20px; letter-spacing: .02em; margin: 28px 0 0; color: var(--ink); }
+.request--titled { padding-top: clamp(40px, 6vw, 64px); }
+.request__confirm { margin-bottom: 8px; }
+.request__confirm .check { margin-bottom: 4px; }
+@media (max-width: 860px) { .howto__steps { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 480px) { .howto__steps { grid-template-columns: 1fr; } }

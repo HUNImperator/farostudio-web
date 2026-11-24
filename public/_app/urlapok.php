@@ -13,7 +13,8 @@ defined('FARO') or exit;
  *   'koszono_cim' => 'Köszönöm a megkeresést!',
  *   'elofeldolgoz' => function (array $a): array {…}, // opcionális: a levél előtti átalakítás
  *   'mezok'       => [kulcs => ['cimke' => '…', 'max' => 190, 'kotelezo' => 'hibaüzenet',
- *                     'tipus' => 'szoveg'|'email'|'tobbsoros'|'lista'|'valasztas', 'opciok' => […]]]
+ *                     'tipus' => 'szoveg'|'email'|'tobbsoros'|'lista'|'valasztas'|'jelolo', 'opciok' => […]]]
+ *   ('jelolo': egyetlen jelölőnégyzet; bejelölve az értéke 'Igen')
  */
 function urlap_valasz(array $adat, int $kod = 200): void
 {
@@ -62,6 +63,9 @@ function urlap_kezel(array $def): void
             }
             $a[$k] = array_values(array_unique($ertekek));
             $ures = !$a[$k];
+        } elseif ($tipus === 'jelolo') {
+            $a[$k] = !empty($be[$k]) ? 'Igen' : '';
+            $ures = $a[$k] === '';
         } else {
             $a[$k] = $tisztit($be[$k] ?? '', $max, $tipus === 'tobbsoros');
             if ($tipus === 'valasztas' && $a[$k] !== '' && !empty($m['opciok']) && !in_array($a[$k], $m['opciok'], true)) {

@@ -6,6 +6,7 @@
  *  - kizáró jelölő (pl. „Még egyiket sem”): data-kizaro
  *  - „Egyéb” szövegmező: data-egyeb-hez="<a jelölőnégyzet id-je>" + data-hiba
  *  - feltételes rész: data-mutat-ha="mezonev=érték" (csak akkor látszik és küldődik, ha az a választás be van jelölve)
+ *  - kötelező egyedi jelölő (pl. „Láttam a kereteket”): <div class="field"><label class="check"><input type="checkbox" required data-egyedi data-hiba>…
  *  - elfogadás: #adatkezeles + [data-elfogadas-hiba]
  * Sikeres küldés után az űrlap eltűnik, és a [data-koszonjuk] doboz jelenik meg.
  */
@@ -39,6 +40,7 @@
         if (x !== t && (t.hasAttribute("data-kizaro") || x.hasAttribute("data-kizaro"))) x.checked = false;
       });
     }
+    if (t.type === "checkbox" && t.required && t.checked) hiba(t, "");
     var csoport = t.closest("[data-csoport]");
     if (csoport) hiba(csoport, "");
     if (t === elf && elf.checked) elfHiba.textContent = "";
@@ -70,6 +72,10 @@
     function rossz(el, szoveg, fokusz) { hiba(el, szoveg); if (!elso) elso = fokusz || el; }
     Array.prototype.forEach.call(urlap.querySelectorAll("input[required], textarea[required], select[required]"), function (i) {
       if (i === elf || i.disabled) return;
+      if (i.type === "checkbox") {
+        if (!i.checked) rossz(i, i.getAttribute("data-hiba") || "Kérlek, jelöld be."); else hiba(i, "");
+        return;
+      }
       var v = i.value.trim();
       if (!v) rossz(i, i.getAttribute("data-hiba") || "Kérlek, töltsd ki ezt a mezőt.");
       else if (i.type === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) rossz(i, "Kérlek, adj meg egy érvényes e-mail-címet.");
@@ -105,6 +111,7 @@
       if (!el.name || el.disabled) return;
       if (el.type === "checkbox") {
         if (el === elf) { adat.adatkezeles = el.checked; return; }
+        if (el.hasAttribute("data-egyedi")) { adat[el.name] = el.checked; return; }
         if (!adat[el.name]) adat[el.name] = [];
         if (el.checked) adat[el.name].push(el.value);
       } else if (el.type === "radio") {
