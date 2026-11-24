@@ -19,6 +19,9 @@
   } else if (szam) {
     bevezeto.textContent = "A rendelésed megérkezett, a rendelésszámod: " + szam + ". A visszaigazolást e-mailben is elküldtem.";
   }
+  // a rendelés tartalma szerinti teendők
+  var tipusok = adat.tipusok || ["konyv"];
+  document.querySelectorAll("[data-csak]").forEach(function (e) { e.hidden = tipusok.indexOf(e.getAttribute("data-csak")) === -1; });
   if (!kartya && adat.fizetes === "atutalas" && adat.vegosszeg) {
     document.querySelector("[data-atutalas]").hidden = false;
     document.querySelector("[data-osszeg]").textContent = ft(adat.vegosszeg);

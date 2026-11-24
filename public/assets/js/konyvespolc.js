@@ -315,7 +315,7 @@
     tisztit();
     Polc.kesz = true;
 
-    var rendelesOldal = document.body.hasAttribute("data-rendeles");
+    var rendelesOldal = document.body.hasAttribute("data-rendeles") || document.body.hasAttribute("data-nincs-panel");
     if (!rendelesOldal) {
       panelEpit();
       Polc.feliratkozik(panelFrissit);

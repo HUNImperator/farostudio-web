@@ -11,7 +11,7 @@
   <link rel="icon" href="assets/img/favicon-32.png" sizes="32x32" type="image/png">
   <link rel="apple-touch-icon" href="assets/img/favicon-180.png">
   <link rel="preload" href="assets/fonts/oswald-var.woff" as="font" type="font/woff" crossorigin>
-  <link rel="stylesheet" href="assets/css/style.css?v=23">
+  <link rel="stylesheet" href="assets/css/style.css?v=24">
 </head>
 <body data-rendeles>
   <a class="skip-link" href="#tartalom">Ugrás a tartalomra</a>
@@ -61,20 +61,23 @@
             <tr><th>Összeg</th><td><strong data-osszeg></strong></td></tr>
             <tr><th>Közlemény</th><td><strong data-szam></strong></td></tr>
           </table>
-          <p style="margin-top:16px">Amint az összeg megérkezik, dedikálom és feladom a könyveket a választott Foxpost-automatába, a számlát pedig e-mailben küldöm.</p>
+          <p style="margin-top:16px">Amint az összeg megérkezik, teljesítem a rendelést, a számlát pedig e-mailben küldöm.</p>
         </div>
 
         <div class="step">
           <h2 style="font-size:24px;margin-bottom:10px">Mi történik ezután?</h2>
           <ol class="next-steps">
             <li>A visszaigazolást a rendelésszámmal e-mailben küldöm. Ha nem találod, nézd meg a levélszemét mappát is.</li>
-            <li>A fizetés beérkezése után dedikálom a könyveket, és feladom őket a választott Foxpost-automatába.</li>
-            <li>A Foxpost SMS-ben és e-mailben értesít, amikor a csomag az automatába érkezik.</li>
+            <li data-csak="konyv">A fizetés beérkezése után dedikálom a könyveket, és feladom őket a választott Foxpost-automatába.</li>
+            <li data-csak="konyv">A Foxpost SMS-ben és e-mailben értesít, amikor a csomag az automatába érkezik.</li>
+            <li data-csak="video" hidden>A fizetés beérkezése után ellenőrzöm a feltöltött igazolásodat. A jóváhagyás után e-mailben küldöm a videós oldal belépési adatait – a 90 napos hozzáférés ekkor indul.</li>
+            <li data-csak="hosszabbitas" hidden>A hosszabbítás a fizetés beérkezésekor azonnal érvénybe lép; az új lejárati dátumot e-mailben is megírom.</li>
           </ol>
           <p class="muted">Kérdésed van? Írj az <a href="mailto:info@farostudio.hu">info@farostudio.hu</a> címre, a rendelésszámmal.</p>
         </div>
 
-        <a class="btn" href="konyvek.html">Vissza a könyvekhez&nbsp;<span class="btn__arrow" aria-hidden="true">→</span></a>
+        <a class="btn" href="konyvek.html" data-csak="konyv">Vissza a könyvekhez&nbsp;<span class="btn__arrow" aria-hidden="true">→</span></a>
+        <a class="btn" href="videok/" data-csak="hosszabbitas" hidden>Vissza a videóimhoz&nbsp;<span class="btn__arrow" aria-hidden="true">→</span></a>
       </div>
     </section>
 
@@ -100,7 +103,7 @@
   </footer>
 
   <script src="assets/js/main.js?v=5" defer></script>
-  <script src="assets/js/konyvespolc.js?v=2" defer></script>
-  <script src="assets/js/koszonjuk.js?v=2" defer></script>
+  <script src="assets/js/konyvespolc.js?v=3" defer></script>
+  <script src="assets/js/koszonjuk.js?v=3" defer></script>
 </body>
 </html>

@@ -321,6 +321,10 @@
     }
   } catch (x) {}
 
+  function tipusok() {
+    return ["konyv", "video", "hosszabbitas"].filter(function (t) { return window.Konyvespolc.vanTipus(t); });
+  }
+
   /* ---------- beküldés ---------- */
   function adatok() {
     var P = window.Konyvespolc;
@@ -383,7 +387,7 @@
           // bankkártya: a polc csak a sikeres fizetés után ürül ki (köszönő oldal)
           try {
             sessionStorage.setItem("faro-utolso-rendeles", JSON.stringify({
-              rendelesszam: valasz.rendelesszam, vegosszeg: valasz.vegosszeg, fizetes: "kartya"
+              rendelesszam: valasz.rendelesszam, vegosszeg: valasz.vegosszeg, fizetes: "kartya", tipusok: tipusok()
             }));
           } catch (x) {}
           gomb.textContent = "Átirányítás a fizetőoldalra…";
@@ -392,7 +396,7 @@
         }
         try {
           sessionStorage.setItem("faro-utolso-rendeles", JSON.stringify({
-            rendelesszam: valasz.rendelesszam, vegosszeg: valasz.vegosszeg, fizetes: valasz.fizetes
+            rendelesszam: valasz.rendelesszam, vegosszeg: valasz.vegosszeg, fizetes: valasz.fizetes, tipusok: tipusok()
           }));
         } catch (x) {}
         window.Konyvespolc.urit();
