@@ -115,9 +115,38 @@
     return szoveg.replace(/[ \t]+/g, " ").replace(/\s*\n\s*/g, "\n").trim();
   }
 
+  // A térkép csak teljes képernyős ablakban jelenik meg; az első megnyitáskor töltődik be.
   var terkep = document.querySelector("[data-apt-terkep]");
+  var keret = terkep.querySelector("iframe");
+  var nyitGomb = document.querySelector("[data-apt-nyit]");
+  var bezarGomb = document.querySelector("[data-apt-bezar]");
+  var csereGomb = document.querySelector("[data-apt-csere]");
   var valasztott = document.querySelector("[data-apt-valasztott]");
   var aptHiba = document.querySelector("[data-apt-hiba]");
+  var visszaFokusz = null;
+  function nyitva() { return terkep.classList.contains("is-full"); }
+  function terkepNyit(honnan) {
+    if (!keret.getAttribute("src")) keret.setAttribute("src", keret.getAttribute("data-src"));
+    visszaFokusz = honnan || nyitGomb;
+    terkep.classList.add("is-full");
+    document.body.classList.add("apt-nyitva");
+    bezarGomb.focus({ preventScroll: true });
+  }
+  function terkepZar() {
+    if (!nyitva()) return;
+    terkep.classList.remove("is-full");
+    document.body.classList.remove("apt-nyitva");
+    var f = visszaFokusz && !visszaFokusz.closest("[hidden]") ? visszaFokusz : (valasztott.hidden ? nyitGomb : csereGomb);
+    f.focus({ preventScroll: true });
+    f.scrollIntoView({ block: "nearest" });
+  }
+  nyitGomb.addEventListener("click", function () { terkepNyit(nyitGomb); });
+  csereGomb.addEventListener("click", function () { terkepNyit(csereGomb); });
+  bezarGomb.addEventListener("click", terkepZar);
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && nyitva()) terkepZar();
+  });
+
   window.addEventListener("message", function (e) {
     if (e.origin !== FOXPOST_ORIGIN) return;
     var apt;
@@ -129,33 +158,11 @@
     document.querySelector("[data-apt-nev]").textContent = apt.name || "";
     document.querySelector("[data-apt-cim]").textContent = document.getElementById("apt_cim").value;
     document.querySelector("[data-apt-leiras]").textContent = tisztaLeiras(apt.findme);
-    nagyitas(false);
     valasztott.hidden = false;
-    terkep.hidden = true;
+    nyitGomb.hidden = true;
     aptHiba.textContent = "";
-  });
-
-  // Nagyítás: a térkép teljes képernyőre nyílik (az iframe a helyén marad, így nem töltődik újra)
-  var nagyitGomb = document.querySelector("[data-apt-nagyit]");
-  var nagyitFelirat = document.querySelector("[data-apt-nagyit-felirat]");
-  function nagyitas(be) {
-    if (terkep.classList.contains("is-full") === be) return;
-    terkep.classList.toggle("is-full", be);
-    document.body.classList.toggle("apt-nyitva", be);
-    nagyitGomb.setAttribute("aria-expanded", be ? "true" : "false");
-    nagyitFelirat.textContent = be ? "Bezárás" : "Nagyítás";
-    if (!be) terkep.scrollIntoView({ block: "nearest" });
-    nagyitGomb.focus({ preventScroll: true });
-  }
-  nagyitGomb.addEventListener("click", function () {
-    nagyitas(!terkep.classList.contains("is-full"));
-  });
-  document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape" && terkep.classList.contains("is-full")) nagyitas(false);
-  });
-  document.querySelector("[data-apt-csere]").addEventListener("click", function () {
-    terkep.hidden = false;
-    valasztott.hidden = true;
+    visszaFokusz = csereGomb;
+    terkepZar();
   });
 
   /* ---------- ellenőrzés ---------- */
@@ -191,8 +198,8 @@
       if (!/^\d{8}-\d-\d{2}$/.test(ado.value.trim())) rossz(ado, "Az adószám formátuma: 12345678-1-12."); else hiba(ado, "");
     }
     if (!document.getElementById("apt_id").value) {
-      aptHiba.textContent = "Kérlek, válassz csomagautomatát a térképen.";
-      if (!elso) elso = terkep;
+      aptHiba.textContent = "Kérlek, válassz csomagautomatát.";
+      if (!elso) elso = nyitGomb;
     }
     var elfHiba = document.querySelector("[data-elfogadas-hiba]");
     if (!document.getElementById("aszf").checked || !document.getElementById("adatkezeles").checked) {

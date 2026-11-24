@@ -11,7 +11,7 @@
   <link rel="icon" href="assets/img/favicon-32.png" sizes="32x32" type="image/png">
   <link rel="apple-touch-icon" href="assets/img/favicon-180.png">
   <link rel="preload" href="assets/fonts/oswald-var.woff" as="font" type="font/woff" crossorigin>
-  <link rel="stylesheet" href="assets/css/style.css?v=13">
+  <link rel="stylesheet" href="assets/css/style.css?v=14">
 </head>
 <body data-rendeles>
   <a class="skip-link" href="#tartalom">Ugrás a tartalomra</a>
@@ -120,7 +120,7 @@
 
             <fieldset class="step">
               <legend><span class="step__num">03</span>Foxpost csomagautomata</legend>
-              <p class="step__note">Válaszd ki a térképen, melyik automatába kéred a csomagot, majd kattints a „Kiválasztom” gombra.</p>
+              <p class="step__note">Kattints a gombra, keresd meg a térképen vagy a listában, melyik automatába kéred a csomagot, majd kattints a „Kiválasztom” gombra.</p>
               <div class="apt-chosen" data-apt-valasztott hidden>
                 <div>
                   <p class="apt-chosen__name" data-apt-nev></p>
@@ -129,16 +129,19 @@
                 </div>
                 <button class="apt-chosen__change" type="button" data-apt-csere>Másikat választok</button>
               </div>
-              <div class="apt-box" data-apt-terkep>
+              <button class="apt-open" type="button" data-apt-nyit>
+                <svg class="apt-open__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-6.1-6.5-11.2A6.5 6.5 0 0 1 18.5 9.8C18.5 14.9 12 21 12 21z" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="9.8" r="2.4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+                <span>Csomagautomata kiválasztása</span>
+              </button>
+              <div class="apt-box" data-apt-terkep role="dialog" aria-modal="true" aria-label="Foxpost csomagautomata kiválasztása">
                 <div class="apt-box__bar">
                   <span class="apt-box__title">Foxpost csomagautomata kiválasztása</span>
-                  <button class="apt-box__toggle" type="button" data-apt-nagyit aria-expanded="false">
-                    <svg class="apt-box__icon apt-box__icon--open" viewBox="0 0 20 20" aria-hidden="true"><path d="M3 8V3h5M12 3h5v5M17 12v5h-5M8 17H3v-5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
-                    <svg class="apt-box__icon apt-box__icon--close" viewBox="0 0 20 20" aria-hidden="true"><path d="M4 4l12 12M16 4L4 16" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
-                    <span data-apt-nagyit-felirat>Nagyítás</span>
+                  <button class="apt-box__close" type="button" data-apt-bezar>
+                    <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 4l12 12M16 4L4 16" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+                    <span>Bezárás</span>
                   </button>
                 </div>
-                <iframe class="apt-frame" title="Foxpost csomagautomata-választó térkép" src="https://cdn.foxpost.hu/apt-finder/v1/app/" loading="lazy"></iframe>
+                <iframe class="apt-frame" title="Foxpost csomagautomata-választó térkép" data-src="https://cdn.foxpost.hu/apt-finder/v1/app/"></iframe>
               </div>
               <input type="hidden" name="apt_id" id="apt_id">
               <input type="hidden" name="apt_nev" id="apt_nev">
@@ -232,6 +235,6 @@
 
   <script src="assets/js/main.js?v=5" defer></script>
   <script src="assets/js/konyvespolc.js?v=1" defer></script>
-  <script src="assets/js/rendeles.js?v=5" defer></script>
+  <script src="assets/js/rendeles.js?v=6" defer></script>
 </body>
 </html>
