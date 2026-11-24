@@ -1,5 +1,5 @@
 {
-  "szallitas": { "nev": "Foxpost csomagautomata", "ar": 1500 },
+  "szallitas": { "nev": "Foxpost csomagautomata", "ar": 1600 },
   "termekek": [
     { "id": "utkozben", "cim": "Útközben", "alcim": "Külvárosi El Camino", "ar": null, "eredetiAr": null, "elerheto": false, "borito": "assets/img/borito-utkozben-300.jpg" },
     { "id": "a-hetedik-napon", "cim": "A hetedik napon", "ar": 1500, "eredetiAr": 2900, "elerheto": true, "borito": "assets/img/borito-a-hetedik-napon-300.jpg" },
