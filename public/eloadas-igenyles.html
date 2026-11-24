@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- TESZT: élesítéskor törölni -->
+  <meta name="robots" content="noindex, nofollow">
+  <title>Előadás igénylése | Csengeri Zsuzsa</title>
+  <meta name="description" content="Előadás, interaktív beszélgetés, könyvbemutató vagy workshop igénylése Csengeri Zsuzsától közösségek, könyvtárak és intézmények számára.">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/img/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="assets/img/favicon-180.png">
+  <link rel="preload" href="assets/fonts/oswald-var.woff" as="font" type="font/woff" crossorigin>
+  <link rel="stylesheet" href="assets/css/style.css?v=14">
+</head>
+<body data-urlap-oldal>
+  <a class="skip-link" href="#tartalom">Ugrás a tartalomra</a>
+
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="logo" href="./" aria-label="FARO – Csengeri Zsuzsa, kezdőlap">
+        <img class="logo__jel" src="assets/img/logo-faro-jel.svg" width="58" height="58" alt="">
+        <span class="logo__text">
+          <span class="logo__mark">FARO</span>
+          <span class="logo__sub">Csengeri Zsuzsa</span>
+        </span>
+      </a>
+
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="fomenu" aria-label="Menü megnyitása">
+        <span class="nav-toggle__bar"></span>
+      </button>
+
+      <nav class="nav" id="fomenu" aria-label="Főmenü">
+        <ul class="nav__list">
+          <li><a class="nav__link" href="rolam.html">Rólam</a></li>
+          <li><a class="nav__link" href="konyvek.html">Könyvek</a></li>
+          <li><a class="nav__link" href="eloadasok.html" aria-current="page">Előadások</a></li>
+          <li><a class="nav__link" href="mentoralas.html">Mentorálás</a></li>
+          <li><a class="nav__link" href="informalis-kineziologia.html">Informális kineziológia</a></li>
+          <li><a class="nav__link" href="bio-narrativa.html">Bio-Narratíva</a></li>
+          <li><a class="nav__link" href="gondolatok.html">Gondolatok</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="tartalom">
+
+    <section class="checkout request">
+      <div class="container request__container">
+        <p class="section-eyebrow"><a href="eloadasok.html" style="text-decoration:none">← Vissza az előadásokhoz</a></p>
+        <h1 class="checkout__title">Előadás igénylése</h1>
+        <p class="request__intro">Töltsd ki az alábbi rövid űrlapot, és 2–3 munkanapon belül személyesen válaszolok. Ha még nem tudod pontosan, milyen témát vagy formát választanál, az sem baj: szívesen segítek megtalálni azt, ami a közösségedhez a legjobban illik.</p>
+
+        <div class="request__thanks" data-koszonjuk tabindex="-1" hidden>
+          <h2>Köszönöm a megkeresést!</h2>
+          <p>Hamarosan jelentkezem, hogy egyeztessük a részleteket.</p>
+          <a class="btn" href="eloadasok.html">Vissza az előadásokhoz&nbsp;<span class="btn__arrow" aria-hidden="true">→</span></a>
+        </div>
+
+        <form class="request__form" novalidate data-igenyles-urlap>
+          <p class="request__required">A <span aria-hidden="true">*</span>-gal jelölt mezők kitöltése kötelező.</p>
+
+          <fieldset class="step">
+            <legend><span class="step__num">01</span>Elérhetőség</legend>
+            <div class="fields">
+              <div class="field field--half">
+                <label for="nev">Név <span class="req" aria-hidden="true">*</span></label>
+                <input id="nev" name="nev" type="text" autocomplete="name" maxlength="150" required>
+                <span class="field__error" aria-live="polite"></span>
+              </div>
+              <div class="field field--half">
+                <label for="intezmeny">Intézmény / közösség neve <span class="req" aria-hidden="true">*</span></label>
+                <input id="intezmeny" name="intezmeny" type="text" autocomplete="organization" maxlength="190" required>
+                <span class="field__error" aria-live="polite"></span>
+              </div>
+              <div class="field field--half">
+                <label for="email">E-mail-cím <span class="req" aria-hidden="true">*</span></label>
+                <input id="email" name="email" type="email" autocomplete="email" maxlength="190" required>
+                <span class="field__error" aria-live="polite"></span>
+              </div>
+              <div class="field field--half">
+                <label for="telefon">Telefonszám</label>
+                <input id="telefon" name="telefon" type="tel" autocomplete="tel" maxlength="30" placeholder="+36 30 123 4567">
+                <span class="field__error" aria-live="polite"></span>
+              </div>
+              <div class="field">
+                <label for="helyszin">Település, helyszín <span class="req" aria-hidden="true">*</span></label>
+                <input id="helyszin" name="helyszin" type="text" maxlength="190" required>
+                <span class="field__error" aria-live="polite"></span>
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset class="step">
+            <legend><span class="step__num">02</span>Az alkalom</legend>
+            <div class="fields">
+              <div class="field" role="group" aria-labelledby="alkalom-cim">
+                <span class="field__label" id="alkalom-cim">Milyen alkalmat tervezel?</span>
+                <div class="chips">
+                  <label class="chip"><input type="radio" name="alkalom" value="Előadás"><span>Előadás</span></label>
+                  <label class="chip"><input type="radio" name="alkalom" value="Interaktív beszélgetés"><span>Interaktív beszélgetés</span></label>
+                  <label class="chip"><input type="radio" name="alkalom" value="Könyvbemutató, író-olvasó találkozó"><span>Könyvbemutató, író-olvasó találkozó</span></label>
+                  <label class="chip"><input type="radio" name="alkalom" value="Workshop"><span>Workshop</span></label>
+                  <label class="chip"><input type="radio" name="alkalom" value="Egyéb"><span>Egyéb</span></label>
+                </div>
+              </div>
+              <div class="field">
+                <label for="tema">Melyik téma érdekel?</label>
+                <select id="tema" name="tema">
+                  <option value="">Válassz témát…</option>
+                    <option>Sosem késő újrakezdeni! Az élet ereje</option>
+                    <option>Stressz nélkül könnyebb az élet</option>
+                    <option>Az énkép és a testkép kialakulása</option>
+                    <option>Férfi-női egyensúly napjainkban</option>
+                    <option>Örök női értékek</option>
+                    <option>Hogyan teremtsünk bőséget az életünkben?</option>
+                    <option>A mai kor gyermekei – Hogyan bánjunk velük?</option>
+                    <option>Magzatkorunk és születésünk nyomai a személyiségünkben</option>
+                    <option>Szexualitás és kreativitás</option>
+                    <option>Beszédes arc – Ismerd meg önmagad!</option>
+                  <option>Még nem tudom, javaslatot kérek</option>
+                </select>
+              </div>
+              <div class="field field--half">
+                <label for="idopont">Tervezett időpont vagy időszak</label>
+                <input id="idopont" name="idopont" type="text" maxlength="190" placeholder="pl. 2027 tavasza, egy hétköznap este">
+              </div>
+              <div class="field field--half">
+                <label for="letszam">Várható létszám és közönség</label>
+                <input id="letszam" name="letszam" type="text" maxlength="190" placeholder="pl. kb. 40 fő, nyugdíjasklub">
+              </div>
+              <div class="field">
+                <label for="uzenet">Üzenet, egyéb kérés</label>
+                <textarea id="uzenet" name="uzenet" maxlength="3000" rows="5"></textarea>
+              </div>
+            </div>
+          </fieldset>
+
+          <div class="visually-hidden" aria-hidden="true">
+            <label for="weboldal">Ezt a mezőt hagyd üresen</label>
+            <input id="weboldal" name="weboldal" type="text" tabindex="-1" autocomplete="off">
+          </div>
+
+          <div class="request__submit">
+            <label class="check"><input type="checkbox" id="adatkezeles" name="adatkezeles" required> <span>Elolvastam és elfogadom az <a href="adatkezeles.html" target="_blank">Adatkezelési tájékoztatót</a>. <span class="req" aria-hidden="true">*</span></span></label>
+            <span class="field__error" data-elfogadas-hiba aria-live="polite"></span>
+            <button class="btn btn--dark" type="submit" data-bekuld>Ajánlatkérés elküldése&nbsp;<span class="btn__arrow" aria-hidden="true">→</span></button>
+            <p class="order-msg order-msg--error" data-uzenet role="alert" hidden></p>
+            <p class="request__direct">Inkább közvetlenül írnál vagy telefonálnál? E-mail: <a href="mailto:info@farostudio.hu">info@farostudio.hu</a> · Telefon: <a href="tel:+36307358092">+36 30 735 8092</a></p>
+          </div>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <nav class="tile-nav" aria-label="Ugrás a kezdőlap csempéihez">
+    <button class="tile-nav__toggle" type="button" aria-expanded="false" aria-controls="csempe-lista">Tartalom</button>
+    <ul class="tile-nav__list" id="csempe-lista">
+      <li><a class="tile-nav__link" href="./#nyito" data-tile="nyito">Bemutatkozás</a></li>
+      <li><a class="tile-nav__link" href="./#irasok" data-tile="irasok">Írások és regények</a></li>
+      <li><a class="tile-nav__link" href="./#eloadasok" data-tile="eloadasok">Előadások</a></li>
+      <li><a class="tile-nav__link" href="./#mentoralas" data-tile="mentoralas">Mentorálás</a></li>
+      <li><a class="tile-nav__link" href="./#informalis-kineziologia" data-tile="informalis-kineziologia">Informális kineziológia</a></li>
+      <li><a class="tile-nav__link" href="./#bio-narrativa" data-tile="bio-narrativa">Bio-Narratíva</a></li>
+      <li><a class="tile-nav__link" href="./#gondolatok" data-tile="gondolatok">Gondolatok</a></li>
+    </ul>
+  </nav>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© 2026 Csengeri Zsuzsa – FARO</p>
+    </div>
+  </footer>
+
+  <script src="assets/js/main.js?v=5" defer></script>
+  <script src="assets/js/konyvespolc.js?v=1" defer></script>
+  <script src="assets/js/eloadas-igenyles.js?v=1" defer></script>
+</body>
+</html>
