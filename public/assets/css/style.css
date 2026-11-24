@@ -200,6 +200,19 @@ p { margin: 0 0 1.1em; }
 .nav__list { gap: 24px; }
 .nav__link { font-size: 14px; letter-spacing: .1em; white-space: nowrap; }
 
+/* Asztali nézet: a hosszabb menünevek miatt a menü a logó alatti második sorba kerül,
+   a teljes szélességet kitöltve. */
+@media (min-width: 1101px) {
+  .site-header { height: auto; }
+  .site-header__inner { flex-wrap: wrap; padding-top: 16px; }
+  .nav { flex: 1 0 100%; margin-top: 14px; border-top: 1px solid #ebe3da; }
+  .nav__list { justify-content: space-between; gap: 18px; padding: 10px 0 12px; }
+  .nav__link { font-size: 14px; letter-spacing: .1em; }
+}
+@media (min-width: 1101px) and (max-width: 1240px) {
+  .nav__link { font-size: 13px; letter-spacing: .07em; }
+}
+
 .nav-toggle {
   display: none;
   width: 44px;
