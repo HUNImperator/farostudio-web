@@ -2157,3 +2157,12 @@ body[data-urlap-oldal] .tile-nav { display: none; }
   .request__submit .btn { width: 100%; }
 }
 .field .chip { font-family: var(--font-body); font-size: 15px; letter-spacing: 0; text-transform: none; color: var(--text); }
+.checklist { display: grid; gap: 10px; margin-top: 4px; }
+.checklist .check { margin: 0; }
+.field .check { font-family: var(--font-body); font-size: 16px; letter-spacing: 0; text-transform: none; color: var(--text); }
+.checklist__other { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 6px 12px; align-items: start; }
+.checklist__other .check { padding-top: 9px; }
+.checklist__other .field input { padding: 8px 10px; }
+.field__label .opt { margin-left: 4px; }
+@media (max-width: 560px) { .checklist__other { grid-template-columns: 1fr; } .checklist__other .check { padding-top: 0; } }
+.field .check input, .field .chip input { padding: 0; border: 0; }

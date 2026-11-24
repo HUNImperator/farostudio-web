@@ -11,7 +11,7 @@
   <link rel="icon" href="assets/img/favicon-32.png" sizes="32x32" type="image/png">
   <link rel="apple-touch-icon" href="assets/img/favicon-180.png">
   <link rel="preload" href="assets/fonts/oswald-var.woff" as="font" type="font/woff" crossorigin>
-  <link rel="stylesheet" href="assets/css/style.css?v=16">
+  <link rel="stylesheet" href="assets/css/style.css?v=17">
 </head>
 <body data-urlap-oldal>
   <a class="skip-link" href="#tartalom">Ugrás a tartalomra</a>
@@ -63,7 +63,7 @@
         </div>
 
       </div>
-      <form class="request__form" novalidate data-igenyles-urlap>
+      <form class="request__form" novalidate data-urlap data-vegpont="api/eloadas-igenyles.php">
         <div class="container request__container">
           <p class="request__required">A <span aria-hidden="true">*</span>-gal jelölt mezők kitöltése kötelező.</p>
 
@@ -72,17 +72,17 @@
             <div class="fields">
               <div class="field field--half">
                 <label for="nev">Név <span class="req" aria-hidden="true">*</span></label>
-                <input id="nev" name="nev" type="text" autocomplete="name" maxlength="150" required>
+                <input id="nev" name="nev" data-hiba="Kérlek, add meg a neved." type="text" autocomplete="name" maxlength="150" required>
                 <span class="field__error" aria-live="polite"></span>
               </div>
               <div class="field field--half">
                 <label for="intezmeny">Intézmény / közösség neve <span class="req" aria-hidden="true">*</span></label>
-                <input id="intezmeny" name="intezmeny" type="text" autocomplete="organization" maxlength="190" required>
+                <input id="intezmeny" name="intezmeny" data-hiba="Kérlek, add meg az intézmény vagy közösség nevét." type="text" autocomplete="organization" maxlength="190" required>
                 <span class="field__error" aria-live="polite"></span>
               </div>
               <div class="field field--half">
                 <label for="email">E-mail-cím <span class="req" aria-hidden="true">*</span></label>
-                <input id="email" name="email" type="email" autocomplete="email" maxlength="190" required>
+                <input id="email" name="email" data-hiba="Kérlek, adj meg egy érvényes e-mail-címet." type="email" autocomplete="email" maxlength="190" required>
                 <span class="field__error" aria-live="polite"></span>
               </div>
               <div class="field field--half">
@@ -92,7 +92,7 @@
               </div>
               <div class="field">
                 <label for="helyszin">Település, helyszín <span class="req" aria-hidden="true">*</span></label>
-                <input id="helyszin" name="helyszin" type="text" maxlength="190" required>
+                <input id="helyszin" name="helyszin" data-hiba="Kérlek, add meg a települést vagy a helyszínt." type="text" maxlength="190" required>
                 <span class="field__error" aria-live="polite"></span>
               </div>
             </div>
@@ -151,7 +151,7 @@
         </div>
         <div class="request__submit">
           <div class="container request__container">
-            <label class="check"><input type="checkbox" id="adatkezeles" name="adatkezeles" required> <span>Elolvastam és elfogadom az <a href="adatkezeles.html" target="_blank">Adatkezelési tájékoztatót</a>. <span class="req" aria-hidden="true">*</span></span></label>
+            <label class="check"><input type="checkbox" id="adatkezeles" name="adatkezeles"> <span>Elolvastam és elfogadom az <a href="adatkezeles.html" target="_blank">Adatkezelési tájékoztatót</a>. <span class="req" aria-hidden="true">*</span></span></label>
             <span class="field__error" data-elfogadas-hiba aria-live="polite"></span>
             <button class="btn btn--dark" type="submit" data-bekuld>Ajánlatkérés elküldése&nbsp;<span class="btn__arrow" aria-hidden="true">→</span></button>
             <p class="order-msg order-msg--error" data-uzenet role="alert" hidden></p>
@@ -184,6 +184,6 @@
 
   <script src="assets/js/main.js?v=5" defer></script>
   <script src="assets/js/konyvespolc.js?v=1" defer></script>
-  <script src="assets/js/eloadas-igenyles.js?v=1" defer></script>
+  <script src="assets/js/urlap.js?v=1" defer></script>
 </body>
 </html>
