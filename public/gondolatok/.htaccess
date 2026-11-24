@@ -1,0 +1,7 @@
+# Szép webcím a blogcikkekhez: gondolatok/<webcím> → index.php?cikk=<webcím>
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^([a-z0-9-]+)/?$ index.php?cikk=$1 [L,QSA]
+</IfModule>

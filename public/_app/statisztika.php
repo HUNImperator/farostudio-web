@@ -321,6 +321,16 @@ function stat_oldalnev(string $ut): string
         }
     }
     if ($ut === '/') $nev = 'Kezdőlap';
+    if ($ut === '/gondolatok/') $nev = 'Gondolatok, blogok';
+    if (preg_match('~^/gondolatok/([a-z0-9-]+)$~', $ut, $m)) {
+        try {
+            $st = db()->prepare('SELECT cim FROM blog_cikkek WHERE slug = ?');
+            $st->execute([$m[1]]);
+            $c = $st->fetchColumn();
+            if ($c) $nev = 'Blog: ' . $c;
+        } catch (Throwable $e) {
+        }
+    }
     if ($nev === '' && strpos($ut, '/videok/') === 0) $nev = 'Videós oldal';
     return $cache[$ut] = $nev;
 }

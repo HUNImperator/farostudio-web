@@ -2518,3 +2518,66 @@ body[data-urlap-oldal] .tile-nav { display: none; }
 .yt-megj { margin: 28px 0 0; font-size: 14px; color: var(--muted); }
 @media (max-width: 900px) { .yt-racs { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 560px) { .yt-racs { grid-template-columns: 1fr; } }
+
+/* ==========================================================
+   Blog – lista kezdőképpel és cikkoldal
+   ========================================================== */
+.post--kep { padding: 0; overflow: hidden; }
+.post__kep { display: block; aspect-ratio: 3 / 2; overflow: hidden; background: var(--beige-light); }
+.post__kep picture, .post__kep img { display: block; width: 100%; height: 100%; }
+.post__kep img { object-fit: cover; transition: transform .5s ease; }
+.post--kep:hover .post__kep img { transform: scale(1.03); }
+.post__kep img.post__kep-helyett { object-fit: contain; padding: 24px; }
+.post__belso { padding: 24px 26px 26px; display: flex; flex-direction: column; flex: 1; }
+.post__tovabb { margin: auto 0 0; padding-top: 10px; display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.post__tovabb a { font-family: var(--font-display); letter-spacing: .08em; text-transform: uppercase; font-size: 14px; color: var(--ink); text-decoration: none; }
+.post__tovabb a:hover { text-decoration: underline; text-underline-offset: 4px; }
+.post__ido { font-size: 13px; color: var(--muted); }
+
+.cikk-elonezet { position: sticky; top: 0; z-index: 30; background: #c9a96b; color: var(--ink); text-align: center; padding: 10px 16px; font-size: 15px; }
+.cikk__fej { background: var(--cream); padding: clamp(40px, 6vw, 72px) 0 clamp(32px, 5vw, 48px); }
+.cikk__szuk { max-width: 760px; }
+.cikk__cim { font-size: clamp(34px, 4.6vw, 54px); line-height: 1.12; margin: 6px 0 16px; }
+.cikk__meta { color: var(--muted); font-size: 15px; margin: 0; }
+.cikk__meta a { color: inherit; }
+.cikk__bevezeto { font-size: 20px; line-height: 1.6; margin: 22px 0 0; color: var(--text); }
+.cikk__kezdokep { max-width: 1000px; margin: 0 auto; padding: 0 var(--gutter); }
+.cikk__kezdokep img { display: block; width: 100%; height: auto; margin-top: clamp(-24px, -2vw, -12px); box-shadow: 0 18px 40px rgba(0, 0, 0, .08); }
+.cikk__szoveg { padding-top: clamp(32px, 5vw, 52px); font-size: 18px; line-height: 1.8; }
+.cikk__szoveg p { margin: 0 0 1.15em; }
+.cikk__szoveg h2 { font-size: clamp(26px, 3vw, 32px); margin: 1.6em 0 .6em; }
+.cikk__szoveg h3 { font-size: clamp(21px, 2.4vw, 24px); margin: 1.4em 0 .5em; }
+.cikk__szoveg a { color: var(--ink); text-underline-offset: 3px; }
+.cikk__szoveg ul, .cikk__szoveg ol { margin: 0 0 1.15em; padding-left: 1.4em; }
+.cikk__szoveg li { margin-bottom: .35em; }
+.cikk__szoveg blockquote {
+  margin: 1.6em 0; padding: 4px 0 4px 26px; border-left: 3px solid var(--beige-dark);
+  font-family: var(--font-display); font-weight: 300; font-size: clamp(21px, 2.4vw, 25px); line-height: 1.5; color: var(--ink);
+}
+.cikk__szoveg blockquote p:last-child { margin-bottom: 0; }
+.cikk__szoveg hr { border: 0; height: 1px; background: var(--beige-dark); width: 120px; margin: 2.4em auto; }
+.cikk__szoveg figure { margin: 2em 0; }
+.cikk__szoveg figure img { display: block; width: 100%; height: auto; }
+.cikk__szoveg figcaption { margin-top: 10px; font-size: 14px; line-height: 1.5; color: var(--muted); text-align: center; }
+.cikk__szoveg figure.video .yt { width: 100%; }
+.cikk__szerzo { font-family: var(--font-display); font-size: 22px; letter-spacing: .04em; margin: 1.6em 0 0; }
+.cikk__lab { border-top: 1px solid rgba(0, 0, 0, .1); margin: 40px 0 clamp(56px, 8vw, 90px); padding-top: 26px; }
+.cikk__kerdes { font-size: 16px; margin: 0 0 18px; }
+.cikk__megosztas { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; font-size: 15px; }
+.cikk__megosztas span { color: var(--muted); margin-right: 4px; }
+.cikk__megosztas a, .cikk__megosztas button {
+  font: inherit; font-family: var(--font-display); font-size: 14px; letter-spacing: .06em; text-transform: uppercase;
+  padding: 8px 14px; border: 1px solid var(--beige-dark); background: var(--white); color: var(--ink); text-decoration: none; cursor: pointer;
+}
+.cikk__megosztas a:hover, .cikk__megosztas button:hover { border-color: var(--ink); }
+.cikk-hasonlok { background: var(--beige-light); }
+.cikk-hasonlok .section-title { margin-bottom: 28px; }
+
+/* Kezdőlap: legutóbbi írások a Gondolatok csempén */
+.notes__legutobbi { list-style: none; margin: 0 0 26px; padding: 0; border-top: 1px solid rgba(0, 0, 0, .12); }
+.notes__legutobbi li { border-bottom: 1px solid rgba(0, 0, 0, .12); }
+.notes__legutobbi a { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; padding: 12px 0; text-decoration: none; color: var(--ink); }
+.notes__legutobbi a:hover .notes__cim { text-decoration: underline; text-underline-offset: 4px; }
+.notes__cim { font-family: var(--font-display); font-size: 19px; line-height: 1.3; }
+.notes__datum { flex: none; font-size: 13px; color: var(--muted); }
+.cikk__kezdokep img.kicsi { width: auto; max-width: 100%; margin-left: auto; margin-right: auto; }

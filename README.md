@@ -52,3 +52,17 @@ Oswald és Open Sans saját tárhelyről (`public/assets/fonts`, OFL licenc), la
 - Oldal: `public/szemelyiseg-elemzo-modszer.html` (az Informális Kineziológia „Részletek és megrendelés” gombja ide visz); 1 ajánló + 6 háttér-videó YouTube-ról, kattintásra töltődik be (`assets/js/yt.js`, youtube-nocookie), az előnézeti képek saját tárhelyről (`assets/img/yt-*.jpg`).
 - Termék: `termekek.json` → `szemelyiseg-elemzo`, `tipus: "program"`, 50 000 Ft, `hozzaferes: "1 éves hozzáférés a programhoz"`. Nincs Foxpost, nincs modul/igazolás; a digitális tartalom nyilatkozata kötelező.
 - A rendelés nem teljesül és nem mondódik le automatikusan: fizetés után az adminban emlékeztető + „Belépési link elküldve → Teljesítve” gomb.
+
+## Blog (Gondolatok, blogok)
+
+- Nyilvános oldalak: `public/gondolatok/index.php` (lista témakör-szűrővel; `gondolatok/<webcím>` = cikk, a `gondolatok/.htaccess` irányítja ide). A régi `gondolatok.html` átirányít ide. Közös fejléc/lábléc: `_app/sablon.php`; cikkoldal: `_app/blog_oldal.php`.
+- Kezdőlap: a Gondolatok csempén a témakörök és a legutóbbi 3 írás (`api/blog.php` + `assets/js/blog-csempe.js`).
+- Admin → Blog (`_app/admin_blog.php`, `admin/blog-szerkeszto.js`): lista, saját szerkesztő (bekezdés, alcím, félkövér, dőlt, idézet, listák, link, kép feltöltéssel és képaláírással, YouTube-videó, elválasztó; beillesztés Wordből tisztítva; kép behúzása/bemásolása), kezdőkép, témakör, webcím, leírás, piszkozat / közzététel / időzítés, automatikus mentés piszkozatnál, előnézet, törlés; Témakörök oldal (bővíthető).
+- Tárolás: `blog_cikkek`, `blog_temak`, `blog_kepek` táblák; a képek a `feltoltes/blog/` mappába kerülnek (nincs a repóban, a deploy nem írja felül), több méretben JPG + WebP; a YouTube-előnézetet a szerver letölti mentéskor.
+- A szöveget a szerver mentéskor mindig megtisztítja (`blog_tisztit`, engedélyezett elemek listája).
+- A 3 régi cikk: `_app/blog_regi.json`; az adminban a Blog oldalon „Áthozom őket” gomb (a kezdőképeket a szerver tölti le a régi oldalról).
+- Élesítéskor a régi címek átirányítása a webgyökér `.htaccess`-ébe (a meglévő sorok elé):
+  ```
+  RewriteEngine On
+  RewriteRule ^(a-kezelhetetlen-gyermek|mindig-jo-voltam-es-megis|most-akkor-fojtsam-el-az-erzelmeimet)/?$ /gondolatok/$1 [R=301,L]
+  ```

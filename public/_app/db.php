@@ -41,6 +41,7 @@ function db_migrate(PDO $pdo): void
     db_migrate_sztorno($pdo);
     db_migrate_video($pdo);
     db_migrate_stat($pdo);
+    db_migrate_blog($pdo);
     // ha a táblák már megvannak, nincs teendő
     try {
         $pdo->query('SELECT 1 FROM belepesi_kiserletek LIMIT 1');
@@ -270,4 +271,70 @@ function db_migrate_stat(PDO $pdo): void
         so VARCHAR(64) NOT NULL
     )$tail");
     try { $pdo->exec('CREATE INDEX ix_stat_tipus ON stat_szamlalo (tipus, nap)'); } catch (PDOException $e) { /* már létezik */ }
+}
+
+/** Blog: témák, cikkek, feltöltött képek. */
+function db_migrate_blog(PDO $pdo): void
+{
+    try {
+        $pdo->query('SELECT 1 FROM blog_cikkek LIMIT 1');
+        return;
+    } catch (PDOException $e) {
+    }
+    $mysql = db_driver() === 'mysql';
+    $id   = $mysql ? 'INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY' : 'INTEGER PRIMARY KEY AUTOINCREMENT';
+    $dt   = $mysql ? 'DATETIME' : 'TEXT';
+    $hosszu = $mysql ? 'MEDIUMTEXT' : 'TEXT';
+    $tail = $mysql ? ' ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_hungarian_ci' : '';
+    $pdo->exec("CREATE TABLE IF NOT EXISTS blog_temak (
+        id $id,
+        kulcs VARCHAR(60) NOT NULL,
+        nev VARCHAR(100) NOT NULL,
+        leiras VARCHAR(300) NOT NULL DEFAULT '',
+        sorrend INT NOT NULL DEFAULT 0
+    )$tail");
+    $pdo->exec("CREATE TABLE IF NOT EXISTS blog_cikkek (
+        id $id,
+        slug VARCHAR(120) NOT NULL,
+        cim VARCHAR(200) NOT NULL,
+        bevezeto TEXT NULL,
+        tartalom $hosszu NULL,
+        tema_id INT NULL,
+        kezdokep VARCHAR(40) NULL,
+        kezdokep_alt VARCHAR(200) NOT NULL DEFAULT '',
+        meta_leiras VARCHAR(300) NOT NULL DEFAULT '',
+        allapot VARCHAR(20) NOT NULL DEFAULT 'piszkozat',
+        megjelenes $dt NOT NULL,
+        olvasasi_ido INT NOT NULL DEFAULT 1,
+        letrehozva $dt NOT NULL,
+        frissitve $dt NOT NULL
+    )$tail");
+    $pdo->exec("CREATE TABLE IF NOT EXISTS blog_kepek (
+        id $id,
+        kulcs VARCHAR(40) NOT NULL,
+        cikk_id INT NULL,
+        szel INT NOT NULL,
+        mag INT NOT NULL,
+        meretek VARCHAR(60) NOT NULL,
+        webp INT NOT NULL DEFAULT 0,
+        letrehozva $dt NOT NULL
+    )$tail");
+    foreach ([
+        'CREATE UNIQUE INDEX ux_blog_slug ON blog_cikkek (slug)',
+        'CREATE INDEX ix_blog_megjelenes ON blog_cikkek (allapot, megjelenes)',
+        'CREATE UNIQUE INDEX ux_blog_tema ON blog_temak (kulcs)',
+        'CREATE UNIQUE INDEX ux_blog_kep ON blog_kepek (kulcs)',
+    ] as $sql) {
+        try { $pdo->exec($sql); } catch (PDOException $e) { /* már létezik */ }
+    }
+    // a meglévő négy témakör
+    $ins = $pdo->prepare('INSERT INTO blog_temak (kulcs, nev, leiras, sorrend) VALUES (?,?,?,?)');
+    foreach ([
+        ['belso-beke', 'Belső béke & Önismeret', 'Gondolatok a stresszoldásról, az elengedésről és a tudatosságról.', 1],
+        ['csaladi-mintak', 'Családi minták & Sorsfonalak', 'Transzgenerációs összefüggések közérthetően.', 2],
+        ['iroi-muhely', 'Írói műhelytitkok', 'Hogyan születnek a karakterek és a történetek.', 3],
+        ['ujrakezdes', 'Újrakezdés & Életerő', 'Inspiráció a változáshoz, kortól függetlenül.', 4],
+    ] as $t) {
+        try { $ins->execute($t); } catch (PDOException $e) { /* már megvan */ }
+    }
 }

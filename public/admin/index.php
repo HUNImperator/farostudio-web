@@ -136,6 +136,13 @@ if ($p === 'jelszo') {
     exit;
 }
 
+/* ---------- blog ---------- */
+if (strpos($p, 'blog') === 0) {
+    require FARO_APP . '/admin_blog.php';
+    admin_blog($p);
+    exit;
+}
+
 /* ---------- látogatottság ---------- */
 if ($p === 'statisztika') {
     require FARO_APP . '/admin_statisztika.php';
@@ -705,7 +712,7 @@ function oldal(string $cim, callable $tartalom, bool $menu = true): void
   <meta name="robots" content="noindex, nofollow">
   <title><?= h($cim) ?> – FARO admin</title>
   <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="admin.css?v=4">
+  <link rel="stylesheet" href="admin.css?v=5">
 </head>
 <body>
   <header class="top">
@@ -715,6 +722,7 @@ function oldal(string $cim, callable $tartalom, bool $menu = true): void
       <a href="./">Rendelések</a>
       <?php $fuggoDb = (int)db()->query("SELECT COUNT(*) FROM video_hozzaferesek WHERE allapot = 'fuggoben'")->fetchColumn(); ?>
       <a href="./?p=felhasznalok">Felhasználók<?= $fuggoDb ? ' <span class="nav-count">' . $fuggoDb . '</span>' : '' ?></a>
+      <a href="./?p=blog">Blog</a>
       <a href="./?p=statisztika">Statisztika</a>
       <a href="./?p=ertesitesek">Stripe-értesítések</a>
       <a href="../" target="_blank" rel="noopener">Weboldal ↗</a>
