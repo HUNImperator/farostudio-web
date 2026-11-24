@@ -105,3 +105,4 @@ require FARO_APP . '/db.php';
 require FARO_APP . '/termekek.php';
 require FARO_APP . '/rendelesek.php';
 require FARO_APP . '/levelek.php';
+require FARO_APP . '/szamlazz.php';

@@ -38,6 +38,7 @@ function db_driver(): string
 function db_migrate(PDO $pdo): void
 {
     db_migrate_webhook($pdo);
+    db_migrate_sztorno($pdo);
     // ha a táblák már megvannak, nincs teendő
     try {
         $pdo->query('SELECT 1 FROM belepesi_kiserletek LIMIT 1');
@@ -76,6 +77,7 @@ function db_migrate(PDO $pdo): void
         vegosszeg INT NOT NULL,
         fizetve_ekkor $dt NULL,
         szamlaszam VARCHAR(50) NULL,
+        sztorno_szamlaszam VARCHAR(50) NULL,
         foxpost_csomagszam VARCHAR(50) NULL,
         stripe_session VARCHAR(255) NULL,
         admin_megjegyzes $text NULL
@@ -143,4 +145,20 @@ function db_migrate_webhook(PDO $pdo): void
         kod INT NOT NULL,
         eredmeny VARCHAR(500) NOT NULL
     )$tail");
+}
+
+/** Sztornó számlaszám oszlop (a már létező táblákhoz utólag). */
+function db_migrate_sztorno(PDO $pdo): void
+{
+    try {
+        $pdo->query('SELECT sztorno_szamlaszam FROM rendelesek LIMIT 1');
+        return;
+    } catch (PDOException $e) {
+    }
+    try {
+        $pdo->query('SELECT 1 FROM rendelesek LIMIT 1');
+    } catch (PDOException $e) {
+        return; // a tábla még nincs meg – a létrehozáskor már benne lesz
+    }
+    $pdo->exec('ALTER TABLE rendelesek ADD COLUMN sztorno_szamlaszam VARCHAR(50) NULL');
 }

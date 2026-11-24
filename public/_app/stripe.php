@@ -157,5 +157,6 @@ function stripe_fizetes_feldolgoz(array $r, array $s, string $szerzo): string
     if (!level_admin_uj_rendeles($r)) {
         naplo($id, 'Az értesítő e-mail (új rendelés) küldése NEM sikerült.', 'rendszer');
     }
-    return 'Rendben: a rendelés Fizetve, e-mailek elküldve.';
+    $szla = szamlazz_szamla_kiallit(rendeles_betolt($id), 'rendszer');
+    return 'Rendben: a rendelés Fizetve, e-mailek elküldve. ' . $szla;
 }

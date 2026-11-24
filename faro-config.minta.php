@@ -51,5 +51,11 @@ return [
         'webhook_secret' => '<a webhook aláíró titka: whsec_…>',
     ],
 
-    // Később: 'szamlazz' => [...], 'foxpost' => [...]
+    // Számlázz.hu – Számla Agent (Számlázz.hu fiók → Beállítások → Számla Agent kulcsok)
+    'szamlazz' => [
+        'agent_kulcs' => '',     // üresen hagyva nem készül számla
+        'eszamla'     => true,   // true = e-számla (PDF), false = papír alapú
+    ],
+
+    // Később: 'foxpost' => [...]
 ];

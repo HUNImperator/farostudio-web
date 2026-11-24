@@ -180,7 +180,15 @@ if ($p === 'rendeles') {
         switch ($muvelet) {
             case 'fizetve':
                 rendeles_allapot($id, 'fizetve', $ki, 'fizetés beérkezett');
-                atiranyit($vissza, 'Fizetettnek jelölve.');
+                $szla = szamlazz_szamla_kiallit(rendeles_betolt($id), $ki);
+                atiranyit($vissza, 'Fizetettnek jelölve. ' . $szla);
+            case 'szamla':
+                atiranyit($vissza, szamlazz_szamla_kiallit($r, $ki));
+            case 'sztorno':
+                if (empty($_POST['megerosit_sztorno'])) {
+                    atiranyit($vissza, 'A sztornózáshoz pipáld be a megerősítést.');
+                }
+                atiranyit($vissza, szamlazz_sztorno($r, $ki));
             case 'feladva':
                 $csomag = mb_substr(trim((string)($_POST['csomagszam'] ?? '')), 0, 50);
                 if ($csomag !== '') {
@@ -278,7 +286,27 @@ if ($p === 'rendeles') {
                   <button class="btn btn--light">Lemondás</button></form>
               <?php endif; ?>
             </div>
-            <p class="muted small">A számla (Számlázz.hu) és a Foxpost-csomag automatikus létrehozása a következő fejlesztési lépésben kerül ide.</p>
+            <h3>Számla</h3>
+            <?php if ($r['szamlaszam']): ?>
+              <p>Számlaszám: <strong><?= h($r['szamlaszam']) ?></strong>
+                <?php if ($r['sztorno_szamlaszam']): ?><br>Sztornózva – sztornó számla: <strong><?= h($r['sztorno_szamlaszam']) ?></strong><?php endif; ?></p>
+              <?php if (!$r['sztorno_szamlaszam']): ?>
+              <details class="more">
+                <summary>Számla sztornózása</summary>
+                <form method="post" class="inline-form"><?= csrf_mezo() ?><input type="hidden" name="muvelet" value="sztorno">
+                  <label class="small"><input type="checkbox" name="megerosit_sztorno" value="1" required> Igen, sztornózom a(z) <?= h($r['szamlaszam']) ?> számlát (a sztornó számlát a Számlázz.hu elküldi a vevőnek).</label>
+                  <button class="btn btn--light">Sztornó</button></form>
+              </details>
+              <?php endif; ?>
+            <?php elseif (!szamlazz_beallitva()): ?>
+              <p class="muted small">A Számlázz.hu nincs beállítva (faro-config.php → szamlazz → agent_kulcs), ezért számla nem készül.</p>
+            <?php elseif ($r['fizetve_ekkor'] && $r['allapot'] !== 'lemondva'): ?>
+              <p class="muted small">Még nincs számla (ha az automatikus kiállítás nem sikerült, az oka a naplóban látszik).</p>
+              <form method="post"><?= csrf_mezo() ?><input type="hidden" name="muvelet" value="szamla">
+                <button class="btn">Számla kiállítása</button></form>
+            <?php else: ?>
+              <p class="muted small">A számla automatikusan elkészül, amikor a rendelés Fizetve lesz, és a Számlázz.hu e-mailben elküldi a vevőnek.</p>
+            <?php endif; ?>
             <details class="more">
               <summary>Állapot kézi módosítása</summary>
               <form method="post" class="inline-form"><?= csrf_mezo() ?><input type="hidden" name="muvelet" value="allapot">

@@ -26,3 +26,5 @@ Oswald és Open Sans saját tárhelyről (`public/assets/fonts`, OFL licenc), la
 - Adatbázis: MySQL (`whiteman_faro_rendeles`); a táblákat az első kérés automatikusan létrehozza.
 - Követelmény: PHP 7.3 vagy újabb, PDO MySQL.
 - Termékadatok és szállítási díj: `public/assets/data/termekek.json` – az árakat a szerver is innen veszi.
+- Bankkártya: Stripe Checkout (`_app/stripe.php`), a fizetésről a `public/api/stripe-webhook.php` értesít.
+- Számla: Számlázz.hu Számla Agent (`_app/szamlazz.php`). Amikor a rendelés Fizetve lesz (Stripe-webhook, kézi Stripe-lekérdezés vagy az admin „Fizetve” gombja), automatikusan elkészül az e-számla (alanyi adómentes, ÁFA-kulcs: AAM), és a Számlázz.hu e-mailben elküldi a vevőnek. Az adminban kézzel újra lehet próbálni, és sztornózni lehet. Beállítás: `faro-config.php` → `szamlazz` → `agent_kulcs`.
