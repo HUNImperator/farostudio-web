@@ -84,3 +84,24 @@ textarea { min-height: 90px; margin-bottom: 10px; }
   .table--list tr { display: block; border-bottom: 1px solid var(--line); padding: 8px 0; }
   .table--list td { display: inline-block; border: 0; padding: 4px 10px; }
 }
+
+/* videós hozzáférések */
+.nav-count, .count { display: inline-block; min-width: 20px; padding: 1px 6px; margin-left: 4px; background: #c9a96b; color: #111; font-size: 12px; text-align: center; border-radius: 10px; }
+.pending { border: 1px solid var(--line); border-left: 3px solid #c9a96b; padding: 14px 16px; margin: 0 0 14px; background: #fcfaf7; }
+.pending__head { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; margin-bottom: 8px; }
+.pending textarea { min-height: 60px; }
+.proofs { display: flex; flex-wrap: wrap; gap: 12px; margin: 10px 0 14px; }
+.proof { display: flex; flex-direction: column; gap: 4px; width: 160px; text-decoration: none; color: inherit; }
+.proof img { width: 160px; height: 120px; object-fit: cover; border: 1px solid var(--line); background: #fff; }
+.proof__pdf { display: flex; align-items: center; justify-content: center; width: 160px; height: 120px; border: 1px solid var(--line); background: #fff; font-family: "Oswald", sans-serif; letter-spacing: .1em; }
+.proof span.small { word-break: break-all; }
+.err { color: var(--err); }
+.user { border-top: 1px solid var(--line); padding: 16px 0 6px; }
+.user__head { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; margin-bottom: 8px; }
+.table--compact td, .table--compact th { padding: 7px 10px; font-size: 14px; }
+.table--compact .inline-form select { min-width: 0; width: auto; }
+.badge--v-fuggoben { background: #fbe7c6; }
+.badge--v-aktiv { background: #d9efd9; }
+.badge--v-lejart { background: #eee; color: var(--muted); }
+.badge--v-elutasitva { background: #f2d6d1; color: var(--err); }
+.btn[disabled] { opacity: .45; cursor: not-allowed; }

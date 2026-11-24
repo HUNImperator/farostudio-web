@@ -164,6 +164,166 @@ if ($p === 'ertesitesek') {
     exit;
 }
 
+/* ---------- feltöltött igazolás megnyitása ---------- */
+if ($p === 'feltoltes') {
+    $st = db()->prepare('SELECT * FROM rendeles_feltoltesek WHERE id = ?');
+    $st->execute([(int)($_GET['id'] ?? 0)]);
+    $f = $st->fetch();
+    $ut = $f ? feltoltes_utvonal($f) : '';
+    if (!$f || !is_file($ut)) {
+        http_response_code(404);
+        exit('A fájl nem található.');
+    }
+    header('Content-Type: ' . $f['mime']);
+    header('Content-Length: ' . filesize($ut));
+    header('Content-Disposition: inline; filename="' . rawurlencode($f['eredeti_nev']) . '"');
+    header('Cache-Control: private, no-store');
+    header('X-Content-Type-Options: nosniff');
+    header("Content-Security-Policy: default-src 'none'; img-src 'self'; style-src 'unsafe-inline'; plugin-types application/pdf");
+    readfile($ut);
+    exit;
+}
+
+/* ---------- videós felhasználók és hozzáférések ---------- */
+if ($p === 'felhasznalok') {
+    $ki = $admin['felhasznalo'];
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        csrf_ellenoriz();
+        $hid = (int)($_POST['hid'] ?? 0);
+        $vissza = './?p=felhasznalok' . (isset($_POST['vissza_rendeles']) ? '' : '');
+        if (!empty($_POST['vissza_rendeles'])) {
+            $vissza = './?p=rendeles&id=' . (int)$_POST['vissza_rendeles'];
+        }
+        switch ((string)($_POST['muvelet'] ?? '')) {
+            case 'jovahagy':
+                atiranyit($vissza, video_jovahagy($hid, $ki));
+            case 'elutasit':
+                if (empty($_POST['megerosit_elutasit'])) {
+                    atiranyit($vissza, 'Az elutasításhoz pipáld be a megerősítést.');
+                }
+                atiranyit($vissza, video_elutasit($hid, mb_substr(trim((string)($_POST['indok'] ?? '')), 0, 500), $ki));
+            case 'hosszabbit':
+                atiranyit($vissza, video_kezi_hosszabbitas($hid, (int)($_POST['nap'] ?? 0), $ki));
+            case 'uj_jelszo':
+                $f = video_felhasznalo((int)($_POST['fid'] ?? 0));
+                if (!$f) atiranyit($vissza, 'Nincs ilyen felhasználó.');
+                $jelszo = video_uj_jelszo((int)$f['id']);
+                $ok = level_video_uj_jelszo($f, $jelszo);
+                atiranyit($vissza, $ok ? 'Új jelszót küldtem a(z) ' . $f['email'] . ' címre.' : 'Az új jelszó beállítva, de a levél NEM ment el.');
+        }
+        atiranyit($vissza);
+    }
+    $fuggok = db()->query("SELECT h.*, r.rendelesszam, r.vevo_nev, r.fizetve_ekkor, r.allapot AS r_allapot, r.fizetes, r.elvegzett_modulok
+        FROM video_hozzaferesek h JOIN rendelesek r ON r.id = h.rendeles_id WHERE h.allapot = 'fuggoben' ORDER BY h.id")->fetchAll();
+    $kereses = trim((string)($_GET['q'] ?? ''));
+    if ($kereses !== '') {
+        $st = db()->prepare('SELECT * FROM video_felhasznalok WHERE email LIKE ? OR nev LIKE ? ORDER BY id DESC');
+        $st->execute(['%' . $kereses . '%', '%' . $kereses . '%']);
+    } else {
+        $st = db()->query('SELECT * FROM video_felhasznalok ORDER BY id DESC LIMIT 300');
+    }
+    $felhasznalok = $st->fetchAll();
+    oldal('Felhasználók', function () use ($fuggok, $felhasznalok, $kereses, $uzenet) { ?>
+        <?php if ($uzenet): ?><p class="alert"><?= h($uzenet) ?></p><?php endif; ?>
+        <h1>Felhasználók – videós hozzáférések</h1>
+
+        <section class="card">
+          <h2>Jóváhagyásra vár <span class="count"><?= count($fuggok) ?></span></h2>
+          <?php if (!$fuggok): ?>
+            <p class="muted">Nincs jóváhagyásra váró videós rendelés.</p>
+          <?php endif; ?>
+          <?php foreach ($fuggok as $h): $s = termek($h['sorozat']); ?>
+            <?= admin_fuggo_doboz($h, $s) ?>
+          <?php endforeach; ?>
+        </section>
+
+        <section class="card">
+          <div class="list-head">
+            <h2 style="margin:0">Videós felhasználók</h2>
+            <form method="get" class="search"><input type="hidden" name="p" value="felhasznalok">
+              <input name="q" value="<?= h($kereses) ?>" placeholder="Keresés: név, e-mail" aria-label="Keresés">
+              <button class="btn btn--light">Keresés</button></form>
+          </div>
+          <?php if (!$felhasznalok): ?><p class="muted">Még nincs videós felhasználó – az első jóváhagyáskor jön létre.</p><?php endif; ?>
+          <?php foreach ($felhasznalok as $f): $hk = video_hozzaferesek_email($f['email']); ?>
+            <div class="user">
+              <div class="user__head">
+                <div><strong><?= h($f['nev']) ?></strong> · <a href="mailto:<?= h($f['email']) ?>"><?= h($f['email']) ?></a><br>
+                  <span class="muted small">Létrehozva: <?= h(datum($f['letrehozva'])) ?> · utolsó belépés: <?= $f['utolso_belepes'] ? h(datum($f['utolso_belepes'])) : 'még nem lépett be' ?></span></div>
+                <form method="post" onsubmit="return confirm('Új jelszót generálok és elküldöm e-mailben. Mehet?')"><?= csrf_mezo() ?>
+                  <input type="hidden" name="muvelet" value="uj_jelszo"><input type="hidden" name="fid" value="<?= (int)$f['id'] ?>">
+                  <button class="btn btn--light">Új jelszó küldése</button></form>
+              </div>
+              <table class="table table--compact">
+                <thead><tr><th>Sorozat</th><th>Állapot</th><th>Kezdete</th><th>Lejárat</th><th>Rendelés</th><th></th></tr></thead>
+                <tbody>
+                <?php foreach ($hk as $h): $a = video_allapot($h); $s = termek($h['sorozat']); ?>
+                  <tr>
+                    <td><?= h($s['rovidCim'] ?? $h['sorozat']) ?></td>
+                    <td><span class="badge badge--v-<?= h($a) ?>"><?= h(VIDEO_ALLAPOTOK[$a] ?? $a) ?></span>
+                      <?php if ($a === 'aktiv'): ?><br><span class="muted small">még <?= video_hatra_nap($h) ?> nap</span><?php endif; ?></td>
+                    <td><?= h(video_datum($h['kezdete'])) ?></td>
+                    <td><?= h(video_datum($h['lejarat'])) ?></td>
+                    <td><?php $rs = db()->prepare('SELECT rendelesszam FROM rendelesek WHERE id = ?'); $rs->execute([$h['rendeles_id']]); $rsz = $rs->fetchColumn(); ?>
+                      <?= $rsz ? '<a href="./?p=rendeles&amp;id=' . (int)$h['rendeles_id'] . '">' . h($rsz) . '</a>' : '<span class="muted">törölve</span>' ?></td>
+                    <td><?php if (in_array($a, ['aktiv', 'lejart'], true)): ?>
+                      <form method="post" class="inline-form"><?= csrf_mezo() ?><input type="hidden" name="muvelet" value="hosszabbit"><input type="hidden" name="hid" value="<?= (int)$h['id'] ?>">
+                        <select name="nap" aria-label="Hosszabbítás"><option value="7">+7 nap</option><option value="30">+30 nap</option><option value="90" selected>+90 nap</option></select>
+                        <button class="btn btn--light">Kézi hosszabbítás</button></form>
+                    <?php elseif ($a === 'elutasitva' && $h['dontes_megj']): ?><span class="muted small">Indok: <?= h($h['dontes_megj']) ?></span><?php endif; ?></td>
+                  </tr>
+                <?php endforeach; ?>
+                </tbody>
+              </table>
+            </div>
+          <?php endforeach; ?>
+        </section>
+    <?php });
+    exit;
+}
+
+/** Egy jóváhagyásra váró videós hozzáférés doboza (Felhasználók és a rendelés oldala). */
+function admin_fuggo_doboz(array $h, ?array $s, ?int $visszaRendeles = null): string
+{
+    $r = rendeles_betolt((int)$h['rendeles_id']);
+    $fizetve = !empty($r['fizetve_ekkor']);
+    ob_start(); ?>
+    <div class="pending">
+      <div class="pending__head">
+        <div>
+          <strong><?= h($s['rovidCim'] ?? $h['sorozat']) ?></strong> – <?= h($s['alcim'] ?? '') ?><br>
+          <?= h($r['vevo_nev']) ?> · <a href="mailto:<?= h($h['email']) ?>"><?= h($h['email']) ?></a> ·
+          <a href="./?p=rendeles&amp;id=<?= (int)$r['id'] ?>"><?= h($r['rendelesszam']) ?></a> · <?= h(datum($h['letrehozva'])) ?>
+        </div>
+        <span class="badge badge--<?= $fizetve ? 'fizetve' : 'fizetesre_var' ?>"><?= $fizetve ? 'Fizetve' : 'Fizetésre vár' ?></span>
+      </div>
+      <p class="small">Elvégzett modulok a vevő szerint: <strong><?= h(video_modulok_szoveg($r['elvegzett_modulok'] ?? '')) ?></strong>
+        <?php if (!in_array((string)($s['modul'] ?? ''), explode(',', (string)$r['elvegzett_modulok']), true)): ?> <span class="err">– a(z) <?= h($s['romai'] ?? '') ?> modul nincs bejelölve!</span><?php endif; ?></p>
+      <div class="proofs">
+        <?php foreach (feltoltesek((int)$r['id']) as $f): ?>
+          <a class="proof" href="./?p=feltoltes&amp;id=<?= (int)$f['id'] ?>" target="_blank" rel="noopener">
+            <?php if (strpos($f['mime'], 'image/') === 0): ?><img src="./?p=feltoltes&amp;id=<?= (int)$f['id'] ?>" alt="" loading="lazy"><?php else: ?><span class="proof__pdf">PDF</span><?php endif; ?>
+            <span class="small"><?= h($f['eredeti_nev']) ?></span></a>
+        <?php endforeach; ?>
+        <?php if (!feltoltesek((int)$r['id'])): ?><p class="muted small">Nincs feltöltött igazolás.</p><?php endif; ?>
+      </div>
+      <div class="actions">
+        <form method="post" action="./?p=felhasznalok"><?= csrf_mezo() ?><input type="hidden" name="muvelet" value="jovahagy"><input type="hidden" name="hid" value="<?= (int)$h['id'] ?>">
+          <?php if ($visszaRendeles): ?><input type="hidden" name="vissza_rendeles" value="<?= $visszaRendeles ?>"><?php endif; ?>
+          <button class="btn"<?= $fizetve ? '' : ' disabled title="Előbb a rendelésnek fizetettnek kell lennie."' ?>>Jóváhagyom – hozzáférés megnyitása</button></form>
+        <details class="more">
+          <summary>Elutasítás</summary>
+          <form method="post" action="./?p=felhasznalok"><?= csrf_mezo() ?><input type="hidden" name="muvelet" value="elutasit"><input type="hidden" name="hid" value="<?= (int)$h['id'] ?>">
+            <?php if ($visszaRendeles): ?><input type="hidden" name="vissza_rendeles" value="<?= $visszaRendeles ?>"><?php endif; ?>
+            <textarea name="indok" rows="2" placeholder="Indoklás a vevőnek (bekerül a levélbe), pl. „A feltöltött oklevél a II. modulról szól.”"></textarea>
+            <label class="small"><input type="checkbox" name="megerosit_elutasit" value="1" required> Igen, elutasítom. <?= $fizetve ? ($r['fizetes'] === 'kartya' ? 'A ' . h(ft((int)($s['ar'] ?? 0))) . ' a Stripe-on automatikusan visszatérül.' : 'Az összeget kézzel kell visszautalni.') : '' ?></label>
+            <button class="btn btn--danger">Elutasítás</button></form>
+        </details>
+      </div>
+    </div>
+    <?php return (string)ob_get_clean();
+}
+
 /* ---------- egy rendelés ---------- */
 if ($p === 'rendeles') {
     $id = (int)($_GET['id'] ?? 0);
@@ -181,7 +341,8 @@ if ($p === 'rendeles') {
             case 'fizetve':
                 rendeles_allapot($id, 'fizetve', $ki, 'fizetés beérkezett');
                 $szla = szamlazz_szamla_kiallit(rendeles_betolt($id), $ki);
-                atiranyit($vissza, 'Fizetettnek jelölve. ' . $szla);
+                $video = video_fizetve(rendeles_betolt($id), $ki);
+                atiranyit($vissza, trim('Fizetettnek jelölve. ' . $szla . ' ' . $video));
             case 'szamla':
                 atiranyit($vissza, szamlazz_szamla_kiallit($r, $ki));
             case 'sztorno':
@@ -248,7 +409,7 @@ if ($p === 'rendeles') {
         <div class="order-head">
           <div>
             <h1><?= h($r['rendelesszam']) ?></h1>
-            <p class="muted"><?= h(datum($r['letrehozva'])) ?> · <?= h(FIZETESI_MODOK[$r['fizetes']] ?? $r['fizetes']) ?> · <?= $db ?> kötet
+            <p class="muted"><?= h(datum($r['letrehozva'])) ?> · <?= h(FIZETESI_MODOK[$r['fizetes']] ?? $r['fizetes']) ?> · <?= count($r['tetelek']) ?> tétel
               <?php if ($r['fizetve_ekkor']): ?> · fizetve: <?= h(datum($r['fizetve_ekkor'])) ?><?php endif; ?></p>
             <?php if ($r['stripe_session']): ?><p class="muted small">Stripe fizetési azonosító: <?= h($r['stripe_session']) ?></p><?php endif; ?>
           </div>
@@ -324,27 +485,45 @@ if ($p === 'rendeles') {
             <h3>Számlázás</h3>
             <p><?= h($r['szamla_nev']) ?><br><?= h($r['szamla_irsz'] . ' ' . $r['szamla_telepules']) ?><br><?= h($r['szamla_cim']) ?>
               <?php if ($r['szamla_adoszam']): ?><br>Adószám: <?= h($r['szamla_adoszam']) ?><?php endif; ?></p>
+            <?php if ($r['apt_nev'] !== ''): ?>
             <h3>Foxpost-automata</h3>
             <p><?= h($r['apt_nev']) ?><br><?= h($r['apt_cim']) ?><br><span class="muted small">Azonosító: <?= h($r['apt_id']) ?></span>
               <?php if ($r['foxpost_csomagszam']): ?><br>Csomagszám: <strong><?= h($r['foxpost_csomagszam']) ?></strong><?php endif; ?></p>
+            <?php endif; ?>
           </section>
         </div>
 
         <section class="card">
-          <h2>Könyvek és dedikálás</h2>
+          <h2>Tételek</h2>
           <table class="table">
-            <thead><tr><th>Könyv</th><th>Dedikálás</th><th class="num">Db</th><th class="num">Egységár</th><th class="num">Összeg</th></tr></thead>
+            <thead><tr><th>Tétel</th><th>Dedikálás</th><th class="num">Db</th><th class="num">Egységár</th><th class="num">Összeg</th></tr></thead>
             <tbody>
             <?php foreach ($r['tetelek'] as $t): ?>
               <tr><td><?= h($t['cim']) ?></td><td class="dedik"><?= $t['dedikalas'] ? nl2br(h($t['dedikalas'])) : '<span class="muted">—</span>' ?></td>
                 <td class="num"><?= (int)$t['db'] ?></td><td class="num"><?= h(ft((int)$t['egysegar'])) ?></td><td class="num"><?= h(ft($t['egysegar'] * $t['db'])) ?></td></tr>
             <?php endforeach; ?>
-              <tr><td colspan="4">Foxpost csomagautomata</td><td class="num"><?= h(ft((int)$r['szallitas'])) ?></td></tr>
+              <?php if ((int)$r['szallitas'] > 0): ?><tr><td colspan="4">Foxpost csomagautomata</td><td class="num"><?= h(ft((int)$r['szallitas'])) ?></td></tr><?php endif; ?>
               <tr class="total"><td colspan="4">Összesen</td><td class="num"><?= h(ft((int)$r['vegosszeg'])) ?></td></tr>
             </tbody>
           </table>
           <?php if ($r['megjegyzes']): ?><h3>A vevő megjegyzése</h3><p class="note"><?= nl2br(h($r['megjegyzes'])) ?></p><?php endif; ?>
         </section>
+
+        <?php $vh = video_rendeles_hozzaferesek((int)$r['id']); if ($vh): ?>
+        <section class="card">
+          <h2>Videós hozzáférés</h2>
+          <?php foreach ($vh as $h): $s = termek($h['sorozat']); $a = video_allapot($h); ?>
+            <?php if ($a === 'fuggoben'): ?>
+              <?= admin_fuggo_doboz($h, $s, (int)$r['id']) ?>
+            <?php else: ?>
+              <p><strong><?= h($s['rovidCim'] ?? $h['sorozat']) ?></strong> – <span class="badge badge--v-<?= h($a) ?>"><?= h(VIDEO_ALLAPOTOK[$a] ?? $a) ?></span>
+                <?php if ($h['lejarat']): ?> · lejárat: <?= h(video_datum($h['lejarat'])) ?><?php endif; ?>
+                <?php if ($a === 'elutasitva' && $h['dontes_megj']): ?><br><span class="muted small">Indok: <?= h($h['dontes_megj']) ?></span><?php endif; ?></p>
+            <?php endif; ?>
+          <?php endforeach; ?>
+          <p class="small"><a href="./?p=felhasznalok">Összes videós felhasználó →</a></p>
+        </section>
+        <?php endif; ?>
 
         <div class="grid">
           <section class="card">
@@ -420,7 +599,7 @@ oldal('Rendelések', function () use ($lista, $szuro, $kereses, $szamok, $aktivD
       <p class="empty">Nincs megjeleníthető rendelés.</p>
     <?php else: ?>
     <table class="table table--list">
-      <thead><tr><th>Rendelésszám</th><th>Dátum</th><th>Vevő</th><th class="num">Kötet</th><th class="num">Összeg</th><th>Fizetés</th><th>Állapot</th></tr></thead>
+      <thead><tr><th>Rendelésszám</th><th>Dátum</th><th>Vevő</th><th class="num">Tétel</th><th class="num">Összeg</th><th>Fizetés</th><th>Állapot</th></tr></thead>
       <tbody>
       <?php foreach ($lista as $r): ?>
         <tr onclick="location.href='./?p=rendeles&amp;id=<?= (int)$r['id'] ?>'">
@@ -458,7 +637,7 @@ function oldal(string $cim, callable $tartalom, bool $menu = true): void
   <meta name="robots" content="noindex, nofollow">
   <title><?= h($cim) ?> – FARO admin</title>
   <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="admin.css?v=1">
+  <link rel="stylesheet" href="admin.css?v=2">
 </head>
 <body>
   <header class="top">
@@ -466,6 +645,8 @@ function oldal(string $cim, callable $tartalom, bool $menu = true): void
     <?php if ($menu && !empty($admin)): ?>
     <nav>
       <a href="./">Rendelések</a>
+      <?php $fuggoDb = (int)db()->query("SELECT COUNT(*) FROM video_hozzaferesek WHERE allapot = 'fuggoben'")->fetchColumn(); ?>
+      <a href="./?p=felhasznalok">Felhasználók<?= $fuggoDb ? ' <span class="nav-count">' . $fuggoDb . '</span>' : '' ?></a>
       <a href="./?p=ertesitesek">Stripe-értesítések</a>
       <a href="../" target="_blank" rel="noopener">Weboldal ↗</a>
       <a href="./?p=jelszo">Jelszócsere</a>

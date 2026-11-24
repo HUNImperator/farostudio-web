@@ -209,9 +209,20 @@ function video_modulok_szoveg(string $lista): string
     return $o ? implode(', ', $o) . ' modul' : '–';
 }
 
+const HONAPOK = ['', 'január', 'február', 'március', 'április', 'május', 'június', 'július', 'augusztus', 'szeptember', 'október', 'november', 'december'];
+
+/** „2027. február 22.” */
 function video_datum(?string $d): string
 {
-    return $d ? date('Y. m. d.', strtotime($d)) : '–';
+    if (!$d) return '–';
+    $t = strtotime($d);
+    return date('Y', $t) . '. ' . HONAPOK[(int)date('n', $t)] . ' ' . (int)date('j', $t) . '.';
+}
+
+/** „2027. február 22-ig” */
+function video_datum_ig(?string $d): string
+{
+    return rtrim(video_datum($d), '.') . '-ig';
 }
 
 /* =========================================================
@@ -297,9 +308,9 @@ function video_fizetve(array $r, string $szerzo): string
         $alap = max(time(), $h['lejarat'] ? strtotime($h['lejarat']) : time());
         $uj = date('Y-m-d H:i:s', $alap + video_nap() * 86400);
         db()->prepare("UPDATE video_hozzaferesek SET allapot = 'aktiv', lejarat = ?, figyelmeztetve = 0 WHERE id = ?")->execute([$uj, $h['id']]);
-        naplo($id, $jel . ' – új lejárat: ' . video_datum($uj) . '.', $szerzo);
+        naplo($id, $jel . ' – új lejárat: ' . video_datum($uj), $szerzo);
         level_video_hosszabbitva($r, $termek ? termek($sorozat) : ['rovidCim' => $sorozat], $uj);
-        $uzenet[] = 'Hosszabbítás: ' . (termek($sorozat)['rovidCim'] ?? $sorozat) . ' → ' . video_datum($uj) . '.';
+        $uzenet[] = 'Hosszabbítás: ' . (termek($sorozat)['rovidCim'] ?? $sorozat) . ' → ' . video_datum($uj);
     }
     if (rendeles_van($r, 'video')) {
         $uzenet[] = 'A videósorozat(ok) jóváhagyásra várnak (Felhasználók).';
@@ -354,10 +365,10 @@ function video_jovahagy(int $hid, string $szerzo): string
         ->execute([$f['id'], $kezd, $lejar, $kezd, $hid]);
     $sorozat = termek($h['sorozat']);
     $ok = level_video_jovahagyva($r, $sorozat, $lejar, $jelszo);
-    naplo((int)$r['id'], 'Videós hozzáférés jóváhagyva: ' . ($sorozat['rovidCim'] ?? $h['sorozat']) . ', lejárat: ' . video_datum($lejar) . '.'
+    naplo((int)$r['id'], 'Videós hozzáférés jóváhagyva: ' . ($sorozat['rovidCim'] ?? $h['sorozat']) . ', lejárat: ' . video_datum($lejar)
         . ($jelszo ? ' Új belépés létrehozva.' : '') . ($ok ? ' Levél elküldve.' : ' A levél küldése NEM sikerült!'), $szerzo);
     rendeles_teljesites_ellenoriz((int)$r['id'], $szerzo);
-    return 'Jóváhagyva: ' . ($sorozat['rovidCim'] ?? $h['sorozat']) . ' (' . $h['email'] . '), lejárat: ' . video_datum($lejar) . '.'
+    return 'Jóváhagyva: ' . ($sorozat['rovidCim'] ?? $h['sorozat']) . ' (' . $h['email'] . '), lejárat: ' . video_datum($lejar)
         . ($ok ? ' A belépési adatokat e-mailben elküldtem.' : ' FIGYELEM: a levél nem ment el – küldj új jelszót a Felhasználóknál.');
 }
 
@@ -432,8 +443,8 @@ function video_kezi_hosszabbitas(int $hid, int $nap, string $szerzo): string
     $alap = max(time(), $h['lejarat'] ? strtotime($h['lejarat']) : time());
     $uj = date('Y-m-d H:i:s', $alap + $nap * 86400);
     db()->prepare("UPDATE video_hozzaferesek SET allapot = 'aktiv', lejarat = ?, figyelmeztetve = 0 WHERE id = ?")->execute([$uj, $hid]);
-    naplo((int)$h['rendeles_id'], 'Kézi hosszabbítás: ' . $h['sorozat'] . ' +' . $nap . ' nap → ' . video_datum($uj) . '.', $szerzo);
-    return 'Meghosszabbítva: új lejárat ' . video_datum($uj) . '.';
+    naplo((int)$h['rendeles_id'], 'Kézi hosszabbítás: ' . $h['sorozat'] . ' +' . $nap . ' nap → ' . video_datum($uj), $szerzo);
+    return 'Meghosszabbítva: új lejárat ' . video_datum($uj);
 }
 
 /* =========================================================
@@ -450,8 +461,8 @@ function level_video_jovahagyva(array $r, ?array $sorozat, string $lejarat, ?str
     $url = video_url();
     $html = '<p>Kedves ' . h($r['vevo_nev']) . '!</p>'
         . '<p>Ellenőriztem az igazolásodat, és megnyitottam számodra a(z) <strong>' . h($nev) . ' – ' . h($sorozat['alcim'] ?? '') . '</strong> videósorozatot. '
-        . 'A videókat <strong>' . h(video_datum($lejarat)) . '</strong>-ig nézheted.</p>';
-    $szoveg = "Kedves {$r['vevo_nev']}!\n\nEllenőriztem az igazolásodat, és megnyitottam számodra a(z) $nev videósorozatot. A videókat " . video_datum($lejarat) . "-ig nézheted.\n\n";
+        . 'A videókat <strong>' . h(video_datum_ig($lejarat)) . '</strong> nézheted.</p>';
+    $szoveg = "Kedves {$r['vevo_nev']}!\n\nEllenőriztem az igazolásodat, és megnyitottam számodra a(z) $nev videósorozatot. A videókat " . video_datum_ig($lejarat) . " nézheted.\n\n";
     if ($jelszo) {
         $html .= '<div style="background:#f0e5db;padding:16px 18px;margin:0 0 18px"><p style="margin:0 0 8px"><strong>Belépési adataid</strong></p>'
             . '<table role="presentation" cellpadding="0" cellspacing="0" style="font-size:15px">'
@@ -487,8 +498,8 @@ function level_video_hosszabbitva(array $r, ?array $sorozat, string $lejarat): b
 {
     $nev = $sorozat['rovidCim'] ?? 'videósorozat';
     $html = '<p>Kedves ' . h($r['vevo_nev']) . '!</p><p>Köszönöm! A(z) <strong>' . h($nev) . '</strong> videósorozathoz a hozzáférésedet meghosszabbítottam, mostantól <strong>'
-        . h(video_datum($lejarat)) . '</strong>-ig nézheted.</p>' . level_gomb(video_url(), 'Belépés a videókhoz') . '<p>Szeretettel:<br>Csengeri Zsuzsa</p>';
-    $szoveg = "Kedves {$r['vevo_nev']}!\n\nKöszönöm! A(z) $nev videósorozathoz a hozzáférésedet meghosszabbítottam, mostantól " . video_datum($lejarat) . "-ig nézheted.\n\n" . video_url() . "\n\nSzeretettel:\nCsengeri Zsuzsa\n";
+        . h(video_datum_ig($lejarat)) . '</strong> nézheted.</p>' . level_gomb(video_url(), 'Belépés a videókhoz') . '<p>Szeretettel:<br>Csengeri Zsuzsa</p>';
+    $szoveg = "Kedves {$r['vevo_nev']}!\n\nKöszönöm! A(z) $nev videósorozathoz a hozzáférésedet meghosszabbítottam, mostantól " . video_datum_ig($lejarat) . " nézheted.\n\n" . video_url() . "\n\nSzeretettel:\nCsengeri Zsuzsa\n";
     return level_kuld($r['vevo_email'], $r['vevo_nev'], 'Meghosszabbítva: ' . $nev, level_keret('Meghosszabbítottam a hozzáférésed', $html), $szoveg);
 }
 
@@ -497,11 +508,11 @@ function level_video_figyelmeztetes(array $f, array $h): bool
     $s = termek($h['sorozat']);
     $nev = $s['rovidCim'] ?? $h['sorozat'];
     $nap = video_hatra_nap($h);
-    $html = '<p>Kedves ' . h($f['nev']) . '!</p><p>A(z) <strong>' . h($nev) . '</strong> videósorozathoz a hozzáférésed <strong>' . $nap . ' nap múlva, '
-        . h(video_datum($h['lejarat'])) . '</strong>-án lejár.</p><p>Ha szeretnéd tovább nézni, a videós oldalon a „Meghosszabbítom” gombbal további '
+    $html = '<p>Kedves ' . h($f['nev']) . '!</p><p>A(z) <strong>' . h($nev) . '</strong> videósorozathoz a hozzáférésed <strong>' . $nap . ' nap múlva lejár</strong> (' 
+        . h(video_datum($h['lejarat'])) . ').</p><p>Ha szeretnéd tovább nézni, a videós oldalon a „Meghosszabbítom” gombbal további '
         . video_nap() . ' nappal meghosszabbíthatod, ugyanazon az áron (' . h(ft((int)($s['ar'] ?? 0))) . ').</p>'
         . level_gomb(video_url(), 'Belépés és hosszabbítás') . '<p>Szeretettel:<br>Csengeri Zsuzsa</p>';
-    $szoveg = "Kedves {$f['nev']}!\n\nA(z) $nev videósorozathoz a hozzáférésed $nap nap múlva, " . video_datum($h['lejarat']) . "-án lejár.\n\n"
+    $szoveg = "Kedves {$f['nev']}!\n\nA(z) $nev videósorozathoz a hozzáférésed $nap nap múlva lejár (" . video_datum($h['lejarat']) . ").\n\n"
         . 'Ha szeretnéd tovább nézni, a videós oldalon a „Meghosszabbítom” gombbal további ' . video_nap() . ' nappal meghosszabbíthatod, ugyanazon az áron (' . ft((int)($s['ar'] ?? 0)) . ").\n\n"
         . video_url() . "\n\nSzeretettel:\nCsengeri Zsuzsa\n";
     return level_kuld($f['email'], $f['nev'], 'Hamarosan lejár: ' . $nev, level_keret('Hamarosan lejár a hozzáférésed', $html), $szoveg);
