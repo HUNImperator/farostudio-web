@@ -2483,3 +2483,38 @@ body[data-urlap-oldal] .tile-nav { display: none; }
   .legal__scroll--stack td + td::before { content: attr(data-label) ": "; color: var(--muted); font-size: 13px; text-transform: uppercase; letter-spacing: .03em; }
   .legal__data th[scope="row"] { width: 38%; }
 }
+
+/* Megrendelésem: a személyiség-elemző program kis jele */
+.mini-video--program { background: var(--beige-dark); color: var(--ink); }
+.mini-video--program .mini-video__brand, .mini-video--program .mini-video__plus { color: var(--ink); }
+
+/* ---------- YouTube-videók kattintásra (személyiség-elemző módszer) ---------- */
+.yt-szekcio { padding: clamp(64px, 8vw, 100px) 0; background: var(--cream); }
+.yt-kiemelt { max-width: 900px; margin-top: 24px; }
+.yt-racs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px 24px; margin-top: 24px; }
+.yt-kartya { margin: 0; }
+.yt-kartya figcaption { margin-top: 10px; font-size: 15px; color: var(--text); }
+.yt {
+  position: relative; display: block; width: 100%; aspect-ratio: 16 / 9; padding: 0; border: 0;
+  background: #1d1d1d; cursor: pointer; overflow: hidden;
+}
+.yt img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform .4s ease, opacity .3s ease; }
+.yt:hover img, .yt:focus-visible img { transform: scale(1.03); opacity: .9; }
+.yt:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+.yt__play {
+  position: absolute; left: 50%; top: 50%; width: 68px; height: 68px; margin: -34px 0 0 -34px;
+  border-radius: 50%; background: rgba(17, 17, 17, .78); transition: background-color .2s ease, transform .2s ease;
+}
+.yt__play::after {
+  content: ""; position: absolute; left: 27px; top: 22px;
+  border-style: solid; border-width: 12px 0 12px 19px; border-color: transparent transparent transparent #fff;
+}
+.yt:hover .yt__play, .yt:focus-visible .yt__play { background: #111; transform: scale(1.06); }
+.yt--nagy .yt__play { width: 84px; height: 84px; margin: -42px 0 0 -42px; }
+.yt--nagy .yt__play::after { left: 33px; top: 27px; border-width: 15px 0 15px 23px; }
+.yt__ido { position: absolute; right: 8px; bottom: 8px; padding: 2px 7px; background: rgba(17, 17, 17, .8); color: #fff; font-size: 12px; font-variant-numeric: tabular-nums; }
+.yt.is-playing { cursor: default; }
+.yt iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.yt-megj { margin: 28px 0 0; font-size: 14px; color: var(--muted); }
+@media (max-width: 900px) { .yt-racs { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .yt-racs { grid-template-columns: 1fr; } }

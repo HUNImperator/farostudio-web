@@ -151,7 +151,7 @@ function szamlazz_szamla_xml(array $r): string
     foreach ($r['tetelek'] as $t) {
         $nev = ($t['tipus'] ?? 'konyv') === 'konyv'
             ? 'Csengeri Zsuzsa: ' . $t['cim'] . (trim((string)($t['dedikalas'] ?? '')) !== '' ? ' (dedikált példány)' : '')
-            : $t['cim'] . ' – online videós hozzáférés';
+            : (($t['tipus'] ?? '') === 'program' ? $t['cim'] . ' – ' . tetel_leiras($t) : $t['cim'] . ' – online videós hozzáférés');
         $sorok[] = [$nev, (int)$t['db'], (int)$t['egysegar']];
     }
     if ((int)$r['szallitas'] > 0) {

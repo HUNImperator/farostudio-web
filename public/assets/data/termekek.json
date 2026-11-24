@@ -233,6 +233,18 @@
         "Vénás-artériás",
         "A 14 fő izom tesztelése"
       ]
+    },
+    {
+      "id": "szemelyiseg-elemzo",
+      "tipus": "program",
+      "cim": "Személyiség-elemző módszer segítők részére",
+      "rovidCim": "Személyiség-elemző módszer",
+      "alcim": "Segítők részére",
+      "hozzaferes": "1 éves hozzáférés a programhoz",
+      "ar": 50000,
+      "eredetiAr": null,
+      "elerheto": true,
+      "borito": null
     }
   ],
   "videoHozzaferesNap": 90

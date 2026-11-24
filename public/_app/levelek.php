@@ -84,7 +84,7 @@ function level_tetelek_html(array $r): string
     $sorok = '';
     foreach ($r['tetelek'] as $t) {
         $sorok .= '<tr><td style="padding:8px 0;border-bottom:1px solid #eee">' . h($t['cim'])
-            . (($t['tipus'] ?? 'konyv') === 'konyv' ? ' × ' . (int)$t['db'] : '<br><span style="color:#6e6a66;font-size:13px">' . video_nap() . ' napos online hozzáférés</span>')
+            . (($t['tipus'] ?? 'konyv') === 'konyv' ? ' × ' . (int)$t['db'] : '<br><span style="color:#6e6a66;font-size:13px">' . h(tetel_leiras($t)) . '</span>')
             . ($t['dedikalas'] !== '' && $t['dedikalas'] !== null ? '<br><span style="color:#6e6a66;font-size:13px">Dedikálás: ' . h($t['dedikalas']) . '</span>' : '')
             . '</td><td align="right" style="padding:8px 0;border-bottom:1px solid #eee;white-space:nowrap">' . h(ft($t['egysegar'] * $t['db'])) . '</td></tr>';
     }
@@ -100,7 +100,7 @@ function level_tetelek_szoveg(array $r): string
 {
     $s = '';
     foreach ($r['tetelek'] as $t) {
-        $s .= '- ' . $t['cim'] . (($t['tipus'] ?? 'konyv') === 'konyv' ? ' × ' . $t['db'] : ' (' . video_nap() . ' napos online hozzáférés)') . ': ' . ft($t['egysegar'] * $t['db']) . "\n";
+        $s .= '- ' . $t['cim'] . (($t['tipus'] ?? 'konyv') === 'konyv' ? ' × ' . $t['db'] : ' (' . tetel_leiras($t) . ')') . ': ' . ft($t['egysegar'] * $t['db']) . "\n";
         if ($t['dedikalas']) {
             $s .= '  Dedikálás: ' . $t['dedikalas'] . "\n";
         }
@@ -125,6 +125,9 @@ function level_teendok(array $r): array
     }
     if (rendeles_van($r, 'hosszabbitas')) {
         $t[] = 'a hozzáférésed meghosszabbítása azonnal érvénybe lép';
+    }
+    if (rendeles_van($r, 'program')) {
+        $t[] = '24 órán belül e-mailben elküldöm a személyiség-elemző program belépési linkjét (1 éves használatra)';
     }
     return $t;
 }
@@ -162,8 +165,8 @@ function level_vevo_visszaigazolas(array $r): bool
         $html .= '<p>A fizetés beérkezése után ' . h($teendo) . ', a számlát e-mailben küldöm.</p>';
         $szoveg .= "A fizetés beérkezése után $teendo, a számlát e-mailben küldöm.\n\n";
     }
-    if (rendeles_van($r, 'video') || rendeles_van($r, 'hosszabbitas')) {
-        $nyil = 'Visszaigazolom, hogy a rendeléskor kifejezetten kérted: a videós hozzáférés az elállási határidő lejárta előtt – új sorozatnál a jóváhagyáskor, hosszabbításnál a fizetéskor – azonnal nyíljon meg, és tudomásul vetted, hogy a hozzáférés megnyitásával elveszíted a 14 napos elállási jogodat. A megnyitásig elállhatsz a videós tételek megrendelésétől.';
+    if (rendeles_van($r, 'video') || rendeles_van($r, 'hosszabbitas') || rendeles_van($r, 'program')) {
+        $nyil = 'Visszaigazolom, hogy a rendeléskor kifejezetten kérted: a digitális tartalom (videós hozzáférés, illetve a program belépési linkje) az elállási határidő lejárta előtt azonnal elérhető legyen, és tudomásul vetted, hogy a hozzáférés megnyitásával, illetve a belépési link elküldésével elveszíted a 14 napos elállási jogodat. Addig elállhatsz ezeknek a tételeknek a megrendelésétől.';
         $html .= '<p>' . h($nyil) . '</p>';
         $szoveg .= $nyil . "\n\n";
     }
@@ -201,14 +204,16 @@ function level_admin_uj_rendeles(array $r): bool
         . ($r['apt_nev'] !== '' ? '<strong>Automata:</strong> ' . h($r['apt_nev']) . ', ' . h($r['apt_cim']) : '') . '</p>'
         . (rendeles_van($r, 'video') ? '<div style="background:#f0e5db;padding:14px 16px;margin:0 0 16px"><strong>Videósorozat – jóváhagyásra vár.</strong><br>Elvégzett modulok (a vevő szerint): '
             . h(video_modulok_szoveg($r['elvegzett_modulok'] ?? '')) . '<br>Az igazolás(oka)t csatoltam. Jóváhagyás: Admin → Felhasználók.</div>' : '')
+        . (rendeles_van($r, 'program') ? '<div style="background:#f0e5db;padding:14px 16px;margin:0 0 16px"><strong>Személyiség-elemző program – kézi teljesítés.</strong><br>A fizetés beérkezése után 24 órán belül küldd el a vevőnek a program belépési linkjét, majd jelöld a rendelést Teljesítve állapotúra.</div>' : '')
         . ($r['megjegyzes'] ? '<p><strong>Megjegyzés:</strong> ' . nl2br(h($r['megjegyzes'])) . '</p>' : '')
         . '<p><a href="' . h($link) . '" style="display:inline-block;background:#111;color:#fff;padding:12px 20px;text-decoration:none">Megnyitás az adminban</a></p>';
     $szoveg = "Új rendelés: {$r['rendelesszam']} – " . FIZETESI_MODOK[$r['fizetes']] . ', ' . ft((int)$r['vegosszeg']) . "\n\n"
         . level_tetelek_szoveg($r) . "\nVevő: {$r['vevo_nev']}, {$r['vevo_email']}, {$r['vevo_telefon']}\n"
         . ($r['apt_nev'] !== '' ? "Automata: {$r['apt_nev']}, {$r['apt_cim']}\n" : '')
         . (rendeles_van($r, 'video') ? 'Videósorozat – jóváhagyásra vár. Elvégzett modulok: ' . video_modulok_szoveg($r['elvegzett_modulok'] ?? '') . " (igazolás csatolva)\n" : '')
+        . (rendeles_van($r, 'program') ? "Személyiség-elemző program – kézi teljesítés: a fizetés után 24 órán belül küldd el a belépési linket, majd jelöld Teljesítve.\n" : '')
         . ($r['megjegyzes'] ? "Megjegyzés: {$r['megjegyzes']}\n" : '') . "\n$link\n";
-    $targy = 'Új rendelés: ' . $r['rendelesszam'] . ' (' . ft((int)$r['vegosszeg']) . ')' . (rendeles_van($r, 'video') ? ' – videó, jóváhagyásra vár' : '');
+    $targy = 'Új rendelés: ' . $r['rendelesszam'] . ' (' . ft((int)$r['vegosszeg']) . ')' . (rendeles_van($r, 'video') ? ' – videó, jóváhagyásra vár' : '') . (rendeles_van($r, 'program') ? ' – személyiség-elemző program (kézi)' : '');
     return level_kuld($cfg['admin_email'], 'FARO', $targy,
         level_keret('Új rendelés', $html), $szoveg, $r['vevo_email'], feltoltes_csatolmanyok((int)$r['id']));
 }

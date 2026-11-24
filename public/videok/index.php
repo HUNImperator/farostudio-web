@@ -328,7 +328,7 @@ function videok_oldal(string $cim, callable $tartalom, bool $lejatszo = false): 
   <meta name="robots" content="noindex, nofollow">
   <title><?= h($cim) ?> | Csengeri Zsuzsa</title>
   <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="../assets/css/style.css?v=25">
+  <link rel="stylesheet" href="../assets/css/style.css?v=26">
 </head>
 <body data-nincs-panel<?= $f ? ' data-vevo-email="' . h($f['email']) . '" data-vevo-nev="' . h($f['nev']) . '"' : '' ?>>
   <header class="site-header video-header">
@@ -359,7 +359,7 @@ function videok_oldal(string $cim, callable $tartalom, bool $lejatszo = false): 
     </div>
   </footer>
   <script src="../assets/js/meres.js?v=1" defer></script>
-  <script src="../assets/js/konyvespolc.js?v=4" defer></script>
+  <script src="../assets/js/konyvespolc.js?v=5" defer></script>
   <?php if ($lejatszo): ?><script src="../assets/vendor/hls/hls.min.js?v=1.6.13" defer></script><?php endif; ?>
   <script src="../assets/js/videok.js?v=2" defer></script>
 </body>

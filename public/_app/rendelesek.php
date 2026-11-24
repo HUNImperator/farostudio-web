@@ -133,8 +133,8 @@ function rendeles_ellenoriz(array $be): array
             }
         }
     }
-    if (($vanVideo || $vanHosszabbitas) && empty($be['digitalis'])) {
-        $hibak[] = 'A videósorozat rendeléséhez el kell fogadnod a digitális tartalomra vonatkozó nyilatkozatot.';
+    if (($vanVideo || $vanHosszabbitas || $vanTipus('program')) && empty($be['digitalis'])) {
+        $hibak[] = 'A digitális tartalom rendeléséhez el kell fogadnod a rá vonatkozó nyilatkozatot.';
     }
     if (($vanVideo || $vanHosszabbitas) && filter_var($r['vevo_email'], FILTER_VALIDATE_EMAIL)) {
         foreach ($tetelek as $t) {

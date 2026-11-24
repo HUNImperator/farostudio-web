@@ -39,6 +39,18 @@ function katalogus(): array
     return $k;
 }
 
+/** Rövid leírás a tételhez (levelekben, adminban): könyvnél üres. */
+function tetel_leiras(array $t): string
+{
+    $tipus = $t['tipus'] ?? 'konyv';
+    if ($tipus === 'konyv') return '';
+    if ($tipus === 'program') {
+        $k = termek((string)($t['termek_id'] ?? $t['id'] ?? ''));
+        return (string)($k['hozzaferes'] ?? 'hozzáférés a programhoz');
+    }
+    return video_nap() . ' napos online hozzáférés';
+}
+
 /** A videósorozatok (a katalógus sorrendjében). */
 function video_sorozatok(): array
 {

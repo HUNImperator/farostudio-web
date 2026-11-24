@@ -323,7 +323,7 @@ function video_fizetve(array $r, string $szerzo): string
 function rendeles_teljesites_ellenoriz(int $id, string $szerzo): void
 {
     $r = rendeles_betolt($id);
-    if (!$r || empty($r['fizetve_ekkor']) || rendeles_van($r, 'konyv') || in_array($r['allapot'], ['teljesitve', 'lemondva'], true)) {
+    if (!$r || empty($r['fizetve_ekkor']) || rendeles_van($r, 'konyv') || rendeles_van($r, 'program') || in_array($r['allapot'], ['teljesitve', 'lemondva'], true)) {
         return;
     }
     $fuggo = 0;

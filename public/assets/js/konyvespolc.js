@@ -3,7 +3,7 @@
    és videósorozatok lebegő panelje.
    A tartalom a böngészőben tárolódik (localStorage), így oldalak
    között járva is megmarad, és a panel nyitott/csukott állapota is.
-   Tételtípusok: konyv (darabszám 1–10), video és hosszabbitas (1 db).
+   Tételtípusok: konyv (darabszám 1–10), video, hosszabbitas és program (1 db).
    ========================================================== */
 (function () {
   "use strict";
@@ -128,6 +128,13 @@
     }
     var d = el("span", (osztaly || "") + " mini-video");
     d.setAttribute("aria-hidden", "true");
+    if (termek.tipus === "program") {
+      d.className += " mini-video--program";
+      d.appendChild(el("span", "mini-video__brand", "Program"));
+      d.appendChild(el("span", "mini-video__num", "IK"));
+      d.appendChild(el("span", "mini-video__plus", "1 év"));
+      return d;
+    }
     d.appendChild(el("span", "mini-video__brand", "One Brain"));
     d.appendChild(el("span", "mini-video__num", termek.romai || ""));
     if (termek.tipus === "hosszabbitas") d.appendChild(el("span", "mini-video__plus", "+90"));
@@ -240,7 +247,7 @@
       ar.appendChild(document.createTextNode(ft(t.termek.ar)));
       info.appendChild(ar);
       if (t.termek.tipus === "konyv") info.appendChild(szamlalo(t));
-      else info.appendChild(el("p", "shelf__meta", katalogus.videoNap + " napos hozzáférés"));
+      else info.appendChild(el("p", "shelf__meta", t.termek.hozzaferes || katalogus.videoNap + " napos hozzáférés"));
       var jobb = el("div", "shelf__right");
       var torles = el("button", "shelf__remove");
       torles.type = "button";

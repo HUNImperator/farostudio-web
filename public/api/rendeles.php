@@ -65,7 +65,7 @@ if ($fajlok) {
     }
 }
 if (!empty($be['digitalis'])) {
-    naplo((int)$rendeles['id'], 'A vevő elfogadta: a digitális tartalom (videós hozzáférés) a jóváhagyással azonnal teljesül, és ezzel elveszíti a 14 napos elállási jogát.', 'rendszer');
+    naplo((int)$rendeles['id'], 'A vevő kifejezetten kérte, hogy a digitális tartalom (videós hozzáférés, ill. a program belépési linkje) az elállási határidő előtt elérhető legyen, és tudomásul vette, hogy ezzel elveszíti a 14 napos elállási jogát.', 'rendszer');
 }
 
 /* ---------- bankkártya: átirányítás a Stripe fizetőoldalára ----------

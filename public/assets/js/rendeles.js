@@ -23,15 +23,17 @@
   }
 
   /* ---------- részek a megrendelés tartalma szerint ---------- */
-  var vanKonyv = false, vanVideo = false, vanHossz = false;
+  var vanKonyv = false, vanVideo = false, vanHossz = false, vanProgram = false, vanDigit = false;
   function reszek() {
     var P = window.Konyvespolc;
     vanKonyv = P.vanTipus("konyv");
     vanVideo = P.vanTipus("video");
     vanHossz = P.vanTipus("hosszabbitas");
+    vanProgram = P.vanTipus("program");
+    vanDigit = vanVideo || vanHossz || vanProgram;
     document.querySelectorAll("[data-csak-konyv]").forEach(function (e) { e.hidden = !vanKonyv; });
     document.querySelectorAll("[data-csak-video]").forEach(function (e) { e.hidden = !vanVideo; });
-    document.querySelectorAll("[data-csak-digitalis]").forEach(function (e) { e.hidden = !(vanVideo || vanHossz); });
+    document.querySelectorAll("[data-csak-digitalis]").forEach(function (e) { e.hidden = !vanDigit; });
     document.querySelector("[data-telefon-cimke]").textContent = vanKonyv ? "Mobilszám" : "Telefonszám";
     var vissza = document.querySelector("[data-vissza]");
     if (vissza && !vanKonyv && (vanVideo || vanHossz)) { vissza.href = "oktato-videok.html"; vissza.textContent = "← Vissza a videósorozatokhoz"; }
@@ -63,7 +65,7 @@
       var kozep = el("div");
       kozep.appendChild(el("strong", null, t.termek.cim));
       var konyv = t.termek.tipus === "konyv";
-      kozep.appendChild(el("span", null, konyv ? P.ft(t.termek.ar) + " / db" : "90 napos online hozzáférés"));
+      kozep.appendChild(el("span", null, konyv ? P.ft(t.termek.ar) + " / db" : (t.termek.hozzaferes || "90 napos online hozzáférés")));
       var q = el("div", "qty");
       var m = el("button", "qty__btn", "−"); m.type = "button"; m.disabled = t.db <= 1;
       m.setAttribute("aria-label", t.termek.cim + ": eggyel kevesebb");
@@ -245,8 +247,8 @@
     if (!document.getElementById("aszf").checked || !document.getElementById("adatkezeles").checked) {
       elfHiba.textContent = "A rendeléshez el kell fogadnod az ÁSZF-et és az adatkezelési tájékoztatót.";
       if (!elso) elso = document.getElementById("aszf");
-    } else if ((vanVideo || vanHossz) && !digit.checked) {
-      elfHiba.textContent = "A videós hozzáféréshez el kell fogadnod a digitális tartalomra vonatkozó nyilatkozatot.";
+    } else if (vanDigit && !digit.checked) {
+      elfHiba.textContent = "A digitális tartalom rendeléséhez el kell fogadnod a rá vonatkozó nyilatkozatot.";
       if (!elso) elso = digit;
     } else elfHiba.textContent = "";
     if (elso) { elso.scrollIntoView({ behavior: "smooth", block: "center" }); if (elso.focus) elso.focus({ preventScroll: true }); }
@@ -322,7 +324,7 @@
   } catch (x) {}
 
   function tipusok() {
-    return ["konyv", "video", "hosszabbitas"].filter(function (t) { return window.Konyvespolc.vanTipus(t); });
+    return ["konyv", "video", "hosszabbitas", "program"].filter(function (t) { return window.Konyvespolc.vanTipus(t); });
   }
 
   /* ---------- beküldés ---------- */
@@ -342,7 +344,7 @@
         return { id: t.id, db: t.db, dedikalas: ta ? ta.value.trim() : "" };
       }),
       modulok: vanVideo ? modulok() : [],
-      digitalis: (vanVideo || vanHossz) && document.getElementById("digitalis").checked,
+      digitalis: vanDigit && document.getElementById("digitalis").checked,
       fizetes: urlap.querySelector("input[name=fizetes]:checked").value,
       megjegyzes: f("megjegyzes"),
       weboldal: (document.getElementById("weboldal") || {}).value || ""

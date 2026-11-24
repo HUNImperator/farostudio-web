@@ -46,3 +46,9 @@ Oswald és Open Sans saját tárhelyről (`public/assets/fonts`, OFL licenc), la
 - Események: `kosarba:<termék>`, `urlap:<oldal>`, `video:<sorozat>`, `kattintas:email|telefon` (`window.FaroMeres.esemeny()`).
 - Nem számít bele: robotok, „Ne kövess” / GPC, és az admin böngészője (az admin oldal `localStorage: faro-nem-szamol` jelzőt tesz; a Statisztika oldal alján visszakapcsolható).
 - Admin → Statisztika (`_app/admin_statisztika.php`, `admin/statisztika.js`): időszakválasztó, mutatók az előző időszakhoz képest, napi/heti grafikon, oldalak, források, hivatkozók, kampányok, eszközök, böngészők, rendszerek, belépő oldalak, napszak, hét napjai, vásárlási lépések, űrlapok, videólejátszások.
+
+## Személyiség-elemző módszer segítők részére (kézi teljesítés)
+
+- Oldal: `public/szemelyiseg-elemzo-modszer.html` (az Informális Kineziológia „Részletek és megrendelés” gombja ide visz); 1 ajánló + 6 háttér-videó YouTube-ról, kattintásra töltődik be (`assets/js/yt.js`, youtube-nocookie), az előnézeti képek saját tárhelyről (`assets/img/yt-*.jpg`).
+- Termék: `termekek.json` → `szemelyiseg-elemzo`, `tipus: "program"`, 50 000 Ft, `hozzaferes: "1 éves hozzáférés a programhoz"`. Nincs Foxpost, nincs modul/igazolás; a digitális tartalom nyilatkozata kötelező.
+- A rendelés nem teljesül és nem mondódik le automatikusan: fizetés után az adminban emlékeztető + „Belépési link elküldve → Teljesítve” gomb.

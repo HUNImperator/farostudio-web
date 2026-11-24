@@ -492,7 +492,14 @@ if ($p === 'rendeles') {
                 <form method="post"><?= csrf_mezo() ?><input type="hidden" name="muvelet" value="fizetve">
                   <button class="btn">Fizetés beérkezett → Fizetve</button></form>
               <?php endif; ?>
-              <?php if (in_array($r['allapot'], ['fizetve', 'csomag_letrehozva'], true)): ?>
+              <?php if (rendeles_van($r, 'program') && !in_array($r['allapot'], ['teljesitve', 'lemondva'], true)): ?>
+                <p class="note" style="flex-basis:100%;margin:0">Személyiség-elemző program: a fizetés beérkezése után 24 órán belül küldd el a vevőnek (<?= h($r['vevo_email']) ?>) a program belépési linkjét<?= rendeles_van($r, 'konyv') ? ', a könyveket pedig add fel' : '' ?>, majd jelöld Teljesítve.</p>
+              <?php endif; ?>
+              <?php if (!rendeles_van($r, 'konyv') && rendeles_van($r, 'program') && $r['allapot'] === 'fizetve'): ?>
+                <form method="post"><?= csrf_mezo() ?><input type="hidden" name="muvelet" value="teljesitve">
+                  <button class="btn">Belépési link elküldve → Teljesítve</button></form>
+              <?php endif; ?>
+              <?php if (rendeles_van($r, 'konyv') && in_array($r['allapot'], ['fizetve', 'csomag_letrehozva'], true)): ?>
                 <form method="post" class="inline-form"><?= csrf_mezo() ?><input type="hidden" name="muvelet" value="feladva">
                   <input name="csomagszam" placeholder="Foxpost csomagszám (nem kötelező)" value="<?= h($r['foxpost_csomagszam']) ?>">
                   <button class="btn">Feladva</button></form>
@@ -560,7 +567,7 @@ if ($p === 'rendeles') {
             <thead><tr><th>Tétel</th><th>Dedikálás</th><th class="num">Db</th><th class="num">Egységár</th><th class="num">Összeg</th></tr></thead>
             <tbody>
             <?php foreach ($r['tetelek'] as $t): ?>
-              <tr><td><?= h($t['cim']) ?></td><td class="dedik"><?= $t['dedikalas'] ? nl2br(h($t['dedikalas'])) : '<span class="muted">—</span>' ?></td>
+              <tr><td><?= h($t['cim']) ?><?= tetel_leiras($t) !== '' ? '<br><span class="muted small">' . h(tetel_leiras($t)) . '</span>' : '' ?></td><td class="dedik"><?= $t['dedikalas'] ? nl2br(h($t['dedikalas'])) : '<span class="muted">—</span>' ?></td>
                 <td class="num"><?= (int)$t['db'] ?></td><td class="num"><?= h(ft((int)$t['egysegar'])) ?></td><td class="num"><?= h(ft($t['egysegar'] * $t['db'])) ?></td></tr>
             <?php endforeach; ?>
               <?php if ((int)$r['szallitas'] > 0): ?><tr><td colspan="4">Foxpost csomagautomata</td><td class="num"><?= h(ft((int)$r['szallitas'])) ?></td></tr><?php endif; ?>
