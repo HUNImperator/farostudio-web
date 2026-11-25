@@ -1,7 +1,7 @@
 <?php
 /**
  * Napi ütemezett feladat (cPanel → Cron Jobs, naponta egyszer):
- *   php /home/whiteman/test.farostudio.hu/_app/napi.php
+ *   php /home/whiteman/public_html/_app/napi.php
  *
  * 1. Figyelmeztető levél 10 nappal a videós hozzáférés lejárta előtt.
  * 2. Lejárt hozzáférések lezárása („Lejárt”), értesítő levéllel.

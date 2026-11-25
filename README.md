@@ -8,11 +8,13 @@ Az új farostudio.hu weboldal forrása.
 Telepítés: cPanel → Git™ Version Control → Manage → Pull or Deploy →
 „Update from Remote”, majd „Deploy HEAD Commit”.
 
-Tesztcím: https://test.farostudio.hu (noindex, robots.txt tiltja az indexelést).
+Éles cím: https://farostudio.hu (cPanel: `public_html`). A korábbi tesztcím (test.farostudio.hu) ugyanazt a `faro-config.php`-t és adatbázist használná, ezért élesítés után átirányítás a fődomainre.
 
-## Élesítés előtt
-- Az oldalakból törölni a `<meta name="robots" content="noindex, nofollow">` sort, és a `public/robots.txt`-t engedélyezőre cserélni.
-- A `.cpanel.yml`-ben a DEPLOYPATH-ot átírni a végleges mappára.
+## Címek, keresők
+- `public/.htaccess`: https + www nélküli cím, `sitemap.xml` → `sitemap.php`, minden nem létező cím → `regi.php`.
+- `public/regi.php`: a régi WordPress-oldal címeinek 301-es átirányítása (oldalak, termékek, blog; a már áthozott cikk a saját új címére), különben 404-es oldal.
+- `public/sitemap.php`: statikus oldalak + megjelent blogírások. `robots.txt`: az admin, a videók és a rendelés kimarad.
+- A rendelési oldalak `noindex`-esek; a PHP-sablonban `'noindex' => true` kapcsolja.
 
 ## Betűtípusok
 Oswald és Open Sans saját tárhelyről (`public/assets/fonts`, OFL licenc), latin + magyar karakterkészletre szűkítve.
@@ -37,7 +39,7 @@ Oswald és Open Sans saját tárhelyről (`public/assets/fonts`, OFL licenc), la
 - Admin → Felhasználók: jóváhagyás (jelszó-generálás, levél), elutasítás (Stripe-visszatérítés, sztornó), kézi hosszabbítás, új jelszó.
 - Videók: titkosított HLS (AES-128) a `/home/whiteman/faro-videok/one-brain-N/` mappákban (`kulcs.key`, `NN/index.m3u8`, `NN/d0000.ts` …). Átalakítás: `eszkozok/hls-atalakito.ps1` (Windows, ffmpeg).
 - Lejátszó: hls.js 1.6.13 (`public/assets/vendor/hls/`, Apache 2.0), a böngésző saját vezérlőivel; vízjel (a néző e-mail-címe), egy munkamenet felhasználónként.
-- Napi feladat (cPanel → Cron Jobs, naponta): `php /home/whiteman/test.farostudio.hu/_app/napi.php` – figyelmeztetés 10 nappal lejárat előtt, lejárat, adattakarítás egy év után.
+- Napi feladat (cPanel → Cron Jobs, naponta): `php /home/whiteman/public_html/_app/napi.php` – figyelmeztetés 10 nappal lejárat előtt, lejárat, adattakarítás egy év után.
 
 ## Látogatottságmérés (saját, süti nélkül)
 

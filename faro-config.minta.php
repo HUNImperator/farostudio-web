@@ -13,7 +13,7 @@
  */
 return [
     // A weboldal címe (az e-mailekben lévő admin-linkhez)
-    'site_url' => 'https://test.farostudio.hu',
+    'site_url' => 'https://farostudio.hu',
 
     // Adatbázis (cPanel → MySQL® Databases)
     'db' => [
@@ -44,8 +44,8 @@ return [
     'debug' => false,
 
     // Stripe – bankkártyás fizetés
-    // A test.farostudio.hu-hoz a Stripe TESZT módjának kulcsait használd (sk_test_…),
-    // élesítéskor cseréld az éles kulcsokra (sk_live_…) és az éles webhook titkára.
+    // Teszteléshez a Stripe TESZT módjának kulcsai (sk_test_…),
+    // élesben az éles kulcs (sk_live_…) és az éles webhook titka (webhook: https://farostudio.hu/api/stripe-webhook.php).
     'stripe' => [
         'secret_key'     => '<Stripe titkos kulcs: sk_test_… vagy sk_live_…>',
         'webhook_secret' => '<a webhook aláíró titka: whsec_…>',

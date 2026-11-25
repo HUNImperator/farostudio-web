@@ -25,8 +25,9 @@ function oldal_fej(array $o): void
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- TESZT: élesítéskor törölni -->
+<?php if (!empty($o['noindex'])): ?>
   <meta name="robots" content="noindex, nofollow">
+<?php endif; ?>
   <title><?= h($o['cim']) ?></title>
   <meta name="description" content="<?= h($o['leiras'] ?? '') ?>">
 <?php if (!empty($o['kanonikus'])): ?>

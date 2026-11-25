@@ -1,2 +1,8 @@
 User-agent: *
-Disallow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /videok/
+Disallow: /rendeles.html
+Disallow: /rendeles-koszonjuk.html
+
+Sitemap: https://farostudio.hu/sitemap.xml

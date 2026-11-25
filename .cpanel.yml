@@ -1,10 +1,12 @@
 ---
 deployment:
   tasks:
-    # A public/ mappa tartalmát másolja a teszt aldomain gyökérmappájába.
-    # Ha az aldomain document rootja más, itt kell átírni.
-    - export DEPLOYPATH=$HOME/test.farostudio.hu/
+    # A public/ mappa tartalmát a farostudio.hu gyökérmappájába másolja.
+    # (Ha a fődomain document rootja nem a public_html, itt kell átírni.)
+    - export DEPLOYPATH=$HOME/public_html/
     - /bin/mkdir -p $DEPLOYPATH
     - /bin/cp -R public/. $DEPLOYPATH
+    # A tesztoldalra feltöltött blogképek átmásolása (a meglévőket nem írja felül)
+    - /bin/sh -c 'if [ -d "$HOME/test.farostudio.hu/feltoltes" ]; then /bin/mkdir -p "$HOME/public_html/feltoltes" && /bin/cp -Rn "$HOME/test.farostudio.hu/feltoltes/." "$HOME/public_html/feltoltes/"; fi'
     # A lecserélt előadásfotó régi fájljainak törlése a szerverről
     - /bin/rm -f $DEPLOYPATH/assets/img/eloadas-*

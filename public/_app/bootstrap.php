@@ -35,7 +35,7 @@ function faro_config(): array
         faro_fatal('A beállítófájl hibás.');
     }
     $defaults = [
-        'site_url'      => 'https://test.farostudio.hu',
+        'site_url'      => 'https://farostudio.hu',
         'admin_email'   => 'info@farostudio.hu',
         'mail_mode'     => 'smtp',          // smtp | log (helyi teszteléshez)
         'mail_log'      => sys_get_temp_dir() . '/faro-mail.log',
