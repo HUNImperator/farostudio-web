@@ -44,7 +44,7 @@ function oldal_fej(array $o): void
   <link rel="icon" href="<?= $gy ?>assets/img/favicon-32.png" sizes="32x32" type="image/png">
   <link rel="apple-touch-icon" href="<?= $gy ?>assets/img/favicon-180.png">
   <link rel="preload" href="<?= $gy ?>assets/fonts/oswald-var.woff" as="font" type="font/woff" crossorigin>
-  <link rel="stylesheet" href="<?= $gy ?>assets/css/style.css?v=27">
+  <link rel="stylesheet" href="<?= $gy ?>assets/css/style.css?v=28">
 <?= $o['fejbe'] ?? '' ?>
 </head>
 <body<?= isset($o['body']) ? ' ' . $o['body'] : '' ?>>

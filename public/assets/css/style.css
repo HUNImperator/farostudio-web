@@ -869,6 +869,7 @@ p { margin: 0 0 1.1em; }
 .notes {
   background: var(--beige-light);
   padding: clamp(70px, 8vw, 110px) 0;
+  overflow: hidden;
 }
 .notes__inner {
   display: grid;
@@ -876,8 +877,37 @@ p { margin: 0 0 1.1em; }
   gap: clamp(36px, 6vw, 90px);
   align-items: center;
 }
-.notes__media { margin: 0; }
-.notes__media img { width: 100%; height: auto; }
+.notes__media {
+  position: relative;
+  margin: 0 28px 28px 0;
+}
+.notes__media::before {            /* vékony keret, jobbra lent eltolva */
+  content: "";
+  position: absolute;
+  inset: 28px -28px -28px 28px;
+  border: 1px solid var(--ink);
+  z-index: 0;
+}
+.notes__media::after {             /* fehér kör balra fent */
+  content: "";
+  position: absolute;
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  background: var(--white);
+  top: -44px;
+  left: -44px;
+  z-index: 0;
+}
+.notes__media img {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 843 / 768;
+  object-fit: cover;
+}
 .notes__lead { font-size: 18px; max-width: 560px; }
 .topic-tags {
   display: flex;
@@ -903,7 +933,9 @@ p { margin: 0 0 1.1em; }
 
 @media (max-width: 900px) {
   .notes__inner { grid-template-columns: 1fr; }
-  .notes__media { width: min(380px, 80%); justify-self: center; }
+  .notes__media { width: min(440px, 82%); justify-self: center; margin: 24px 20px 20px 0; }
+  .notes__media::before { inset: 20px -20px -20px 20px; }
+  .notes__media::after { width: 96px; height: 96px; top: -30px; left: -30px; }
 }
 
 /* ==========================================================
