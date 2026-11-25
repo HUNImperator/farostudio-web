@@ -26,12 +26,12 @@ function stripe_osszeg(int $forint): int
     return $forint * 100;
 }
 
-function stripe_api(string $metodus, string $ut, array $parameterek = []): array
+function stripe_api(string $metodus, string $ut, array $parameterek = [], string $verzio = '2024-06-20'): array
 {
     $s = faro_config()['stripe'];
     $alap = rtrim($s['api_base'] ?? 'https://api.stripe.com', '/');
     $ch = curl_init($alap . $ut);
-    $fejlec = ['Stripe-Version: 2024-06-20'];
+    $fejlec = ['Stripe-Version: ' . $verzio];
     curl_setopt_array($ch, [
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_USERPWD        => $s['secret_key'] . ':',
@@ -98,7 +98,14 @@ function stripe_fizetooldal(array $r): array
             ],
         ];
     }
-    return stripe_api('POST', '/v1/checkout/sessions', $p);
+    // A Link (Stripe saját mentett-kártyás fizetése) ne jelenjen meg; Apple Pay / Google Pay a kártyával együtt marad.
+    // A wallet_options a 2025-04-30.basil API-verziótól létezik; ha a Stripe mégis elutasítaná, nélküle készül a fizetőoldal.
+    try {
+        return stripe_api('POST', '/v1/checkout/sessions', $p + ['wallet_options' => ['link' => ['display' => 'never']]], '2025-04-30.basil');
+    } catch (RuntimeException $e) {
+        if (strpos($e->getMessage(), 'A Stripe nem érhető el') === 0) throw $e;
+        return stripe_api('POST', '/v1/checkout/sessions', $p);
+    }
 }
 
 /**
