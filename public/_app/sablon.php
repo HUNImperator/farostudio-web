@@ -5,8 +5,18 @@ defined('FARO') or exit;
  * Közös fejléc és lábléc a PHP-ből készülő nyilvános oldalakhoz (blog).
  * A statikus HTML-oldalakéval azonos szerkezet; $o['gy'] a gyökér relatív útvonala (pl. '../').
  *   cim, leiras, gy, kanonikus (teljes URL), kep (teljes URL, megosztáshoz), tipus ('website'|'article'),
- *   aktiv (a főmenü aktív pontjának href-je), body (body attribútumok), fejbe (extra <head> tartalom)
+ *   aktiv (a főmenü aktív pontjának href-je), body (body attribútumok), fejbe (extra <head> tartalom),
+ *   schema (az oldal saját schema.org elemei; a közöseket a _app/schema_alap.json adja), noindex
  */
+/** schema.org JSON-LD: a közös elemek (weboldal, személy, vállalkozás) + az oldal sajátjai. */
+function schema_blokk(array $sajat): string
+{
+    $alap = json_decode((string)@file_get_contents(FARO_APP . '/schema_alap.json'), true) ?: [];
+    $adat = ['@context' => 'https://schema.org', '@graph' => array_merge($alap, $sajat)];
+    $json = json_encode($adat, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG);
+    return "  <script type=\"application/ld+json\">\n" . $json . "\n  </script>\n";
+}
+
 function oldal_fej(array $o): void
 {
     $gy = $o['gy'] ?? '';
@@ -45,8 +55,10 @@ function oldal_fej(array $o): void
   <link rel="icon" href="<?= $gy ?>assets/img/favicon-32.png" sizes="32x32" type="image/png">
   <link rel="apple-touch-icon" href="<?= $gy ?>assets/img/favicon-180.png">
   <link rel="preload" href="<?= $gy ?>assets/fonts/oswald-var.woff" as="font" type="font/woff" crossorigin>
-  <link rel="stylesheet" href="<?= $gy ?>assets/css/style.css?v=29">
+  <link rel="preload" href="<?= $gy ?>assets/fonts/opensans-var.woff" as="font" type="font/woff" crossorigin>
+  <link rel="stylesheet" href="<?= $gy ?>assets/css/style.css?v=30">
 <?= $o['fejbe'] ?? '' ?>
+<?php if (empty($o['noindex'])) echo schema_blokk($o['schema'] ?? []); ?>
 </head>
 <body<?= isset($o['body']) ? ' ' . $o['body'] : '' ?>>
   <a class="skip-link" href="#tartalom">Ugrás a tartalomra</a>
@@ -104,6 +116,7 @@ function oldal_lab(array $o): void
         <li><a href="<?= $gy ?>impresszum.html">Impresszum</a></li>
         <li><a href="<?= $gy ?>kapcsolat.html">Kapcsolat</a></li>
       </ul>
+      <p class="site-footer__cim">Csengeri Zsuzsa kineziológus · 2310 Szigetszentmiklós, Szent Miklós útja 18/A/1. · személyesen és online · <a href="https://www.facebook.com/utkozbenkonyv" target="_blank" rel="me noopener">Facebook</a></p>
       <p>© <?= date('Y') ?> Csengeri Zsuzsa – FARO</p>
     </div>
   </footer>

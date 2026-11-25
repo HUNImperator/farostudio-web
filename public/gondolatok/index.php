@@ -47,6 +47,15 @@ oldal_fej([
     'cim' => 'Gondolatok, blogok – Csengeri Zsuzsa | FARO',
     'leiras' => 'Gondolatok, blogok – Csengeri Zsuzsa jegyzetei önismeretről, családi mintákról, írói műhelytitkokról és újrakezdésről.',
     'gy' => $gy, 'aktiv' => 'gondolatok/', 'kanonikus' => $alap . '/gondolatok/',
+    'schema' => [[
+        '@type' => 'Blog', '@id' => $alap . '/gondolatok/#blog', 'url' => $alap . '/gondolatok/',
+        'name' => 'Gondolatok, blogok – Csengeri Zsuzsa', 'inLanguage' => 'hu',
+        'author' => ['@id' => $alap . '/#szemely'], 'isPartOf' => ['@id' => $alap . '/#website'],
+        'blogPost' => array_map(function ($c) use ($alap) {
+            return ['@type' => 'BlogPosting', '@id' => $alap . '/gondolatok/' . $c['slug'] . '#cikk', 'headline' => $c['cim'],
+                    'url' => $alap . '/gondolatok/' . $c['slug'], 'datePublished' => date('c', strtotime($c['megjelenes']))];
+        }, $cikkek),
+    ]],
 ]); ?>
     <section class="page-hero" aria-labelledby="oldal-cim">
       <div class="container page-hero__inner">

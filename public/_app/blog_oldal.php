@@ -15,26 +15,37 @@ function blog_cikk_oldal(array $c, string $gy, bool $elonezet): void
     }
     $leiras = trim((string)($c['meta_leiras'] ?: $c['bevezeto'])) ?: mb_substr(trim(preg_replace('/\s+/u', ' ', strip_tags((string)$c['tartalom']))), 0, 160);
     oldal_fej([
-        'cim' => $c['cim'] . ' – Csengeri Zsuzsa | FARO', 'og_cim' => $c['cim'], 'leiras' => $leiras, 'gy' => $gy,
+        'cim' => $c['cim'] . ' – Csengeri Zsuzsa', 'og_cim' => $c['cim'], 'leiras' => $leiras, 'gy' => $gy,
         'aktiv' => 'gondolatok/', 'kanonikus' => $url, 'kep' => $kep, 'tipus' => 'article',
         'fejbe' => '  <meta property="article:published_time" content="' . h(date('c', strtotime($c['megjelenes']))) . '">' . "\n",
+        'noindex' => $elonezet,
+        'schema' => [array_filter([
+            '@type' => 'BlogPosting', '@id' => $url . '#cikk', 'url' => $url, 'mainEntityOfPage' => $url,
+            'headline' => $c['cim'], 'description' => $leiras, 'inLanguage' => 'hu',
+            'datePublished' => date('c', strtotime($c['megjelenes'])),
+            'dateModified' => date('c', strtotime((string)($c['frissitve'] ?: $c['megjelenes']))),
+            'image' => $kep, 'articleSection' => $t['nev'] ?? null,
+            'wordCount' => count(preg_split('/\s+/u', trim(strip_tags((string)$c['tartalom'])), -1, PREG_SPLIT_NO_EMPTY)) ?: null,
+            'author' => ['@id' => $alap . '/#szemely'], 'publisher' => ['@id' => $alap . '/#szemely'],
+            'isPartOf' => ['@id' => $alap . '/gondolatok/#blog'],
+        ])],
     ]);
     $vissza = $elonezet ? '#' : $gy . 'gondolatok/'; ?>
 <?php if ($elonezet): ?>
     <div class="cikk-elonezet" role="status">Előnézet – <?= blog_el($c) ? 'ez a cikk már megjelent.' : ($c['allapot'] === 'kozzeteve' ? 'időzítve: ' . h(blog_datum($c['megjelenes'])) . ' ' . h(date('H:i', strtotime($c['megjelenes']))) . '.' : 'piszkozat, a látogatók még nem látják.') ?></div>
 <?php endif; ?>
-    <article class="cikk" itemscope itemtype="https://schema.org/BlogPosting">
+    <article class="cikk">
       <header class="cikk__fej">
         <div class="container cikk__szuk">
           <p class="section-eyebrow"><a href="<?= h($vissza) ?>" style="text-decoration:none">← Gondolatok, blogok</a></p>
-          <h1 class="cikk__cim" itemprop="headline"><?= h($c['cim']) ?></h1>
+          <h1 class="cikk__cim"><?= h($c['cim']) ?></h1>
           <p class="cikk__meta">
-            <time datetime="<?= h(date('Y-m-d', strtotime($c['megjelenes']))) ?>" itemprop="datePublished"><?= h(blog_datum($c['megjelenes'])) ?></time>
+            <time datetime="<?= h(date('Y-m-d', strtotime($c['megjelenes']))) ?>"><?= h(blog_datum($c['megjelenes'])) ?></time>
             <?= $t ? ' · <a href="' . h($vissza) . ($elonezet ? '' : '#' . h($t['kulcs'])) . '">' . h($t['nev']) . '</a>' : '' ?>
             · <?= (int)$c['olvasasi_ido'] ?> perc olvasás
           </p>
 <?php if (trim((string)$c['bevezeto']) !== ''): ?>
-          <p class="cikk__bevezeto" itemprop="description"><?= h($c['bevezeto']) ?></p>
+          <p class="cikk__bevezeto"><?= h($c['bevezeto']) ?></p>
 <?php endif; ?>
         </div>
       </header>
@@ -46,10 +57,10 @@ function blog_cikk_oldal(array $c, string $gy, bool $elonezet): void
       </figure>
 <?php endif; ?>
       <div class="container cikk__szuk">
-        <div class="cikk__szoveg" itemprop="articleBody">
+        <div class="cikk__szoveg">
 <?= blog_megjelenit((string)$c['tartalom'], $gy) ?>
         </div>
-        <p class="cikk__szerzo" itemprop="author">Csengeri Zsuzsa</p>
+        <p class="cikk__szerzo">Csengeri Zsuzsa</p>
 
         <div class="cikk__lab">
           <p class="cikk__kerdes">Gondolatod vagy kérdésed támadt az írás kapcsán? Írd meg nekem: <a href="mailto:info@farostudio.hu?subject=<?= rawurlencode($c['cim']) ?>">info@farostudio.hu</a></p>

@@ -2,6 +2,8 @@
 
 Options -Indexes
 DirectoryIndex index.html index.php
+AddDefaultCharset UTF-8
+AddCharset UTF-8 .txt .css .js .json .xml .svg
 ErrorDocument 404 /regi.php
 
 <IfModule mod_rewrite.c>
@@ -32,14 +34,23 @@ ErrorDocument 404 /regi.php
   Header always set Referrer-Policy "strict-origin-when-cross-origin"
 </IfModule>
 
+# A verziószámos CSS/JS fájlok hosszan gyorsítótárazhatók (ha a mod_expires nem működne)
+<IfModule mod_headers.c>
+  <FilesMatch "\.(css|js|woff2?)$">
+    Header set Cache-Control "public, max-age=31536000"
+  </FilesMatch>
+</IfModule>
+
 # Tömörítés és gyorsítótár (a CSS/JS fájlok verziószámmal frissülnek)
 <IfModule mod_deflate.c>
-  AddOutputFilterByType DEFLATE text/html text/css text/plain application/javascript application/json application/xml image/svg+xml
+  AddOutputFilterByType DEFLATE text/html text/css text/plain text/javascript application/javascript application/json application/xml image/svg+xml
 </IfModule>
 <IfModule mod_expires.c>
   ExpiresActive On
   ExpiresByType text/css "access plus 1 year"
   ExpiresByType application/javascript "access plus 1 year"
+  ExpiresByType text/javascript "access plus 1 year"
+  ExpiresByType application/x-javascript "access plus 1 year"
   ExpiresByType font/woff2 "access plus 1 year"
   ExpiresByType font/woff "access plus 1 year"
   ExpiresByType image/jpeg "access plus 1 month"

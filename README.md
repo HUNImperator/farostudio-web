@@ -15,6 +15,8 @@ Telepítés: cPanel → Git™ Version Control → Manage → Pull or Deploy →
 - `public/regi.php`: a régi WordPress-oldal címeinek 301-es átirányítása (oldalak, termékek, blog; a már áthozott cikk a saját új címére), különben 404-es oldal.
 - `public/sitemap.php`: statikus oldalak + megjelent blogírások. `robots.txt`: az admin, a videók és a rendelés kimarad.
 - A rendelési oldalak `noindex`-esek; a PHP-sablonban `'noindex' => true` kapcsolja.
+- **Strukturált adatok (schema.org JSON-LD):** a közös rész (weboldal, Csengeri Zsuzsa, a vállalkozás címmel) a `public/_app/schema_alap.json`-ban. A statikus oldalakba a `python3 tools/seo_schema.py` írja be (a `<!-- schema:start -->…<!-- schema:end -->` közé) – **cím, leírás, ár vagy GYIK változása után újra kell futtatni**. A blog (PHP) a sablonból kapja (`schema_blokk()`), a cikk BlogPostingként.
+- `public/llms.txt`: rövid, tényszerű leírás az MI-keresőknek (szolgáltatások, árak, elérhetőség) – árváltozáskor ezt is frissíteni.
 
 ## Betűtípusok
 Oswald és Open Sans saját tárhelyről (`public/assets/fonts`, OFL licenc), latin + magyar karakterkészletre szűkítve.
