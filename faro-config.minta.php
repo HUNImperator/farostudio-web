@@ -62,5 +62,12 @@ return [
     // 'video_mappa'     => '/home/whiteman/faro-videok',
     // 'feltoltes_mappa' => '/home/whiteman/faro-feltoltesek',
 
-    // Később: 'foxpost' => [...]
+    // Foxpost Web API – az adatok a foxpost.hu üzleti fiókban: Beállítások (https://foxpost.hu/beallitasok)
+    'foxpost' => [
+        'felhasznalo' => '',       // API felhasználónév (Basic auth username)
+        'jelszo'      => '',       // API jelszó (Basic auth password)
+        'api_kulcs'   => '',       // API-key
+        'alap_meret'  => 's',      // alapértelmezett csomagméret: xs, s, m, l, xl
+        'cimke_meret' => 'A6',     // címke: A6, A7 (4 db/A4), A5 vagy _85X85
+    ],
 ];

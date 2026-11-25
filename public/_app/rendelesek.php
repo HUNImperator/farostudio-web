@@ -47,6 +47,7 @@ function rendeles_ellenoriz(array $be): array
         'apt_id'           => $s(['foxpost', 'id'], 40),
         'apt_nev'          => $s(['foxpost', 'nev']),
         'apt_cim'          => $s(['foxpost', 'cim'], 255),
+        'apt_tipus'        => $s(['foxpost', 'tipus'], 20),
         'fizetes'          => $s(['fizetes'], 20),
         'megjegyzes'       => $s(['megjegyzes'], 1000),
     ];
@@ -112,7 +113,7 @@ function rendeles_ellenoriz(array $be): array
     if ($vanKonyv) {
         if ($r['apt_id'] === '' || $r['apt_nev'] === '') $hibak[] = 'Nincs kiválasztva Foxpost-automata.';
     } else {
-        $r['apt_id'] = $r['apt_nev'] = $r['apt_cim'] = '';
+        $r['apt_id'] = $r['apt_nev'] = $r['apt_cim'] = $r['apt_tipus'] = '';
     }
     if (!isset(FIZETESI_MODOK[$r['fizetes']])) $hibak[] = 'Ismeretlen fizetési mód.';
 
@@ -177,12 +178,12 @@ function rendeles_letrehoz(array $r, string $kezdoAllapot): array
         $st = $pdo->prepare('INSERT INTO rendelesek
             (letrehozva, frissitve, allapot, fizetes, vevo_nev, vevo_email, vevo_telefon,
              szamla_nev, szamla_irsz, szamla_telepules, szamla_cim, szamla_adoszam,
-             apt_id, apt_nev, apt_cim, megjegyzes, konyvek_osszeg, szallitas, vegosszeg, elvegzett_modulok)
-            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
+             apt_id, apt_nev, apt_cim, apt_tipus, megjegyzes, konyvek_osszeg, szallitas, vegosszeg, elvegzett_modulok)
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
         $st->execute([
             $most, $most, $kezdoAllapot, $r['fizetes'], $r['vevo_nev'], $r['vevo_email'], $r['vevo_telefon'],
             $r['szamla_nev'], $r['szamla_irsz'], $r['szamla_telepules'], $r['szamla_cim'], $r['szamla_adoszam'],
-            $r['apt_id'], $r['apt_nev'], $r['apt_cim'], $r['megjegyzes'], $r['konyvek_osszeg'], $r['szallitas'], $r['vegosszeg'],
+            $r['apt_id'], $r['apt_nev'], $r['apt_cim'], $r['apt_tipus'] !== '' ? $r['apt_tipus'] : null, $r['megjegyzes'], $r['konyvek_osszeg'], $r['szallitas'], $r['vegosszeg'],
             $r['elvegzett_modulok'] ?? '',
         ]);
         $id = (int)$pdo->lastInsertId();

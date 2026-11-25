@@ -423,8 +423,26 @@ if ($p === 'rendeles') {
                 if ($csomag !== '') {
                     db()->prepare('UPDATE rendelesek SET foxpost_csomagszam = ? WHERE id = ?')->execute([$csomag, $id]);
                 }
+                $voltFeladva = $r['allapot'] === 'feladva';
                 rendeles_allapot($id, 'feladva', $ki, $csomag !== '' ? 'csomagszám: ' . $csomag : '');
-                atiranyit($vissza, 'Feladottnak jelölve.');
+                $levelOk = !$voltFeladva && !empty($_POST['level']) ? level_feladva(rendeles_betolt($id)) : null;
+                atiranyit($vissza, 'Feladottnak jelölve.' . ($levelOk === true ? ' A vevő levelet kapott a csomagszámmal.' : ($levelOk === false ? ' A vevőnek szóló levelet nem sikerült elküldeni.' : '')));
+            case 'foxpost_letrehoz':
+                atiranyit($vissza, foxpost_csomag_letrehoz($r, (string)($_POST['meret'] ?? ''), $ki));
+            case 'foxpost_frissit':
+                atiranyit($vissza, foxpost_frissit($r, $ki) ?: 'Nincs Foxpost-csomag.');
+            case 'foxpost_torol':
+                if (empty($_POST['megerosit'])) atiranyit($vissza, 'A törléshez pipáld be a megerősítést.');
+                atiranyit($vissza, foxpost_csomag_torol($r, $ki));
+            case 'foxpost_cimke':
+                [$ok, $pdf] = $r['foxpost_csomagszam'] ? foxpost_cimke([$r['foxpost_csomagszam']], (string)($_POST['meret'] ?? 'A6')) : [false, 'Nincs Foxpost-csomag.'];
+                if ($ok) {
+                    header('Content-Type: application/pdf');
+                    header('Content-Disposition: inline; filename="foxpost-cimke-' . preg_replace('/[^A-Za-z0-9-]/', '', $r['rendelesszam']) . '.pdf"');
+                    echo $pdf;
+                    exit;
+                }
+                atiranyit($vissza, $pdf);
             case 'teljesitve':
                 rendeles_allapot($id, 'teljesitve', $ki);
                 atiranyit($vissza, 'Teljesítettnek jelölve.');
@@ -506,10 +524,40 @@ if ($p === 'rendeles') {
                 <form method="post"><?= csrf_mezo() ?><input type="hidden" name="muvelet" value="teljesitve">
                   <button class="btn">Belépési link elküldve → Teljesítve</button></form>
               <?php endif; ?>
+              <?php if (rendeles_van($r, 'konyv') && $r['apt_id'] !== '' && foxpost_beallitva()): ?>
+                <?php if (!$r['foxpost_csomagszam'] && $r['allapot'] === 'fizetve'): ?>
+                <form method="post" class="inline-form"><?= csrf_mezo() ?><input type="hidden" name="muvelet" value="foxpost_letrehoz">
+                  <label class="small" style="margin:0">Csomagméret
+                    <select name="meret" style="width:auto">
+                      <?php $alapMeret = foxpost_cfg()['alap_meret'] ?? 's'; foreach (FOXPOST_MERETEK as $k => $n): ?><option value="<?= $k ?>"<?= $k === $alapMeret ? ' selected' : '' ?>><?= $n ?></option><?php endforeach; ?>
+                    </select></label>
+                  <button class="btn">Foxpost-csomag létrehozása</button></form>
+                <?php elseif ($r['foxpost_csomagszam'] && in_array($r['allapot'], ['csomag_letrehozva', 'feladva', 'teljesitve'], true)): ?>
+                <form method="post" target="_blank" class="inline-form"><?= csrf_mezo() ?><input type="hidden" name="muvelet" value="foxpost_cimke">
+                  <select name="meret" style="width:auto" aria-label="Címke mérete">
+                    <?php $alapCimke = foxpost_cfg()['cimke_meret'] ?? 'A6'; foreach (FOXPOST_CIMKE_MERETEK as $k => $n): ?><option value="<?= $k ?>"<?= $k === $alapCimke ? ' selected' : '' ?>><?= h($n) ?></option><?php endforeach; ?>
+                  </select>
+                  <button class="btn">Címke letöltése (PDF) ↗</button></form>
+                <form method="post"><?= csrf_mezo() ?><input type="hidden" name="muvelet" value="foxpost_frissit">
+                  <button class="btn btn--light">Foxpost-állapot frissítése</button></form>
+                <?php endif; ?>
+              <?php endif; ?>
               <?php if (rendeles_van($r, 'konyv') && in_array($r['allapot'], ['fizetve', 'csomag_letrehozva'], true)): ?>
-                <form method="post" class="inline-form"><?= csrf_mezo() ?><input type="hidden" name="muvelet" value="feladva">
-                  <input name="csomagszam" placeholder="Foxpost csomagszám (nem kötelező)" value="<?= h($r['foxpost_csomagszam']) ?>">
-                  <button class="btn">Feladva</button></form>
+                <details class="more" style="flex-basis:100%">
+                  <summary><?= foxpost_beallitva() ? 'Feladás kézzel (ha a csomagot nem itt hoztad létre)' : 'Feladva' ?></summary>
+                  <form method="post" class="inline-form"><?= csrf_mezo() ?><input type="hidden" name="muvelet" value="feladva">
+                    <input name="csomagszam" placeholder="Foxpost csomagszám (nem kötelező)" value="<?= h($r['foxpost_csomagszam']) ?>">
+                    <label class="small" style="margin:0;text-transform:none;letter-spacing:0"><input type="checkbox" name="level" value="1" checked style="width:auto"> levél a vevőnek</label>
+                    <button class="btn">Feladva</button></form>
+                </details>
+              <?php endif; ?>
+              <?php if ($r['foxpost_csomagszam'] && $r['allapot'] === 'csomag_letrehozva' && foxpost_beallitva()): ?>
+                <details class="more" style="flex-basis:100%">
+                  <summary>Foxpost-csomag törlése</summary>
+                  <form method="post" class="inline-form"><?= csrf_mezo() ?><input type="hidden" name="muvelet" value="foxpost_torol">
+                    <label class="small" style="margin:0;text-transform:none;letter-spacing:0"><input type="checkbox" name="megerosit" value="1" required style="width:auto"> Igen, törlöm a csomagot a Foxpost rendszeréből (pl. rossz méret).</label>
+                    <button class="btn btn--light">Törlés</button></form>
+                </details>
               <?php endif; ?>
               <?php if ($r['allapot'] === 'feladva'): ?>
                 <form method="post"><?= csrf_mezo() ?><input type="hidden" name="muvelet" value="teljesitve">
@@ -562,8 +610,9 @@ if ($p === 'rendeles') {
               <?php if ($r['szamla_adoszam']): ?><br>Adószám: <?= h($r['szamla_adoszam']) ?><?php endif; ?></p>
             <?php if ($r['apt_nev'] !== ''): ?>
             <h3>Foxpost-automata</h3>
-            <p><?= h($r['apt_nev']) ?><br><?= h($r['apt_cim']) ?><br><span class="muted small">Azonosító: <?= h($r['apt_id']) ?></span>
-              <?php if ($r['foxpost_csomagszam']): ?><br>Csomagszám: <strong><?= h($r['foxpost_csomagszam']) ?></strong><?php endif; ?></p>
+            <p><?= h($r['apt_nev']) ?><br><?= h($r['apt_cim']) ?><br><span class="muted small">Azonosító: <?= h($r['apt_id']) ?><?= !empty($r['apt_tipus']) && $r['apt_tipus'] !== 'FOXPOST' ? ' · ' . h($r['apt_tipus']) : '' ?></span>
+              <?php if ($r['foxpost_csomagszam']): ?><br>Csomagszám: <a href="<?= h(foxpost_kovetes_url($r['foxpost_csomagszam'])) ?>" target="_blank" rel="noopener"><strong><?= h($r['foxpost_csomagszam']) ?></strong> ↗</a><?= $r['foxpost_meret'] ? ' <span class="muted small">(' . h(strtoupper($r['foxpost_meret'])) . ')</span>' : '' ?><?php endif; ?>
+              <?php if ($r['foxpost_allapot_szoveg']): ?><br><span class="small"><?= h($r['foxpost_allapot_szoveg']) ?></span> <span class="muted small">(<?= h(datum((string)$r['foxpost_frissitve'])) ?>)</span><?php endif; ?></p>
             <?php endif; ?>
           </section>
         </div>

@@ -66,3 +66,10 @@ Oswald és Open Sans saját tárhelyről (`public/assets/fonts`, OFL licenc), la
   RewriteEngine On
   RewriteRule ^(a-kezelhetetlen-gyermek|mindig-jo-voltam-es-megis|most-akkor-fojtsam-el-az-erzelmeimet)/?$ /gondolatok/$1 [R=301,L]
   ```
+
+## Foxpost Web API
+
+- `_app/foxpost.php`; beállítás a `faro-config.php`-ban: `'foxpost' => ['felhasznalo', 'jelszo', 'api_kulcs', 'alap_meret' => 's', 'cimke_meret' => 'A6']` (az adatok: foxpost.hu → Beállítások).
+- Admin → rendelés (könyves, Fizetve): **Foxpost-csomag létrehozása** (méret: XS–XL) → csomagszám, állapot „Csomag létrehozva” → **Címke letöltése (PDF)** (A6 / A7 / A5 / 85×85) → **Foxpost-állapot frissítése**; amíg nincs feladva, a csomag törölhető. A kézi „Feladva” (csomagszámmal) megmaradt tartaléknak.
+- Követés: a napi feladat (`_app/napi.php`) és a gomb lekéri az állapotot: ha a csomag a Foxpostnál van → **Feladva** + levél a vevőnek a csomagszámmal és követési linkkel; ha a vevő átvette → **Teljesítve**; lejárt átvétel / visszaküldés → levél neked.
+- A rendelési oldal az automata operátori azonosítóját (pl. `hu5516`) és típusát (FOXPOST / Z-BOX / Z-Pont) menti.

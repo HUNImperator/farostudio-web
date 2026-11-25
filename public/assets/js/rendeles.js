@@ -179,7 +179,9 @@
     var apt;
     try { apt = typeof e.data === "string" ? JSON.parse(e.data) : e.data; } catch (x) { return; }
     if (!apt || !(apt.place_id || apt.operator_id)) return;
-    document.getElementById("apt_id").value = apt.place_id || apt.operator_id;
+    // a Foxpost Web API az automata operátori azonosítóját várja (pl. hu5516)
+    document.getElementById("apt_id").value = apt.operator_id || apt.place_id;
+    document.getElementById("apt_tipus").value = apt.variant || "";
     document.getElementById("apt_nev").value = apt.name || "";
     document.getElementById("apt_cim").value = [apt.zip, apt.city, apt.street || apt.address].filter(Boolean).join(" ");
     document.querySelector("[data-apt-nev]").textContent = apt.name || "";
@@ -338,7 +340,7 @@
         irsz: f("irsz"), telepules: f("telepules"), cim: f("cim"),
         adoszam: cegkent.checked ? f("adoszam") : ""
       },
-      foxpost: { id: f("apt_id"), nev: f("apt_nev"), cim: f("apt_cim") },
+      foxpost: { id: f("apt_id"), nev: f("apt_nev"), cim: f("apt_cim"), tipus: f("apt_tipus") },
       tetelek: P.tetelek().map(function (t) {
         var ta = document.getElementById("dedik-" + t.id);
         return { id: t.id, db: t.db, dedikalas: ta ? ta.value.trim() : "" };

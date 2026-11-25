@@ -108,3 +108,4 @@ require FARO_APP . '/levelek.php';
 require FARO_APP . '/szamlazz.php';
 require FARO_APP . '/urlapok.php';
 require FARO_APP . '/videok.php';
+require FARO_APP . '/foxpost.php';

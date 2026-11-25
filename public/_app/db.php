@@ -39,6 +39,7 @@ function db_migrate(PDO $pdo): void
 {
     db_migrate_webhook($pdo);
     db_migrate_sztorno($pdo);
+    db_migrate_foxpost($pdo);
     db_migrate_video($pdo);
     db_migrate_stat($pdo);
     db_migrate_blog($pdo);
@@ -336,5 +337,30 @@ function db_migrate_blog(PDO $pdo): void
         ['ujrakezdes', 'Újrakezdés & Életerő', 'Inspiráció a változáshoz, kortól függetlenül.', 4],
     ] as $t) {
         try { $ins->execute($t); } catch (PDOException $e) { /* már megvan */ }
+    }
+}
+
+/** Foxpost Web API: a csomag állapota és a választott pont típusa (FOXPOST / Z-BOX / Z-Pont). */
+function db_migrate_foxpost(PDO $pdo): void
+{
+    try {
+        $pdo->query('SELECT foxpost_allapot FROM rendelesek LIMIT 1');
+        return;
+    } catch (PDOException $e) {
+    }
+    try {
+        $pdo->query('SELECT 1 FROM rendelesek LIMIT 1');
+    } catch (PDOException $e) {
+        return;
+    }
+    $dt = db_driver() === 'mysql' ? 'DATETIME' : 'TEXT';
+    foreach ([
+        'apt_tipus VARCHAR(20) NULL',
+        'foxpost_meret VARCHAR(4) NULL',
+        'foxpost_allapot VARCHAR(40) NULL',
+        'foxpost_allapot_szoveg VARCHAR(255) NULL',
+        "foxpost_frissitve $dt NULL",
+    ] as $oszlop) {
+        try { $pdo->exec('ALTER TABLE rendelesek ADD COLUMN ' . $oszlop); } catch (PDOException $e) { /* már megvan */ }
     }
 }

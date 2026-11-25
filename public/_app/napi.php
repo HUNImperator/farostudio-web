@@ -10,6 +10,7 @@
  *    (a rendelések megmaradnak – azokat csak kézzel lehet törölni).
  * 4. Régi belépési próbálkozások törlése (30 nap).
  * 5. Látogatottságmérés: a korábbi napok lezárása (napi kódok és kulcsok törlése).
+ * 6. Foxpost: az úton lévő csomagok állapotának frissítése.
  */
 declare(strict_types=1);
 if (PHP_SAPI !== 'cli') {
@@ -86,6 +87,11 @@ foreach ($emailek as $email) {
 
 /* 4. régi belépési próbálkozások */
 db()->prepare('DELETE FROM belepesi_kiserletek WHERE ido < ?')->execute([date('Y-m-d H:i:s', $most - 30 * 86400)]);
+
+/* 6. Foxpost: az úton lévő csomagok állapota (Feladva / Teljesítve / figyelmeztetés) */
+foreach (foxpost_napi() as $sor) {
+    $naplo[] = 'Foxpost – ' . $sor;
+}
 
 /* 5. látogatottságmérés: a korábbi napok lezárása (napi kódok és kulcsok törlése) */
 require_once FARO_APP . '/statisztika.php';
