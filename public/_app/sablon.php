@@ -102,6 +102,7 @@ function oldal_lab(array $o): void
         <li><a href="<?= $gy ?>adatkezeles.html">Adatkezelési tájékoztató</a></li>
         <li><a href="<?= $gy ?>elallas.html">Elállás a szerződéstől</a></li>
         <li><a href="<?= $gy ?>impresszum.html">Impresszum</a></li>
+        <li><a href="<?= $gy ?>kapcsolat.html">Kapcsolat</a></li>
       </ul>
       <p>© <?= date('Y') ?> Csengeri Zsuzsa – FARO</p>
     </div>

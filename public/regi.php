@@ -24,7 +24,7 @@ const REGI_CIMEK = [
     'kineziologia-one-brain' => 'oktato-videok.html',
     'bio-narrativa-amikor-a-tested-es-a-torteneted-vegre-egy-nyelvet-beszel' => 'bio-narrativa.html',
     'adatkezelesi-tajekoztato' => 'adatkezeles.html',
-    'kapcsolat'              => 'impresszum.html',
+    'kapcsolat'              => 'kapcsolat.html',
     'bihari-berta'           => '',
     'szarka-gyongyi'         => '',
     // webáruház
@@ -90,7 +90,7 @@ oldal_fej(['cim' => 'Az oldal nem található – Csengeri Zsuzsa | FARO', 'leir
         <h1 class="section-title">Ez az oldal nem található</h1>
         <p>Lehet, hogy a cím elírás, vagy az oldal a weboldal megújulásakor új helyre került.</p>
         <p style="margin-top:28px"><a class="btn btn--dark" href="/">Tovább a kezdőlapra&nbsp;<span class="btn__arrow" aria-hidden="true">→</span></a></p>
-        <p style="margin-top:18px"><a href="/gondolatok/">Gondolatok, blogok</a> · <a href="/konyvek.html">Írások és regények</a> · <a href="/impresszum.html">Elérhetőség</a></p>
+        <p style="margin-top:18px"><a href="/gondolatok/">Gondolatok, blogok</a> · <a href="/konyvek.html">Írások és regények</a> · <a href="/kapcsolat.html">Kapcsolat</a></p>
       </div>
     </section>
 <?php oldal_lab(['gy' => '/']);

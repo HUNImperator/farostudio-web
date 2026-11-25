@@ -354,6 +354,7 @@ function videok_oldal(string $cim, callable $tartalom, bool $lejatszo = false): 
         <li><a href="../adatkezeles.html">Adatkezelési tájékoztató</a></li>
         <li><a href="../elallas.html">Elállás a szerződéstől</a></li>
         <li><a href="../impresszum.html">Impresszum</a></li>
+        <li><a href="../kapcsolat.html">Kapcsolat</a></li>
       </ul>
       <p>© <?= date('Y') ?> Csengeri Zsuzsa – FARO · <a href="mailto:info@farostudio.hu">info@farostudio.hu</a></p>
     </div>

@@ -11,7 +11,7 @@ $oldalak = [
     '', 'rolam.html', 'konyvek.html', 'eloadasok.html', 'eloadas-igenyles.html', 'mentoralas.html',
     'mentoralas-jelentkezes.html', 'informalis-kineziologia.html', 'informalis-kineziologia-bejelentkezes.html',
     'szemelyiseg-elemzo-modszer.html', 'oktato-videok.html', 'bio-narrativa.html', 'bio-narrativa-jelentkezes.html',
-    'gondolatok/', 'aszf.html', 'adatkezeles.html', 'elallas.html', 'impresszum.html',
+    'gondolatok/', 'aszf.html', 'adatkezeles.html', 'elallas.html', 'impresszum.html', 'kapcsolat.html',
 ];
 
 $sorok = [];
