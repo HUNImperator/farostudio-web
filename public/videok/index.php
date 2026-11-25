@@ -328,7 +328,7 @@ function videok_oldal(string $cim, callable $tartalom, bool $lejatszo = false): 
   <meta name="robots" content="noindex, nofollow">
   <title><?= h($cim) ?> | Csengeri Zsuzsa</title>
   <link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="../assets/css/style.css?v=28">
+  <link rel="stylesheet" href="../assets/css/style.css?v=29">
 </head>
 <body data-nincs-panel<?= $f ? ' data-vevo-email="' . h($f['email']) . '" data-vevo-nev="' . h($f['nev']) . '"' : '' ?>>
   <header class="site-header video-header">

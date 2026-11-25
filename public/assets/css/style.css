@@ -2117,9 +2117,24 @@ body.apt-nyitva { overflow: hidden; }
 .empty-order { text-align: center; padding: 60px 20px; background: var(--beige-light); }
 .empty-order[hidden] { display: none; }
 
+.checkout__mini { display: none; }
 @media (max-width: 960px) {
   .checkout__inner { grid-template-columns: 1fr; }
-  .order-summary { position: relative; top: 0; order: -1; }
+  .order-summary { position: relative; top: 0; }
+  .checkout__mini {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    padding: 14px 18px;
+    background: var(--beige-light);
+    color: var(--ink);
+    text-decoration: none;
+    font-size: 15px;
+  }
+  .checkout__mini span, .checkout__mini strong { white-space: nowrap; }
+  .checkout__mini strong { font-family: var(--font-display); font-weight: 400; font-size: 20px; margin-left: auto; }
+  .checkout__mini::after { content: "↓"; }
 }
 @media (max-width: 560px) {
   .step { padding: 22px 18px; }

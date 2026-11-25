@@ -93,6 +93,10 @@
     document.querySelector("[data-reszosszeg]").textContent = P.ft(P.reszosszeg());
     document.querySelector("[data-szallitas]").textContent = szall ? P.ft(szall.ar) : "";
     document.querySelector("[data-vegosszeg]").textContent = P.ft(P.vegosszeg());
+    // mobilon felül egy rövid sáv: hány tétel, mennyi az összeg (a teljes összesítő a küldés gombbal alul van)
+    var darab = tetelek.reduce(function (a, t) { return a + (t.termek.tipus === "konyv" ? t.db : 1); }, 0);
+    document.querySelector("[data-mini-tetel]").textContent = "Megrendelésem: " + darab + " tétel";
+    document.querySelector("[data-mini-osszeg]").textContent = P.ft(P.vegosszeg());
 
     // dedikálás könyvenként
     dedikDoboz.querySelectorAll("textarea").forEach(function (ta) { dedikaciok[ta.dataset.id] = ta.value; });
