@@ -567,6 +567,46 @@ function blog_regi_hianyzik(): array
     return array_values(array_filter(blog_regi_cikkek(), function ($c) { return !blog_cikk_slug($c['slug']); }));
 }
 
+/** A régi cikk 600×300-as kezdőképe a csomagban (_app/blog_regi/), ha van. */
+function blog_regi_kep_fajl(string $slug): ?string
+{
+    $f = FARO_APP . '/blog_regi/' . $slug . '-600x300.jpg';
+    return is_file($f) ? $f : null;
+}
+
+/** Már áthozott régi cikkek, amelyeknek még a régi oldalról letöltött kezdőképük van. */
+function blog_regi_kepcsere_kell(): array
+{
+    $lista = [];
+    foreach (blog_regi_cikkek() as $c) {
+        if (!blog_regi_kep_fajl($c['slug'])) continue;
+        $cikk = blog_cikk_slug($c['slug']);
+        if (!$cikk) continue;
+        $k = $cikk['kezdokep'] ? blog_kep((string)$cikk['kezdokep']) : null;
+        if (!$cikk['kezdokep'] || ($k && $k['szel'] . 'x' . $k['mag'] === ($c['regi_meret'] ?? ''))) {
+            $lista[] = ['cikk' => $cikk, 'regi' => $c];
+        }
+    }
+    return $lista;
+}
+
+/** Az áthozott régi cikkek kezdőképét lecseréli a 600×300-as változatra. */
+function blog_regi_kepcsere(): array
+{
+    $uzenet = [];
+    foreach (blog_regi_kepcsere_kell() as $t) {
+        try {
+            $kulcs = blog_kep_ment(blog_regi_kep_fajl($t['regi']['slug']), 'kezdo')['kulcs'];
+            db()->prepare('UPDATE blog_kepek SET cikk_id = ? WHERE kulcs = ?')->execute([(int)$t['cikk']['id'], $kulcs]);
+            db()->prepare('UPDATE blog_cikkek SET kezdokep = ?, frissitve = ? WHERE id = ?')->execute([$kulcs, most(), (int)$t['cikk']['id']]);
+            $uzenet[] = '„' . $t['cikk']['cim'] . '” kezdőképe lecserélve.';
+        } catch (Throwable $e) {
+            $uzenet[] = '„' . $t['cikk']['cim'] . '”: ' . $e->getMessage();
+        }
+    }
+    return $uzenet;
+}
+
 function blog_regi_import(): array
 {
     $uzenet = [];
@@ -575,7 +615,14 @@ function blog_regi_import(): array
     foreach (blog_regi_hianyzik() as $c) {
         $kezdo = null;
         $kepUzenet = '';
-        if (!empty($c['kep']) && function_exists('curl_init')) {
+        $helyi = blog_regi_kep_fajl($c['slug']);
+        if ($helyi) {
+            try {
+                $kezdo = blog_kep_ment($helyi, 'kezdo')['kulcs'];
+            } catch (Throwable $e) {
+                $kepUzenet = ' (a kezdőkép nem jött át: ' . $e->getMessage() . ')';
+            }
+        } elseif (!empty($c['kep']) && function_exists('curl_init')) {
             $tmp = tempnam(sys_get_temp_dir(), 'blog');
             $ch = curl_init($c['kep']);
             $fp = fopen($tmp, 'wb');

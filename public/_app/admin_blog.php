@@ -66,6 +66,9 @@ function admin_blog_lista(): void
         if ($m === 'import') {
             atiranyit('./?p=blog', implode(' ', blog_regi_import()) ?: 'Nincs áthozandó cikk.');
         }
+        if ($m === 'kepcsere') {
+            atiranyit('./?p=blog', implode(' ', blog_regi_kepcsere()) ?: 'Nincs cserélendő kép.');
+        }
         if ($m === 'torol') {
             $c = blog_cikk((int)($_POST['id'] ?? 0));
             if ($c && ($_POST['megerosit'] ?? '') === '1') {
@@ -86,8 +89,9 @@ function admin_blog_lista(): void
         return $kereso === '' || mb_stripos($c['cim'] . ' ' . $c['bevezeto'], $kereso) !== false;
     });
     $regi = blog_regi_hianyzik();
+    $kepcsere = blog_regi_kepcsere_kell();
 
-    oldal('Blog', function () use ($lista, $db, $szuro, $kereso, $regi, $uzenet) { ?>
+    oldal('Blog', function () use ($lista, $db, $szuro, $kereso, $regi, $kepcsere, $uzenet) { ?>
         <div class="list-head">
           <h1>Blog</h1>
           <div class="actions" style="margin:0">
@@ -101,6 +105,12 @@ function admin_blog_lista(): void
           <div class="card note" style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap">
             <p style="margin:0">A régi weboldalról <?= count($regi) ?> írás még nincs áthozva: <?= h(implode(', ', array_map(function ($c) { return '„' . $c['cim'] . '”'; }, $regi))) ?>.</p>
             <form method="post"><?= csrf_mezo() ?><input type="hidden" name="muvelet" value="import"><button class="btn">Áthozom őket</button></form>
+          </div>
+        <?php endif; ?>
+        <?php if ($kepcsere): ?>
+          <div class="card note" style="display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap">
+            <p style="margin:0">Elkészült a régi írások egységes, 600×300-as kezdőképe: <?= h(implode(', ', array_map(function ($t) { return '„' . $t['cikk']['cim'] . '”'; }, $kepcsere))) ?>.</p>
+            <form method="post"><?= csrf_mezo() ?><input type="hidden" name="muvelet" value="kepcsere"><button class="btn">Lecserélem</button></form>
           </div>
         <?php endif; ?>
         <form class="list-head" method="get">
