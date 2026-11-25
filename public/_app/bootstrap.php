@@ -17,16 +17,36 @@ mb_internal_encoding('UTF-8');
  * A titkos adatok (jelszavak, kulcsok) a webgyökéren KÍVÜL, a
  * faro-config.php fájlban vannak, hogy soha ne kerüljenek a GitHubra
  * és a böngészőből se legyenek elérhetők.
- * Alapértelmezett hely: a weboldal mappája melletti faro-config.php
- * (pl. /home/whiteman/faro-config.php).
+ * Helye: a weboldal mappája mellett vagy eggyel feljebb
+ * (/home/whiteman/faro-config.php).
  */
+/**
+ * A beállítófájl helye: FARO_CONFIG, különben a weboldal mappája mellett,
+ * vagy eggyel feljebb (ha a weboldal a public_html egy almappájában van,
+ * pl. /home/whiteman/public_html/farostudio.hu → /home/whiteman/faro-config.php).
+ */
+function faro_config_ut(): string
+{
+    if (getenv('FARO_CONFIG')) return (string)getenv('FARO_CONFIG');
+    foreach ([dirname(FARO_PUBLIC), dirname(FARO_PUBLIC, 2)] as $m) {
+        if (is_file($m . '/faro-config.php')) return $m . '/faro-config.php';
+    }
+    return dirname(FARO_PUBLIC) . '/faro-config.php';
+}
+
+/** A webgyökéren kívüli mappa, ahol a beállítófájl van (a videók és igazolások alapértelmezett helye). */
+function faro_kulso_mappa(): string
+{
+    return dirname(faro_config_ut());
+}
+
 function faro_config(): array
 {
     static $cfg = null;
     if ($cfg !== null) {
         return $cfg;
     }
-    $path = getenv('FARO_CONFIG') ?: dirname(FARO_PUBLIC) . '/faro-config.php';
+    $path = faro_config_ut();
     if (!is_file($path)) {
         faro_fatal('Hiányzik a beállítófájl (faro-config.php).');
     }

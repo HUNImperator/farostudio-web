@@ -8,7 +8,7 @@ Az új farostudio.hu weboldal forrása.
 Telepítés: cPanel → Git™ Version Control → Manage → Pull or Deploy →
 „Update from Remote”, majd „Deploy HEAD Commit”.
 
-Éles cím: https://farostudio.hu (cPanel: `public_html`). A korábbi tesztcím (test.farostudio.hu) ugyanazt a `faro-config.php`-t és adatbázist használná, ezért élesítés után átirányítás a fődomainre.
+Éles cím: https://farostudio.hu (cPanel: `public_html/farostudio.hu`). A korábbi tesztcím (test.farostudio.hu) ugyanazt a `faro-config.php`-t és adatbázist használná, ezért élesítés után átirányítás a fődomainre.
 
 ## Címek, keresők
 - `public/.htaccess`: https + www nélküli cím, `sitemap.xml` → `sitemap.php`, minden nem létező cím → `regi.php`.
@@ -24,7 +24,7 @@ Oswald és Open Sans saját tárhelyről (`public/assets/fonts`, OFL licenc), la
 - `public/api/rendeles.php` – a rendelési oldal ide küldi a rendelést (JSON).
 - `public/admin/` – admin felület (rendelések kezelése), első indításkor admin felhasználó létrehozása a `setup_token` kóddal.
 - `public/_app/` – közös PHP-kód (kívülről nem érhető el, `.htaccess`), benne a PHPMailer (LGPL).
-- Beállítások: a webgyökéren **kívül**, `/home/whiteman/faro-config.php` (minta: `faro-config.minta.php`). Jelszavak és kulcsok soha nem kerülnek a GitHubra.
+- Beállítások: a webgyökéren **kívül**, `/home/whiteman/faro-config.php` (a weboldal mappája mellett vagy eggyel feljebb keresi) (minta: `faro-config.minta.php`). Jelszavak és kulcsok soha nem kerülnek a GitHubra.
 - Adatbázis: MySQL (`whiteman_faro_rendeles`); a táblákat az első kérés automatikusan létrehozza.
 - Követelmény: PHP 7.3 vagy újabb, PDO MySQL.
 - Termékadatok és szállítási díj: `public/assets/data/termekek.json` – az árakat a szerver is innen veszi.
@@ -39,7 +39,7 @@ Oswald és Open Sans saját tárhelyről (`public/assets/fonts`, OFL licenc), la
 - Admin → Felhasználók: jóváhagyás (jelszó-generálás, levél), elutasítás (Stripe-visszatérítés, sztornó), kézi hosszabbítás, új jelszó.
 - Videók: titkosított HLS (AES-128) a `/home/whiteman/faro-videok/one-brain-N/` mappákban (`kulcs.key`, `NN/index.m3u8`, `NN/d0000.ts` …). Átalakítás: `eszkozok/hls-atalakito.ps1` (Windows, ffmpeg).
 - Lejátszó: hls.js 1.6.13 (`public/assets/vendor/hls/`, Apache 2.0), a böngésző saját vezérlőivel; vízjel (a néző e-mail-címe), egy munkamenet felhasználónként.
-- Napi feladat (cPanel → Cron Jobs, naponta): `php /home/whiteman/public_html/_app/napi.php` – figyelmeztetés 10 nappal lejárat előtt, lejárat, adattakarítás egy év után.
+- Napi feladat (cPanel → Cron Jobs, naponta): `php /home/whiteman/public_html/farostudio.hu/_app/napi.php` – figyelmeztetés 10 nappal lejárat előtt, lejárat, adattakarítás egy év után.
 
 ## Látogatottságmérés (saját, süti nélkül)
 

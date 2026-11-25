@@ -110,5 +110,5 @@ function video_nezheti(array $f, string $sorozat): ?array
 /** A videók mappája – a webgyökéren kívül (alapból: /home/<felhasználó>/faro-videok). */
 function video_mappa(): string
 {
-    return rtrim(faro_config()['video_mappa'] ?? (dirname(FARO_PUBLIC) . '/faro-videok'), '/');
+    return rtrim(faro_config()['video_mappa'] ?? (faro_kulso_mappa() . '/faro-videok'), '/');
 }

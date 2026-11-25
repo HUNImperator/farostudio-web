@@ -34,7 +34,7 @@ const FELTOLTES_MAX_OSSZES = 10 * 1024 * 1024;   // 10 MB összesen
 /** A feltöltések mappája – a webgyökéren kívül (alapból: /home/<felhasználó>/faro-feltoltesek). */
 function feltoltes_mappa(): string
 {
-    $m = faro_config()['feltoltes_mappa'] ?? (dirname(FARO_PUBLIC) . '/faro-feltoltesek');
+    $m = faro_config()['feltoltes_mappa'] ?? (faro_kulso_mappa() . '/faro-feltoltesek');
     if (!is_dir($m)) {
         @mkdir($m, 0750, true);
         @file_put_contents($m . '/.htaccess', "Require all denied\nDeny from all\n");
