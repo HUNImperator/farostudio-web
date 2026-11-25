@@ -56,7 +56,7 @@ function oldal_fej(array $o): void
   <link rel="apple-touch-icon" href="<?= $gy ?>assets/img/favicon-180.png">
   <link rel="preload" href="<?= $gy ?>assets/fonts/oswald-var.woff" as="font" type="font/woff" crossorigin>
   <link rel="preload" href="<?= $gy ?>assets/fonts/opensans-var.woff" as="font" type="font/woff" crossorigin>
-  <link rel="stylesheet" href="<?= $gy ?>assets/css/style.css?v=30">
+  <link rel="stylesheet" href="<?= $gy ?>assets/css/style.css?v=31">
 <?= $o['fejbe'] ?? '' ?>
 <?php if (empty($o['noindex'])) echo schema_blokk($o['schema'] ?? []); ?>
 </head>
